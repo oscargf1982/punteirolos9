@@ -280,7 +280,9 @@ body{
   <div class="stitle">📐 Análisis</div>
   <div class="card"><div class="ch"><span class="ci">🎲</span><span class="ct">% victorias H2H</span></div><div id="bar-wpct"></div></div>
   <div class="card"><div class="ch"><span class="ci">🌪️</span><span class="ct">Equipos más caóticos (σ)</span></div><div id="bar-chaos"></div></div>
-  <div class="card"><div class="ch"><span class="ci">🍀</span><span class="ct">Índice de suerte</span></div><div id="bar-luck"></div></div>
+  <div class="card"><div class="ch"><span class="ci">🍀</span><span class="ct">Suerte (ganó por debajo de la media)</span></div><div id="bar-luck"></div></div>
+  <div class="card"><div class="ch"><span class="ci">😤</span><span class="ct">Mala suerte (perdió por encima de la media)</span></div><div id="bar-unluck"></div></div>
+  <div class="card"><div class="ch"><span class="ci">⚖️</span><span class="ct">Balance neto de suerte</span></div><div id="bar-netluck"></div></div>
   <div class="stitle">🏅 Logros</div>
   <div class="badge-grid" id="badges"></div>
 </div>
@@ -368,7 +370,7 @@ const CURRENT_GW=5;
 // ── Compute ───────────────────────────────────────────────────
 const st={};
 TEAMS.forEach(t=>{st[t.e]={name:t.n,player:t.p,wins:t.w,draws:t.d,losses:t.l,pts:t.pts,
-  cw:0,bw:0,cl:0,hs:0,lp:0,total:0,luck:0,scores:[],res:[]}});
+  cw:0,bw:0,cl:0,hs:0,lp:0,total:0,luck:0,unluck:0,scores:[],res:[]}});
 
 const byGW={};
 MATCHES.forEach(([e1,s1,e2,s2,gw])=>{
@@ -379,7 +381,11 @@ let bestM={n:'',v:0,gw:0},worstM={n:'',v:999,gw:0},bigW={w:'',l:'',d:0,gw:0,ws:0
 const tight=[];
 
 MATCHES.forEach(([e1,s1,e2,s2,gw])=>{
-  const diff=Math.abs(s1-s2),avg=(s1+s2)/2;
+  const diff=Math.abs(s1-s2);
+  // Liga avg for this GW
+  const gwMs=byGW[gw]||[];
+  const allScores=gwMs.flatMap(m=>[m[1],m[3]]);
+  const avg=allScores.reduce((a,b)=>a+b,0)/Math.max(allScores.length,1);
   [[e1,s1,e2,s2],[e2,s2,e1,s1]].forEach(([me,my,,op])=>{
     if(!st[me])return;
     st[me].total++;st[me].scores.push(my);
@@ -388,7 +394,13 @@ MATCHES.forEach(([e1,s1,e2,s2,gw])=>{
     else if(my<op){st[me].res.push('L');if(diff<=4)st[me].cl++;st[me].lp+=my;}
     else st[me].res.push('D');
   });
-  if(s1>s2&&s1<avg)st[e1].luck++;if(s2>s1&&s2<avg)st[e2].luck++;
+  // Suerte: ganó por debajo de la media de la liga ese GW
+  // Mala suerte: perdió por encima de la media de la liga ese GW
+  // (avg aquí es la media del partido — recalculamos por GW en renderBars)
+  if(s1>s2&&s1<avg){st[e1].luck++;}
+  if(s2>s1&&s2<avg){st[e2].luck++;}
+  if(s1<s2&&s1>avg){st[e1].unluck++;}
+  if(s2<s1&&s2>avg){st[e2].unluck++;}
   const mx=Math.max(s1,s2),mn=Math.min(s1,s2);
   if(mx>bestM.v)bestM={n:s1>=s2?(st[e1]?.name||''):(st[e2]?.name||''),v:mx,gw};
   if(mn<worstM.v)worstM={n:s1<=s2?(st[e1]?.name||''):(st[e2]?.name||''),v:mn,gw};
@@ -509,9 +521,24 @@ document.getElementById('bar-wpct').innerHTML=wpArr.map((t,i)=>{
 const stdArr=[...TEAMS].sort((a,b)=>st[b.e].std-st[a.e].std);
 const stdMx=st[stdArr[0].e].std;
 document.getElementById('bar-chaos').innerHTML=stdArr.map((t,i)=>bar(t.n,st[t.e].std,(st[t.e].std/stdMx)*100,'#ff2882','σ',i*35)).join('');
+// Luck bars
 const lkArr=[...TEAMS].sort((a,b)=>st[b.e].luck-st[a.e].luck);
 const lkMx=Math.max(...TEAMS.map(t=>st[t.e].luck),1);
-document.getElementById('bar-luck').innerHTML=lkArr.map((t,i)=>bar(t.n,st[t.e].luck,(st[t.e].luck/lkMx)*100,'#c084fc','victorias con suerte',i*35)).join('');
+document.getElementById('bar-luck').innerHTML=lkArr.map((t,i)=>bar(t.n,st[t.e].luck,(st[t.e].luck/Math.max(lkMx,1))*100,'#00ff87','vict. con suerte',i*35)).join('');
+
+const ulArr=[...TEAMS].sort((a,b)=>st[b.e].unluck-st[a.e].unluck);
+const ulMx=Math.max(...TEAMS.map(t=>st[t.e].unluck),1);
+document.getElementById('bar-unluck').innerHTML=ulArr.map((t,i)=>bar(t.n,st[t.e].unluck,(st[t.e].unluck/Math.max(ulMx,1))*100,'#ff2882','derrotas con mala suerte',i*35)).join('');
+
+// Net luck: luck - unluck, show with +/- and color
+const netArr=[...TEAMS].map(t=>({...t,net:st[t.e].luck-st[t.e].unluck})).sort((a,b)=>b.net-a.net);
+const netMx=Math.max(...netArr.map(t=>Math.abs(t.net)),1);
+document.getElementById('bar-netluck').innerHTML=netArr.map((t,i)=>{
+  const v=t.net;const pct=(Math.abs(v)/netMx)*100;
+  const color=v>0?'#00ff87':v<0?'#ff2882':'#888';
+  const label=v>0?`+${v}`:v===0?'0':String(v);
+  return bar(t.n,label,pct,color,'balance',i*35);
+}).join('');
 
 // ── Badges ────────────────────────────────────────────────────
 const cArr=[...TEAMS].filter(t=>st[t.e].total>=2).sort((a,b)=>st[a.e].std-st[b.e].std);
@@ -628,7 +655,8 @@ document.getElementById('awards').innerHTML=[
   {i:'💥',l:'Rey de las palizas',v:sd(TEAMS,'bw')[0].n,s:`${st[sd(TEAMS,'bw')[0].e].bw} goleadas +20 pts`},
   {i:'💔',l:'Más derrotas ajustadas',v:sd(TEAMS,'cl')[0].n,s:`${st[sd(TEAMS,'cl')[0].e].cl} derrotas ≤4 pts`},
   {i:'🔥',l:'Mejor racha',v:swArr[0].n,s:`${STR[swArr[0].e].bW} victorias consecutivas`},
-  {i:'🍀',l:'El más afortunado',v:sd(TEAMS,'luck')[0].n,s:`${st[sd(TEAMS,'luck')[0].e].luck} victorias con suerte`},
+  {i:'🍀',l:'El más afortunado (balance neto)',v:[...TEAMS].map(t=>({...t,net:st[t.e].luck-st[t.e].unluck})).sort((a,b)=>b.net-a.net)[0].n,s:`Balance: +${Math.max(...TEAMS.map(t=>st[t.e].luck-st[t.e].unluck))}`},
+  {i:'😤',l:'El más gafado (balance neto)',v:[...TEAMS].map(t=>({...t,net:st[t.e].luck-st[t.e].unluck})).sort((a,b)=>a.net-b.net)[0].n,s:`Balance: ${Math.min(...TEAMS.map(t=>st[t.e].luck-st[t.e].unluck))}`},
   {i:'😵',l:'El más gafado',v:sd(TEAMS,'lp')[0].n,s:`${st[sd(TEAMS,'lp')[0].e].lp} pts marcados perdiendo`},
   {i:'⚡',l:'Victoria más amplia',v:bigW.w,s:`+${bigW.d} pts vs ${bigW.l} · GW${bigW.gw}`},
   {i:'💀',l:'Farolillo rojo',v:TEAMS[19].n,s:`${TEAMS[19].w}V · ${TEAMS[19].pts} pts`},
