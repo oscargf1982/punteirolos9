@@ -2,25 +2,25 @@ name: Actualizar Punteirolos 9.0
 
 on:
   schedule:
-    - cron: '0 10 * * 1'  # Lunes 10:00 UTC (11h España invierno, 12h verano)
-  workflow_dispatch:       # Permite ejecutarlo manualmente
+    - cron: '0 10 * * 1'
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: 📥 Descargar repositorio
+      - name: Descargar repositorio
         uses: actions/checkout@v4
 
-      - name: 🐍 Configurar Python
+      - name: Configurar Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: 📡 Generar estadísticas
+      - name: Generar estadísticas
         run: python generate_9.py
 
-      - name: 🚀 Publicar en GitHub Pages
+      - name: Publicar en GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
