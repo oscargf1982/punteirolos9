@@ -243,7 +243,7 @@ body{
 <div class="hero">
   <div class="hero-badge">⚽ Punteirolos 9.0 · 2026/27</div>
   <h1>PUNTEIROLOS<br>9.0</h1>
-  <p class="hero-sub">Liga #42303 · 20 equipos</p>
+  <p class="hero-sub">Liga #42303 · Actualizado: 20/09/2026 08:03</p>
   <div class="live-pill"><span class="live-dot"></span>EN CURSO · GW <span id="cgw">5</span></div>
   <div class="hstrip" id="hstrip"></div>
 </div>
@@ -315,6 +315,15 @@ body{
 <div class="panel" id="panel-awards">
   <div class="stitle">🏅 Premios</div>
   <div class="card"><div id="awards"></div></div>
+  <div class="stitle">🔥 Partidos TOP</div>
+  <p style="font-size:13px;color:var(--text3);margin-bottom:14px">Los partidos con mayor suma de puntos entre los dos equipos</p>
+  <div class="card"><div id="matches-top"></div></div>
+  <div class="stitle">💩 Partidos Brocescos</div>
+  <p style="font-size:13px;color:var(--text3);margin-bottom:14px">Los partidos con menor suma de puntos entre los dos equipos</p>
+  <div class="card"><div id="matches-broce"></div></div>
+  <div class="stitle">🎯 Managers en la diana</div>
+  <p style="font-size:13px;color:var(--text3);margin-bottom:14px">Managers que han recibido más chips en contra — con el resultado</p>
+  <div id="diana-cards"></div>
 </div>
 
 <!-- NAV -->
@@ -329,7 +338,7 @@ body{
 </nav>
 
 <script>
-const TEAMS = [
+const TEAMS=[
   {e:2740581,n:"Os meninhos",p:"Roi Valc\u00e1rcel",r:1,w:3,d:0,l:1,pts:306},
   {e:232272,n:"Club FLUV ia L",p:"Figo Dido",r:2,w:3,d:0,l:1,pts:305},
   {e:336896,n:"La Conchabanza",p:"Rub\u00e9n Rodr\u00edguez",r:3,w:3,d:0,l:1,pts:302},
@@ -351,54 +360,11 @@ const TEAMS = [
   {e:4273984,n:"CASAS BARATAS CF",p:"Roberto Varela Prada",r:19,w:1,d:0,l:3,pts:246},
   {e:2738656,n:"Cobra Kai",p:"Omar L\u00f3pez Parga",r:20,w:0,d:0,l:4,pts:234}
 ];
-const MATCHES = [
-  [375826,61,2740014,57,1],
-  [253425,48,2763130,52,1],
-  [209323,42,314451,67,1],
-  [2609302,65,2742897,62,1],
-  [15871,44,4273984,61,1],
-  [336896,47,2739209,51,1],
-  [371963,36,208380,65,1],
-  [232272,68,4414467,49,1],
-  [6036721,58,2738656,44,1],
-  [2740581,76,352983,42,1],
-  [2740014,96,2740581,82,2],
-  [352983,72,6036721,108,2],
-  [2738656,76,232272,100,2],
-  [4414467,94,371963,66,2],
-  [208380,74,336896,107,2],
-  [2739209,91,15871,78,2],
-  [4273984,75,2609302,88,2],
-  [2742897,105,209323,95,2],
-  [314451,65,253425,89,2],
-  [2763130,87,375826,70,2],
-  [253425,44,2740014,49,3],
-  [209323,51,375826,48,3],
-  [2609302,45,2763130,56,3],
-  [15871,68,314451,55,3],
-  [336896,50,2742897,45,3],
-  [371963,66,4273984,52,3],
-  [232272,47,2739209,50,3],
-  [6036721,49,208380,53,3],
-  [2740581,61,4414467,53,3],
-  [352983,58,2738656,48,3],
-  [2740014,64,352983,79,4],
-  [2738656,66,2740581,87,4],
-  [4414467,83,6036721,70,4],
-  [208380,73,232272,90,4],
-  [2739209,71,371963,78,4],
-  [4273984,58,336896,98,4],
-  [2742897,75,15871,72,4],
-  [314451,67,2609302,75,4],
-  [2763130,58,209323,75,4],
-  [375826,83,253425,68,4],
-  [209323,2,2740014,0,5],
-  [336896,0,2763130,2,5],
-  [371963,2,314451,6,5],
-  [232272,0,2742897,2,5],
-  [6036721,9,4273984,7,5],
-  [2740581,2,2739209,2,5]
+
+const MATCHES=[
+  [375826,61,2740014,57,1],[253425,48,2763130,52,1],[209323,42,314451,67,1],[2609302,65,2742897,62,1],[15871,44,4273984,61,1],[336896,47,2739209,51,1],[371963,36,208380,65,1],[232272,68,4414467,49,1],[6036721,58,2738656,44,1],[2740581,76,352983,42,1],[2740014,96,2740581,82,2],[352983,72,6036721,108,2],[2738656,76,232272,100,2],[4414467,94,371963,66,2],[208380,74,336896,107,2],[2739209,91,15871,78,2],[4273984,75,2609302,88,2],[2742897,105,209323,95,2],[314451,65,253425,89,2],[2763130,87,375826,70,2],[253425,44,2740014,49,3],[209323,51,375826,48,3],[2609302,45,2763130,56,3],[15871,68,314451,55,3],[336896,50,2742897,45,3],[371963,66,4273984,52,3],[232272,47,2739209,50,3],[6036721,49,208380,53,3],[2740581,61,4414467,53,3],[352983,58,2738656,48,3],[2740014,64,352983,79,4],[2738656,66,2740581,87,4],[4414467,83,6036721,70,4],[208380,73,232272,90,4],[2739209,71,371963,78,4],[4273984,58,336896,98,4],[2742897,75,15871,72,4],[314451,67,2609302,75,4],[2763130,58,209323,75,4],[375826,83,253425,68,4],[209323,9,2740014,12,5],[2609302,8,253425,13,5],[15871,13,375826,5,5],[336896,24,2763130,16,5],[371963,13,314451,24,5],[232272,25,2742897,11,5],[6036721,34,4273984,17,5],[2740581,5,2739209,27,5],[352983,7,208380,23,5],[2738656,9,4414467,26,5]
 ];
+
 const CURRENT_GW=5;
 
 // ── Compute ───────────────────────────────────────────────────
@@ -695,6 +661,122 @@ document.getElementById('awards').innerHTML=[
   {i:'⚡',l:'Victoria más amplia',v:bigW.w,s:`+${bigW.d} pts vs ${bigW.l} · GW${bigW.gw}`},
   {i:'💀',l:'Farolillo rojo',v:TEAMS[19].n,s:`${TEAMS[19].w}V · ${TEAMS[19].pts} pts`},
 ].map(a=>`<div class="award-row"><span class="award-icon">${a.i}</span><div style="flex:1;min-width:0"><div class="award-lbl">${a.l}</div><div class="award-val">${a.v}</div><div class="award-sub">${a.s}</div></div></div>`).join('');
+
+// ── Partidos TOP & Brocescos ─────────────────────────────────
+(function(){
+  const nm={
+    2740581:"Os meninhos",232272:"Club FLUV ia L",336896:"La Conchabanza",
+    2609302:"Djalminha FC",2739209:"RCD da Penela",2763130:"RoberVeiguiña",
+    2742897:"Chaos FC",6036721:"Feng Huang",4414467:"Chapeceense",
+    2740014:"All Blacks",208380:"O Casar FC",209323:"Abeledos Team",
+    375826:"No quedaré ultimo!",352983:"Oh Ferrán",371963:"Galaicos",
+    15871:"The Admin",314451:"Obvelot",253425:"Liverprool",
+    4273984:"CASAS BARATAS CF",2738656:"Cobra Kai",
+  };
+  function matchRow(e1,s1,e2,s2,gw,rank,color){
+    const total=s1+s2;
+    const win=s1>s2?'left':s1<s2?'right':'draw';
+    const c1=win==='left'?'var(--cyan)':win==='right'?'var(--text3)':'#aaa';
+    const c2=win==='right'?'var(--cyan)':win==='left'?'var(--text3)':'#aaa';
+    return `<div style="padding:14px 0;border-bottom:1px solid rgba(255,255,255,.05)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span style="font-size:11px;font-family:'Space Mono',monospace;color:var(--text3)">GW${gw}</span>
+        <span style="font-size:13px;font-weight:800;font-family:'Space Mono',monospace;color:${color}">${rank} ${total} pts totales</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center">
+        <span style="font-size:14px;font-weight:700;text-align:right;color:${c1};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${nm[e1]||e1}</span>
+        <span style="font-family:'Space Mono',monospace;font-size:17px;font-weight:900;text-align:center;white-space:nowrap"><span style="color:${c1}">${s1}</span>–<span style="color:${c2}">${s2}</span></span>
+        <span style="font-size:14px;font-weight:700;text-align:left;color:${c2};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${nm[e2]||e2}</span>
+      </div>
+    </div>`;
+  }
+  const sorted=[...MATCHES].sort((a,b)=>(b[1]+b[3])-(a[1]+a[3]));
+  const medals=['🥇','🥈','🥉','4️⃣','5️⃣'];
+  document.getElementById('matches-top').innerHTML=
+    sorted.slice(0,5).map(([e1,s1,e2,s2,gw],i)=>matchRow(e1,s1,e2,s2,gw,medals[i],'#00ff87')).join('')
+    +'<div style="margin-top:6px;font-size:11px;color:var(--text3);text-align:center;padding-top:10px">Top 5 partidos por puntos totales</div>';
+  const broceMedals=['💩','💩💩','💩💩💩','😴','😴😴'];
+  document.getElementById('matches-broce').innerHTML=
+    [...sorted].reverse().slice(0,5).map(([e1,s1,e2,s2,gw],i)=>matchRow(e1,s1,e2,s2,gw,broceMedals[i],'#ff2882')).join('')
+    +'<div style="margin-top:6px;font-size:11px;color:var(--text3);text-align:center;padding-top:10px">Top 5 partidos más brocescos</div>';
+})();
+
+// ── Managers en la diana ─────────────────────────────────────
+(function(){
+  const CHIPS_USED = {"2740581": [{"name": "3xc", "event": 2}], "232272": [], "336896": [{"name": "freehit", "event": 4}], "2609302": [], "2739209": [{"name": "wildcard", "event": 4}], "2763130": [], "2742897": [{"name": "wildcard", "event": 3}], "6036721": [], "4414467": [], "2740014": [], "208380": [], "209323": [], "375826": [{"name": "3xc", "event": 5}], "352983": [{"name": "freehit", "event": 3}, {"name": "wildcard", "event": 4}], "371963": [{"name": "wildcard", "event": 3}], "15871": [{"name": "3xc", "event": 3}], "314451": [{"name": "3xc", "event": 4}], "253425": [{"name": "wildcard", "event": 4}], "4273984": [], "2738656": []};
+
+  const CHIP_LABELS = {wildcard:"Wildcard 🃏",freehit:"Free Hit 🆓","3xc":"Triple Cap ⚡",bboost:"Bench Boost 🚀"};
+  const CHIP_COLORS = {wildcard:"#ffd700",freehit:"#00ff87","3xc":"#ff2882",bboost:"#38bdf8"};
+
+  // Build GW->opponents map
+  const gwOpp={};
+  MATCHES.forEach(([e1,s1,e2,s2,gw])=>{
+    if(!gwOpp[gw])gwOpp[gw]={};
+    gwOpp[gw][e1]=e2; gwOpp[gw][e2]=e1;
+  });
+
+  // Find who received chips and result
+  const received={}; // opponent -> [{chip,user,gw,ws,os}]
+  Object.entries(CHIPS_USED).forEach(([entryStr,chips])=>{
+    const entry=parseInt(entryStr);
+    chips.forEach(({name,event:gw})=>{
+      if(!gwOpp[gw]||!gwOpp[gw][entry])return;
+      const opp=gwOpp[gw][entry];
+      if(!received[opp])received[opp]=[];
+      const m=MATCHES.find(m=>m[4]===gw&&((m[0]===entry&&m[2]===opp)||(m[0]===opp&&m[2]===entry)));
+      if(!m)return;
+      const [e1,s1,e2,s2]=m;
+      const ws=e1===entry?s1:s2, os=e1===entry?s2:s1;
+      received[opp].push({chip:name,user:entry,gw,ws,os});
+    });
+  });
+
+  // Sort by most chips received
+  const sorted=Object.entries(received).sort((a,b)=>b[1].length-a[1].length);
+  if(!sorted.length){
+    document.getElementById('diana-cards').innerHTML='<p style="color:var(--text3);font-size:14px;padding:16px">Aún no hay datos suficientes.</p>';
+    return;
+  }
+
+  const nm=Object.fromEntries(TEAMS.map(t=>[t.e,t.n]));
+
+  document.getElementById('diana-cards').innerHTML=sorted.map(([oppStr,chips])=>{
+    const opp=parseInt(oppStr);
+    const total=chips.length;
+    const wins=chips.filter(c=>c.ws>c.os).length; // chip user won = victim lost
+    const losses=chips.filter(c=>c.ws<c.os).length; // chip user lost = victim won
+    const survived=losses; // victim survived the chip
+    const header_color=wins===total?'var(--pink)':wins===0?'var(--cyan)':'#ffd700';
+    const header_text=wins===total?'No salvó ninguna 😢':wins===0?'¡Las sobrevivió todas! 💪':`Salvó ${survived} de ${total} 😅`;
+
+    return \`<div class="card" style="margin-bottom:12px;border-color:\${header_color}30">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <div>
+          <div style="font-size:16px;font-weight:800;color:#fff">🎯 \${nm[opp]||opp}</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:2px">\${total} chip\${total>1?'s':''} recibido\${total>1?'s':''}</div>
+        </div>
+        <div style="font-size:12px;font-weight:700;color:\${header_color};text-align:right">\${header_text}</div>
+      </div>
+      \${chips.map(c=>{
+        const won=c.ws>c.os; // chip user won
+        const result_emoji=won?'❌':'✅';
+        const result_text=won?'le ganó':'le perdió';
+        const result_color=won?'var(--pink)':'var(--cyan)';
+        const chip_color=CHIP_COLORS[c.chip]||'#888';
+        return \`<div style="display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.05)">
+          <div style="background:\${chip_color}20;border:1px solid \${chip_color}40;border-radius:8px;padding:5px 10px;font-size:12px;font-weight:700;color:\${chip_color};white-space:nowrap;flex-shrink:0">
+            \${CHIP_LABELS[c.chip]||c.chip}
+          </div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:13px;color:var(--text2)"><b style="color:#fff">\${nm[c.user]||c.user}</b> \${result_text} con <b style="font-family:'Space Mono',monospace;color:\${result_color}">\${c.ws}–\${c.os}</b></div>
+            <div style="font-size:11px;color:var(--text3);margin-top:2px">GW\${c.gw}</div>
+          </div>
+          <div style="font-size:22px">\${result_emoji}</div>
+        </div>\`;
+      }).join('')}
+    </div>\`;
+  }).join('');
+})();
 
 // ── Nav ───────────────────────────────────────────────────────
 document.querySelectorAll('.nb').forEach(btn=>{
