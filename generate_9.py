@@ -2,16 +2,12 @@
 """
 Punteirolos 9.0 — Generador automático
 Liga FPL #42303 — Temporada 2026/27
-Ejecuta: python generate_9.py
-Genera: index.html con todos los datos actualizados
 """
-
 import json, time, urllib.request, base64
 from pathlib import Path
 from datetime import datetime
 
 LEAGUE_ID = 42303
-SEASON    = "2026-27"
 FPL_BASE  = "https://fantasy.premierleague.com/api"
 HEADERS   = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
@@ -39,8 +35,7 @@ def main():
     print("📡 Clasificación...")
     sd = fpl(f"/leagues-h2h/{LEAGUE_ID}/standings/")
     teams = sd["standings"]["results"]
-    league_name = sd["league"]["name"]
-    print(f"  {league_name} — {len(teams)} equipos")
+    print(f"  {sd['league']['name']} — {len(teams)} equipos")
 
     # 2. Partidos H2H
     print("📡 Partidos...")
@@ -55,11 +50,27 @@ def main():
         page += 1
         time.sleep(0.5)
 
-    # Jornada actual
     current_gw = max((m["event"] for m in all_matches), default=1)
     print(f"  Jornada actual: GW{current_gw}")
 
-    # 3. Splash image base64
+    # 3. Chips de cada manager
+    print("📡 Chips...")
+    chips_data = {}
+    for team in teams:
+        entry = team["entry"]
+        try:
+            hist = fpl(f"/entry/{entry}/history/")
+            chips_data[entry] = [
+                {"name": c["name"], "event": c["event"]}
+                for c in hist.get("chips", [])
+            ]
+            print(f"  {team['entry_name']}: {len(chips_data[entry])} chip(s)")
+        except Exception as e:
+            chips_data[entry] = []
+            print(f"  {team['entry_name']}: error — {e}")
+        time.sleep(0.4)
+
+    # 4. Splash image
     splash_b64 = ""
     for name in ["splash.png", "splash.jpg"]:
         p = Path(__file__).parent / name
@@ -68,32 +79,31 @@ def main():
             print(f"  Splash: {name} ({len(splash_b64)//1024} KB)")
             break
 
-    # 4. Construir JS
-    teams_js = "const TEAMS = [\n" + ",\n".join(
+    # 5. Build JS blocks
+    teams_js = "const TEAMS=[\n" + ",\n".join(
         f'  {{e:{t["entry"]},n:{json.dumps(t["entry_name"])},p:{json.dumps(t["player_name"])},'
         f'r:{t["rank"]},w:{t["matches_won"]},d:{t["matches_drawn"]},l:{t["matches_lost"]},'
         f'pts:{t["points_for"]}}}'
         for t in teams
     ) + "\n];"
 
-    matches_js = "const MATCHES = [\n" + ",\n".join(
-        f'  [{m["entry_1_entry"]},{m["entry_1_points"]},{m["entry_2_entry"]},{m["entry_2_points"]},{m["event"]}]'
+    matches_js = "const MATCHES=[\n  " + ",".join(
+        f'[{m["entry_1_entry"]},{m["entry_1_points"]},{m["entry_2_entry"]},{m["entry_2_points"]},{m["event"]}]'
         for m in all_matches
     ) + "\n];"
 
-    gw_js = f"const CURRENT_GW = {current_gw};"
-    updated_js = f'const LAST_UPDATED = "{datetime.now().strftime("%d/%m/%Y %H:%M")}";'
-    splash_js = f'const SPLASH_B64 = "{splash_b64}";'
+    chips_js = json.dumps({str(k): v for k, v in chips_data.items()})
 
-    # 5. Generar HTML desde template
-    print("📄 Generando HTML...")
-    template = Path(__file__).parent / "template.html"
-    html = template.read_text(encoding="utf-8")
-    html = html.replace("%%TEAMS_JS%%", teams_js)
-    html = html.replace("%%MATCHES_JS%%", matches_js)
-    html = html.replace("%%CURRENT_GW%%", str(current_gw))
-    html = html.replace("%%LAST_UPDATED%%", datetime.now().strftime("%d/%m/%Y %H:%M"))
-    html = html.replace("%%SPLASH_B64%%", splash_b64)
+    # 6. Generate HTML
+    print("\n📄 Generando HTML...")
+    template = (Path(__file__).parent / "template.html").read_text(encoding="utf-8")
+    html = template
+    html = html.replace("%%TEAMS_JS%%",    teams_js)
+    html = html.replace("%%MATCHES_JS%%",  matches_js)
+    html = html.replace("%%CURRENT_GW%%",  str(current_gw))
+    html = html.replace("%%LAST_UPDATED%%",datetime.now().strftime("%d/%m/%Y %H:%M"))
+    html = html.replace("%%CHIPS_JS%%",    chips_js)
+    html = html.replace("%%SPLASH_B64%%",  splash_b64)
 
     out = Path(__file__).parent / "index.html"
     out.write_text(html, encoding="utf-8")
