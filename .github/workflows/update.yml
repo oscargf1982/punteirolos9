@@ -17,7 +17,7 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Generar estadísticas
+      - name: Generar estadisticas
         run: python generate_9.py
 
       - name: Publicar en GitHub Pages
@@ -26,4 +26,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: .
           publish_branch: gh-pages
-          exclude_assets: '.github,generate_9.py,template.html,README.md,splash.png'
+          exclude_assets: '.github,generate_9.py,README_9.md'
