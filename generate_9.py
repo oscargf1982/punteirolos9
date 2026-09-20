@@ -23,92 +23,112 @@ def fpl(path, retries=3):
             with urllib.request.urlopen(req, timeout=15) as r:
                 return json.loads(r.read())
         except Exception as e:
-            print(f"  ⚠ Intento {i+1}: {e}")
+            print(f"  Intento {i+1} fallido: {e}")
             if i < retries - 1: time.sleep(3)
     raise Exception(f"Fallo en {path}")
 
 def main():
-    print(f"🚀 Punteirolos 9.0 — {datetime.now().strftime('%d/%m/%Y %H:%M')}")
-    print("=" * 50)
+    print(f"Punteirolos 9.0 — {datetime.now().strftime('%d/%m/%Y %H:%M')}")
 
     # 1. Clasificación
-    print("📡 Clasificación...")
+    print("Clasificacion...")
     sd = fpl(f"/leagues-h2h/{LEAGUE_ID}/standings/")
     teams = sd["standings"]["results"]
-    print(f"  {sd['league']['name']} — {len(teams)} equipos")
+    print(f"  {len(teams)} equipos")
 
     # 2. Partidos H2H
-    print("📡 Partidos...")
+    print("Partidos...")
     all_matches = []
     page = 1
     while True:
         d = fpl(f"/leagues-h2h-matches/league/{LEAGUE_ID}/?page={page}")
         played = [m for m in d["results"] if m["entry_1_points"] + m["entry_2_points"] > 0]
         all_matches.extend(played)
-        print(f"  Página {page}: {len(played)} partidos")
+        print(f"  Pagina {page}: {len(played)} partidos")
         if not d["has_next"]: break
         page += 1
         time.sleep(0.5)
 
     current_gw = max((m["event"] for m in all_matches), default=1)
-    print(f"  Jornada actual: GW{current_gw}")
+    print(f"  GW actual: {current_gw}")
 
-    # 3. Chips de cada manager
-    print("📡 Chips...")
+    # 3. Chips
+    print("Chips...")
     chips_data = {}
     for team in teams:
         entry = team["entry"]
         try:
             hist = fpl(f"/entry/{entry}/history/")
-            chips_data[entry] = [
+            chips_data[str(entry)] = [
                 {"name": c["name"], "event": c["event"]}
                 for c in hist.get("chips", [])
             ]
-            print(f"  {team['entry_name']}: {len(chips_data[entry])} chip(s)")
-        except Exception as e:
-            chips_data[entry] = []
-            print(f"  {team['entry_name']}: error — {e}")
+        except:
+            chips_data[str(entry)] = []
         time.sleep(0.4)
+    print(f"  Chips obtenidos para {len(chips_data)} equipos")
 
-    # 4. Splash image
+    # 4. Splash
     splash_b64 = ""
     for name in ["splash.png", "splash.jpg"]:
         p = Path(__file__).parent / name
         if p.exists():
             splash_b64 = base64.b64encode(p.read_bytes()).decode()
-            print(f"  Splash: {name} ({len(splash_b64)//1024} KB)")
+            print(f"  Splash: {name}")
             break
 
-    # 5. Build JS blocks
-    teams_js = "const TEAMS=[\n" + ",\n".join(
-        f'  {{e:{t["entry"]},n:{json.dumps(t["entry_name"])},p:{json.dumps(t["player_name"])},'
-        f'r:{t["rank"]},w:{t["matches_won"]},d:{t["matches_drawn"]},l:{t["matches_lost"]},'
-        f'pts:{t["points_for"]}}}'
-        for t in teams
-    ) + "\n];"
+    # 5. Construir bloques JS
+    teams_lines = []
+    for t in teams:
+        line = (
+            f'  {{e:{t["entry"]},'
+            f'n:{json.dumps(t["entry_name"], ensure_ascii=False)},'
+            f'p:{json.dumps(t["player_name"], ensure_ascii=False)},'
+            f'r:{t["rank"]},'
+            f'w:{t["matches_won"]},'
+            f'd:{t["matches_drawn"]},'
+            f'l:{t["matches_lost"]},'
+            f'pts:{t["points_for"]}}}'
+        )
+        teams_lines.append(line)
+    teams_js = "const TEAMS=[\n" + ",\n".join(teams_lines) + "\n];"
 
-    matches_js = "const MATCHES=[\n  " + ",".join(
-        f'[{m["entry_1_entry"]},{m["entry_1_points"]},{m["entry_2_entry"]},{m["entry_2_points"]},{m["event"]}]'
-        for m in all_matches
-    ) + "\n];"
+    match_lines = []
+    for m in all_matches:
+        match_lines.append(
+            f'[{m["entry_1_entry"]},{m["entry_1_points"]},'
+            f'{m["entry_2_entry"]},{m["entry_2_points"]},{m["event"]}]'
+        )
+    matches_js = "const MATCHES=[\n  " + ",\n  ".join(match_lines) + "\n];"
 
-    chips_js = json.dumps({str(k): v for k, v in chips_data.items()})
+    chips_js = json.dumps(chips_data, ensure_ascii=False)
+    last_updated = datetime.now().strftime("%d/%m/%Y %H:%M")
 
-    # 6. Generate HTML
-    print("\n📄 Generando HTML...")
-    template = (Path(__file__).parent / "template.html").read_text(encoding="utf-8")
-    html = template
-    html = html.replace("%%TEAMS_JS%%",    teams_js)
-    html = html.replace("%%MATCHES_JS%%",  matches_js)
-    html = html.replace("%%CURRENT_GW%%",  str(current_gw))
-    html = html.replace("%%LAST_UPDATED%%",datetime.now().strftime("%d/%m/%Y %H:%M"))
-    html = html.replace("%%CHIPS_JS%%",    chips_js)
-    html = html.replace("%%SPLASH_B64%%",  splash_b64)
+    # 6. Leer template y sustituir
+    print("Generando HTML...")
+    template_path = Path(__file__).parent / "template.html"
+    html = template_path.read_text(encoding="utf-8")
+
+    html = html.replace("%%TEAMS_JS%%",     teams_js)
+    html = html.replace("%%MATCHES_JS%%",   matches_js)
+    html = html.replace("%%CURRENT_GW%%",   str(current_gw))
+    html = html.replace("%%LAST_UPDATED%%", last_updated)
+    html = html.replace("%%CHIPS_JS%%",     chips_js)
+    html = html.replace("%%SPLASH_B64%%",   splash_b64)
+
+    # Verificar que no quedan placeholders sin sustituir
+    remaining = [p for p in ["%%TEAMS_JS%%","%%MATCHES_JS%%","%%CURRENT_GW%%",
+                              "%%LAST_UPDATED%%","%%CHIPS_JS%%","%%SPLASH_B64%%"]
+                 if p in html]
+    if remaining:
+        print(f"  AVISO: placeholders sin sustituir: {remaining}")
+    else:
+        print("  Todos los placeholders sustituidos OK")
 
     out = Path(__file__).parent / "index.html"
     out.write_text(html, encoding="utf-8")
-    print(f"  ✅ index.html — {len(html)//1024} KB")
-    print("🎉 ¡Listo!")
+    print(f"  index.html generado: {len(html)//1024} KB")
+    print("Listo!")
 
 if __name__ == "__main__":
     main()
