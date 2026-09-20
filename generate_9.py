@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """
-Punteirolos 9.0 — Generador automático
-Liga FPL #42303 — Temporada 2026/27
+Punteirolos 9.0 - Generador automatico
+Liga FPL #42303 - Temporada 2026/27
+Genera index.html directamente sin template ni placeholders
 """
-import json, time, urllib.request, base64
+import json, time, urllib.request, base64, re
 from pathlib import Path
 from datetime import datetime
 
@@ -27,10 +28,43 @@ def fpl(path, retries=3):
             if i < retries - 1: time.sleep(3)
     raise Exception(f"Fallo en {path}")
 
-def main():
-    print(f"Punteirolos 9.0 — {datetime.now().strftime('%d/%m/%Y %H:%M')}")
+def build_teams_js(teams):
+    lines = []
+    for t in teams:
+        # Use json.dumps for safe string escaping
+        name   = json.dumps(t["entry_name"])
+        player = json.dumps(t["player_name"])
+        lines.append(
+            f'  {{e:{t["entry"]},n:{name},p:{player},'
+            f'r:{t["rank"]},w:{t["matches_won"]},d:{t["matches_drawn"]},'
+            f'l:{t["matches_lost"]},pts:{t["points_for"]}}}'
+        )
+    return "const TEAMS=[\n" + ",\n".join(lines) + "\n];"
 
-    # 1. Clasificación
+def build_matches_js(matches):
+    lines = [
+        f'[{m["entry_1_entry"]},{m["entry_1_points"]},'
+        f'{m["entry_2_entry"]},{m["entry_2_points"]},{m["event"]}]'
+        for m in matches
+    ]
+    return "const MATCHES=[\n  " + ",\n  ".join(lines) + "\n];"
+
+def build_chips_js(teams, chips_data):
+    parts = []
+    for t in teams:
+        entry = str(t["entry"])
+        chips = chips_data.get(entry, [])
+        chip_items = []
+        for ch in chips:
+            chip_items.append(f'{{name:"{ch["name"]}",event:{ch["event"]}}}')
+        chip_list = ",".join(chip_items)
+        parts.append(f'  {entry}:[{chip_list}]')
+    return "{\n" + ",\n".join(parts) + "\n  }"
+
+def main():
+    print(f"Punteirolos 9.0 - {datetime.now().strftime('%d/%m/%Y %H:%M')}")
+
+    # 1. Clasificacion
     print("Clasificacion...")
     sd = fpl(f"/leagues-h2h/{LEAGUE_ID}/standings/")
     teams = sd["standings"]["results"]
@@ -56,75 +90,52 @@ def main():
     print("Chips...")
     chips_data = {}
     for team in teams:
-        entry = team["entry"]
+        entry = str(team["entry"])
         try:
-            hist = fpl(f"/entry/{entry}/history/")
-            chips_data[str(entry)] = [
+            hist = fpl(f"/entry/{team['entry']}/history/")
+            chips_data[entry] = [
                 {"name": c["name"], "event": c["event"]}
                 for c in hist.get("chips", [])
             ]
-        except:
-            chips_data[str(entry)] = []
+        except Exception as e:
+            chips_data[entry] = []
+            print(f"  Error chips {team['entry_name']}: {e}")
         time.sleep(0.4)
-    print(f"  Chips obtenidos para {len(chips_data)} equipos")
+    print(f"  Chips OK para {len(chips_data)} equipos")
 
-    # 4. Splash
-    splash_b64 = ""
-    for name in ["splash.png", "splash.jpg"]:
-        p = Path(__file__).parent / name
-        if p.exists():
-            splash_b64 = base64.b64encode(p.read_bytes()).decode()
-            print(f"  Splash: {name}")
-            break
+    # 4. Construir bloques JS
+    teams_js   = build_teams_js(teams)
+    matches_js = build_matches_js(all_matches)
+    chips_js   = build_chips_js(teams, chips_data)
+    gw_js      = f"const CURRENT_GW={current_gw};"
+    updated    = datetime.now().strftime("%d/%m/%Y %H:%M")
 
-    # 5. Construir bloques JS
-    teams_lines = []
-    for t in teams:
-        line = (
-            f'  {{e:{t["entry"]},'
-            f'n:{json.dumps(t["entry_name"], ensure_ascii=False)},'
-            f'p:{json.dumps(t["player_name"], ensure_ascii=False)},'
-            f'r:{t["rank"]},'
-            f'w:{t["matches_won"]},'
-            f'd:{t["matches_drawn"]},'
-            f'l:{t["matches_lost"]},'
-            f'pts:{t["points_for"]}}}'
-        )
-        teams_lines.append(line)
-    teams_js = "const TEAMS=[\n" + ",\n".join(teams_lines) + "\n];"
+    # 5. Leer HTML base (el index.html actual o el html guardado)
+    base_path = Path(__file__).parent / "base.html"
+    if not base_path.exists():
+        print("ERROR: falta base.html en el repo")
+        return
 
-    match_lines = []
-    for m in all_matches:
-        match_lines.append(
-            f'[{m["entry_1_entry"]},{m["entry_1_points"]},'
-            f'{m["entry_2_entry"]},{m["entry_2_points"]},{m["event"]}]'
-        )
-    matches_js = "const MATCHES=[\n  " + ",\n  ".join(match_lines) + "\n];"
+    html = base_path.read_text(encoding="utf-8")
 
-    chips_js = json.dumps(chips_data, ensure_ascii=False)
-    last_updated = datetime.now().strftime("%d/%m/%Y %H:%M")
+    # 6. Reemplazar bloques de datos usando marcadores de linea
+    # Reemplazar TEAMS
+    html = re.sub(r'const TEAMS=\[[\s\S]*?\];', teams_js, html)
+    # Reemplazar MATCHES
+    html = re.sub(r'const MATCHES=\[[\s\S]*?\];', matches_js, html)
+    # Reemplazar CURRENT_GW
+    html = re.sub(r'const CURRENT_GW=\d+;', gw_js, html)
+    # Reemplazar CHIPS_USED
+    html = re.sub(r'const CHIPS_USED = \{[\s\S]*?\n  \};',
+                  f'const CHIPS_USED = {chips_js};', html)
+    # Actualizar fecha en hero-sub
+    html = re.sub(
+        r'Liga #42303 · [^<]+',
+        f'Liga #42303 · Actualizado: {updated}',
+        html
+    )
 
-    # 6. Leer template y sustituir
-    print("Generando HTML...")
-    template_path = Path(__file__).parent / "template.html"
-    html = template_path.read_text(encoding="utf-8")
-
-    html = html.replace("%%TEAMS_JS%%",     teams_js)
-    html = html.replace("%%MATCHES_JS%%",   matches_js)
-    html = html.replace("%%CURRENT_GW%%",   str(current_gw))
-    html = html.replace("%%LAST_UPDATED%%", last_updated)
-    html = html.replace("%%CHIPS_JS%%",     chips_js)
-    html = html.replace("%%SPLASH_B64%%",   splash_b64)
-
-    # Verificar que no quedan placeholders sin sustituir
-    remaining = [p for p in ["%%TEAMS_JS%%","%%MATCHES_JS%%","%%CURRENT_GW%%",
-                              "%%LAST_UPDATED%%","%%CHIPS_JS%%","%%SPLASH_B64%%"]
-                 if p in html]
-    if remaining:
-        print(f"  AVISO: placeholders sin sustituir: {remaining}")
-    else:
-        print("  Todos los placeholders sustituidos OK")
-
+    # 7. Guardar index.html
     out = Path(__file__).parent / "index.html"
     out.write_text(html, encoding="utf-8")
     print(f"  index.html generado: {len(html)//1024} KB")
