@@ -137,7 +137,7 @@ body{
 <div class="hero">
   <div class="hero-badge">⚽ Punteirolos 9.0 · 2026/27</div>
   <h1>PUNTEIROLOS<br>9.0</h1>
-  <p class="hero-sub">Liga #42303 · Actualizado: 20/09/2026 08:37</p>
+  <p class="hero-sub">Liga #42303 · Actualizado: 20/09/2026 08:46</p>
   <div class="live-pill"><span class="live-dot"></span>EN CURSO · GW 5</div>
   <div class="hstrip" id="hstrip"></div>
 </div>
@@ -358,7 +358,7 @@ function std(a){if(!a.length)return 0;const m=a.reduce((x,y)=>x+y,0)/a.length;re
 TEAMS.forEach(t=>{st[t.e].std=Math.round(std(st[t.e].scores));st[t.e].avg=st[t.e].total>0?(t.pts/st[t.e].total).toFixed(1):0});
 function streaks(){
   const r={};
-  TEAMS.forEach(t=>{let bW=0,cW=0,bL=0,cL=0;st[t.e].res.forEach(x=>{if(x==='W'){cW++;bW=Math.max(bW,cW);cL=0}else if(x==='L'){cL++;bL=Math.max(bL,cL);cW=0}else{cW=0;cL=0}});r[t.e]={bW,bL}});
+  TEAMS.forEach(t=>{let bW=0,cW=0,bL=0,cL=0;st[t.e].res.forEach(x=>{if(x==='W'){cW++;bW=Math.max(bW,cW);cL=0}else if(x==='L'){cL++;bL=Math.max(bL,cL);cW=0}else{cW=0;cL=0});r[t.e]={bW,bL});
   return r;
 }
 const STR=streaks();
@@ -486,14 +486,13 @@ function buildCharts(){
   const rankByGW={};TEAMS.forEach(t=>{rankByGW[t.e]=[]});
   gws.forEach((gw,gi)=>{
     const snap=TEAMS.map(t=>{const o={};o.e=t.e;o.p=cum[t.e][gi]||0;return o;}).sort((a,b)=>b.p-a.p);
-b.p-a.p);
     snap.forEach((s,ri)=>{rankByGW[s.e].push(ri+1)});
   });
   const pal=['#00ff87','#ff2882','#38bdf8','#ffd700','#c084fc','#fb923c','#4ade80','#f472b6','#60a5fa','#facc15','#34d399','#ff6b35','#818cf8','#a3e635','#67e8f9','#d946ef','#fdba74','#10b981','#fb7185','#38bdf8'];
   const labels=gws.map(g=>`GW${g}`);
-  const base={responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#9070a0',font:{size:10},boxWidth:10,padding:8}}},scales:{x:{ticks:{color:'#9070a0',maxTicksLimit:8,maxRotation:0},grid:{color:'rgba(0,255,135,.05)'}},y:{ticks:{color:'#9070a0'},grid:{color:'rgba(0,255,135,.05)'}}}};
-  new Chart(document.getElementById('rankChart'),{type:'line',data:{labels,datasets:TEAMS.slice(0,8).map((t,i)=>({{label:t.n,data:rankByGW[t.e],borderColor:pal[i],backgroundColor:'transparent',borderWidth:2,pointRadius:2,tension:.35}}))}},options:{...base,scales:{...base.scales,y:{...base.scales.y,reverse:true,min:1,max:20}}}});
-  new Chart(document.getElementById('ptsChart'),{type:'line',data:{labels,datasets:TEAMS.slice(0,6).map((t,i)=>({{label:t.n,data:cum[t.e],borderColor:pal[i],backgroundColor:pal[i]+'12',borderWidth:2,pointRadius:2,tension:.35,fill:false}}))}},options:base});
+  const base={responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#9070a0',font:{size:10},boxWidth:10,padding:8},scales:{x:{ticks:{color:'#9070a0',maxTicksLimit:8,maxRotation:0},grid:{color:'rgba(0,255,135,.05)'},y:{ticks:{color:'#9070a0'},grid:{color:'rgba(0,255,135,.05)'};
+  new Chart(document.getElementById('rankChart'),{type:'line',data:{labels,datasets:TEAMS.slice(0,8).map((t,i)=>({label:t.n,data:rankByGW[t.e],borderColor:pal[i],backgroundColor:'transparent',borderWidth:2,pointRadius:2,tension:.35}))},options:{...base,scales:{...base.scales,y:{...base.scales.y,reverse:true,min:1,max:20}}}});
+  new Chart(document.getElementById('ptsChart'),{type:'line',data:{labels,datasets:TEAMS.slice(0,6).map((t,i)=>({label:t.n,data:cum[t.e],borderColor:pal[i],backgroundColor:pal[i]+'12',borderWidth:2,pointRadius:2,tension:.35,fill:false}))},options:base});
 }
 
 // Comparador
