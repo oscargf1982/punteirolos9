@@ -137,7 +137,7 @@ body{
 <div class="hero">
   <div class="hero-badge">⚽ Punteirolos 9.0 · 2026/27</div>
   <h1>PUNTEIROLOS<br>9.0</h1>
-  <p class="hero-sub">Liga #42303 · Actualizado: 20/09/2026 08:46</p>
+  <p class="hero-sub">Liga #42303 · Actualizado: 20/09/2026 09:18</p>
   <div class="live-pill"><span class="live-dot"></span>EN CURSO · GW 5</div>
   <div class="hstrip" id="hstrip"></div>
 </div>
@@ -280,17 +280,7 @@ const MATCHES=[
   [2742897,75,15871,72,4],
   [314451,67,2609302,75,4],
   [2763130,58,209323,75,4],
-  [375826,83,253425,68,4],
-  [209323,9,2740014,12,5],
-  [2609302,8,253425,13,5],
-  [15871,13,375826,5,5],
-  [336896,24,2763130,16,5],
-  [371963,13,314451,24,5],
-  [232272,25,2742897,11,5],
-  [6036721,34,4273984,17,5],
-  [2740581,5,2739209,27,5],
-  [352983,7,208380,23,5],
-  [2738656,9,4414467,26,5]
+  [375826,83,253425,68,4]
 ];
 const CURRENT_GW=5;
 const CHIPS_USED={
@@ -358,7 +348,7 @@ function std(a){if(!a.length)return 0;const m=a.reduce((x,y)=>x+y,0)/a.length;re
 TEAMS.forEach(t=>{st[t.e].std=Math.round(std(st[t.e].scores));st[t.e].avg=st[t.e].total>0?(t.pts/st[t.e].total).toFixed(1):0});
 function streaks(){
   const r={};
-  TEAMS.forEach(t=>{let bW=0,cW=0,bL=0,cL=0;st[t.e].res.forEach(x=>{if(x==='W'){cW++;bW=Math.max(bW,cW);cL=0}else if(x==='L'){cL++;bL=Math.max(bL,cL);cW=0}else{cW=0;cL=0});r[t.e]={bW,bL});
+  TEAMS.forEach(t=>{let bW=0,cW=0,bL=0,cL=0;st[t.e].res.forEach(x=>{if(x==='W'){cW++;bW=Math.max(bW,cW);cL=0}else if(x==='L'){cL++;bL=Math.max(bL,cL);cW=0}else{cW=0;cL=0}});r[t.e]={bW,bL};});
   return r;
 }
 const STR=streaks();
@@ -469,7 +459,7 @@ document.getElementById('badges').innerHTML=[
   {i:'🔥',n:'En racha',o:swArr[0].n,d:`${STR[swArr[0].e].bW} victorias seguidas`},
   {i:'🍀',n:'Más suerte',o:lkArr[0].n,d:`${st[lkArr[0].e].luck} victorias bajo la media`},
   {i:'😤',n:'Más gafado',o:ulArr[0].n,d:`${st[ulArr[0].e].unluck} derrotas sobre la media`},
-  {i:'💀',n:'Farolillo',o:TEAMS[19].n,d:`${TEAMS[19].w}V · ${TEAMS[19].pts} pts`},
+  {i:'💀',n:'Farolillo',o:TEAMS[TEAMS.length-1].n,d:`${TEAMS[TEAMS.length-1].w}V · ${TEAMS[TEAMS.length-1].pts} pts`},
 ].map(b=>`<div class="badge-card"><span class="badge-icon">${b.i}</span><div class="badge-name">${b.n}</div><div class="badge-owner">${b.o}</div><div class="badge-desc">${b.d}</div></div>`).join('');
 
 // Charts
@@ -490,9 +480,9 @@ function buildCharts(){
   });
   const pal=['#00ff87','#ff2882','#38bdf8','#ffd700','#c084fc','#fb923c','#4ade80','#f472b6','#60a5fa','#facc15','#34d399','#ff6b35','#818cf8','#a3e635','#67e8f9','#d946ef','#fdba74','#10b981','#fb7185','#38bdf8'];
   const labels=gws.map(g=>`GW${g}`);
-  const base={responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#9070a0',font:{size:10},boxWidth:10,padding:8},scales:{x:{ticks:{color:'#9070a0',maxTicksLimit:8,maxRotation:0},grid:{color:'rgba(0,255,135,.05)'},y:{ticks:{color:'#9070a0'},grid:{color:'rgba(0,255,135,.05)'};
-  new Chart(document.getElementById('rankChart'),{type:'line',data:{labels,datasets:TEAMS.slice(0,8).map((t,i)=>({label:t.n,data:rankByGW[t.e],borderColor:pal[i],backgroundColor:'transparent',borderWidth:2,pointRadius:2,tension:.35}))},options:{...base,scales:{...base.scales,y:{...base.scales.y,reverse:true,min:1,max:20}}}});
-  new Chart(document.getElementById('ptsChart'),{type:'line',data:{labels,datasets:TEAMS.slice(0,6).map((t,i)=>({label:t.n,data:cum[t.e],borderColor:pal[i],backgroundColor:pal[i]+'12',borderWidth:2,pointRadius:2,tension:.35,fill:false}))},options:base});
+  const base={responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#9070a0',font:{size:10},boxWidth:10,padding:8}}},scales:{x:{ticks:{color:'#9070a0',maxTicksLimit:8,maxRotation:0},grid:{color:'rgba(0,255,135,.05)'}},y:{ticks:{color:'#9070a0'},grid:{color:'rgba(0,255,135,.05)'}}}}
+  new Chart(document.getElementById('rankChart'),{type:'line',data:{labels,datasets:TEAMS.slice(0,8).map((t,i)=>({label:t.n,data:rankByGW[t.e],borderColor:pal[i],backgroundColor:'transparent',borderWidth:2,pointRadius:2,tension:.35}))},options:{...base,scales:{...base.scales,y:{...base.scales.y,reverse:true,min:1,max:20}}}})
+  new Chart(document.getElementById('ptsChart'),{type:'line',data:{labels,datasets:TEAMS.slice(0,6).map((t,i)=>({label:t.n,data:cum[t.e],borderColor:pal[i],backgroundColor:pal[i]+'12',borderWidth:2,pointRadius:2,tension:.35,fill:false}))},options:base})
 }
 
 // Comparador
@@ -545,14 +535,14 @@ const cm=tight.sort((a,b)=>a.diff-b.diff)[0];
 document.getElementById('narr').innerHTML=`
   <p><strong>${TEAMS[0].n}</strong> (${TEAMS[0].p}) lidera la Punteirolos 9.0 con ${TEAMS[0].pts} puntos tras ${CURRENT_GW-1} jornadas. Solo ${TEAMS[0].pts-TEAMS[1].pts} pts le separan de <strong>${TEAMS[1].n}</strong>.</p>
   <p>El récord es de <strong>${bestM.v} pts</strong> firmado por <strong>${bestM.n}</strong> en la GW${bestM.gw}. La paliza más grande: <strong>${bigW.w}</strong> ganó a <strong>${bigW.l}</strong> por +${bigW.d} pts en GW${bigW.gw}.</p>
-  <p>Partido más igualado: <strong>${cm?.a}</strong> vs <strong>${cm?.b}</strong> — ${cm?.diff} pt de diferencia en GW${cm?.gw}. <strong>${TEAMS[19].n}</strong> sigue sin ganar ningún partido.</p>`;
+  <p>Partido más igualado: <strong>${cm?.a}</strong> vs <strong>${cm?.b}</strong> — ${cm?.diff} pt de diferencia en GW${cm?.gw}. <strong>${TEAMS[TEAMS.length-1].n}</strong> sigue sin ganar ningún partido.</p>`;
 document.getElementById('headlines').innerHTML=[
   {i:'👑',c:'cy',t:`${TEAMS[0].n} lidera la liga`,s:`${TEAMS[0].pts} pts, ${TEAMS[0].w}V. Ventaja de ${TEAMS[0].pts-TEAMS[1].pts} pts sobre ${TEAMS[1].n}.`},
   {i:'🎯',c:'',t:`Récord: ${bestM.v} pts en GW${bestM.gw}`,s:`${bestM.n} marcó la mayor puntuación de la temporada.`},
   {i:'💥',c:'',t:`Paliza de +${bigW.d} pts en GW${bigW.gw}`,s:`${bigW.w} venció a ${bigW.l}: ${bigW.ws}–${bigW.ls}.`},
   {i:'😰',c:'',t:`Solo ${cm?.diff} pt entre ${cm?.a} y ${cm?.b}`,s:`El más igualado, en GW${cm?.gw}.`},
   {i:'🔥',c:'cy',t:`${swArr[0].n} con racha de ${STR[swArr[0].e].bW} victorias`,s:`La mejor racha de la temporada.`},
-  {i:'💀',c:'',t:`${TEAMS[19].n} sin victorias`,s:`${TEAMS[19].n} es el único con 0 victorias tras ${CURRENT_GW-1} jornadas.`},
+  {i:'💀',c:'',t:`${TEAMS[TEAMS.length-1].n} sin victorias`,s:`${TEAMS[TEAMS.length-1].n} es el único con 0 victorias tras ${CURRENT_GW-1} jornadas.`},
 ].map(h=>`<div class="headline ${h.c}"><span class="hl-emoji">${h.i}</span><div><div class="hl-title">${h.t}</div><div class="hl-sub">${h.s}</div></div></div>`).join('');
 
 // Awards
@@ -567,7 +557,7 @@ document.getElementById('awards').innerHTML=[
   {i:'🍀',l:'El más afortunado',v:lkArr[0].n,s:`${st[lkArr[0].e].luck} victorias con suerte`},
   {i:'😤',l:'El más gafado',v:ulArr[0].n,s:`${st[ulArr[0].e].unluck} derrotas con mala suerte`},
   {i:'⚡',l:'Victoria más amplia',v:bigW.w,s:`+${bigW.d} pts vs ${bigW.l} · GW${bigW.gw}`},
-  {i:'💀',l:'Farolillo rojo',v:TEAMS[19].n,s:`${TEAMS[19].w}V · ${TEAMS[19].pts} pts`},
+  {i:'💀',l:'Farolillo rojo',v:TEAMS[TEAMS.length-1].n,s:`${TEAMS[TEAMS.length-1].w}V · ${TEAMS[TEAMS.length-1].pts} pts`},
 ].map(a=>`<div class="award-row"><span class="award-icon">${a.i}</span><div style="flex:1;min-width:0"><div class="award-lbl">${a.l}</div><div class="award-val">${a.v}</div><div class="award-sub">${a.s}</div></div></div>`).join('');
 
 // Partidos TOP y Brocescos
