@@ -137,8 +137,8 @@ body{
 <div class="hero">
   <div class="hero-badge">⚽ Punteirolos 9.0 · 2026/27</div>
   <h1>PUNTEIROLOS<br>9.0</h1>
-  <p class="hero-sub">Liga #42303 · Actualizado: 05/10/2026 19:09</p>
-  <div class="live-pill"><span class="live-dot"></span>EN CURSO · GW 5</div>
+  <p class="hero-sub">Liga #42303 · Actualizado: 12/10/2026 19:42</p>
+  <div class="live-pill"><span class="live-dot"></span>EN CURSO · GW 6</div>
   <div class="hstrip" id="hstrip"></div>
 </div>
 
@@ -292,13 +292,13 @@ const MATCHES=[
   [352983,26,208380,45,5],
   [2738656,39,4414467,53,5]
 ];
-const CURRENT_GW=5;
+const CURRENT_GW=6;
 const CHIPS_USED={
   232272:[],
   2609302:[],
   2763130:[],
-  2739209:[{name:"wildcard",event:4}],
-  336896:[{name:"freehit",event:4}],
+  2739209:[{name:"wildcard",event:4},{name:"freehit",event:6}],
+  336896:[{name:"freehit",event:4},{name:"wildcard",event:6}],
   2740581:[{name:"3xc",event:2}],
   6036721:[],
   4414467:[],
@@ -307,13 +307,13 @@ const CHIPS_USED={
   209323:[],
   371963:[{name:"wildcard",event:3}],
   2742897:[{name:"wildcard",event:3}],
-  2740014:[],
+  2740014:[{name:"wildcard",event:6}],
   352983:[{name:"freehit",event:3},{name:"wildcard",event:4}],
-  314451:[{name:"3xc",event:4}],
-  15871:[{name:"3xc",event:3}],
+  314451:[{name:"3xc",event:4},{name:"freehit",event:6}],
+  15871:[{name:"3xc",event:3},{name:"wildcard",event:6}],
   4273984:[],
   253425:[{name:"wildcard",event:4}],
-  2738656:[]
+  2738656:[{name:"freehit",event:6}]
 };
 const CHIP_LABELS={wildcard:"Wildcard 🃏",freehit:"Free Hit 🆓","3xc":"Triple Cap ⚡",bboost:"Bench Boost 🚀"};
 const CHIP_COLORS={wildcard:"#ffd700",freehit:"#00ff87","3xc":"#ff2882",bboost:"#38bdf8"};
