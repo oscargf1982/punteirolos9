@@ -300,6 +300,8 @@ body{
 .jtile{background:rgba(255,255,255,.06);border-radius:8px;padding:7px 4px;text-align:center;min-width:0}
 .jtile b{display:block;font-family:'Space Mono',monospace;font-size:16px;color:#fff;white-space:nowrap}
 .jtile span{display:block;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
+.jmore{display:block;width:calc(100% - 20px);margin:2px 10px 10px;padding:8px;border:1px solid rgba(0,229,255,.4);border-radius:10px;background:rgba(0,229,255,.08);color:var(--cyan);font:700 12px 'Space Mono',monospace;letter-spacing:.04em;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.jlines[hidden]{display:none}
 .jlines{padding:0 12px 10px;font-size:13px;color:var(--text2);line-height:1.5}
 .jlines>div{padding:6px 0;border-top:1px solid rgba(255,255,255,.07)}
 .jlines .k{display:block;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:'Space Mono',monospace;margin-bottom:3px}
@@ -1101,7 +1103,8 @@ JORNADA_JS = r'''(function(){
       const line=(label,body)=>'<div><span class="k">'+label+'</span>'+body+'</div>';
       return '<details class="jficha '+cls+'" open><summary><span>Datos curiosos de '+esc(fname(e))+'</span><span class="jpos">#'+t.r+'</span></summary>'
         +'<div class="jtiles">'+tiles.map(x=>'<div class="jtile"><b>'+esc(x[0])+'</b><span>'+x[1]+'</span></div>').join('')+'</div>'
-        +'<div class="jlines">'
+        +'<button type="button" class="jmore">Mostrar estadísticas</button>'
+        +'<div class="jlines" hidden>'
         +line('Racha',esc(curStreak(h))+' · mejor: '+pl(k.bW,'victoria','victorias')+' · peor: '+pl(k.bL,'derrota','derrotas'))
         +line('Mejor y peor jornada',best?best.my+' pts (GW'+best.gw+') · '+worst.my+' pts (GW'+worst.gw+')':'sin datos')
         +line('Mayor victoria',big?'+'+big.dd+' pts a '+esc(fname(big.vs))+' (GW'+big.gw+')':'aún sin victorias')
@@ -1152,6 +1155,13 @@ JORNADA_JS = r'''(function(){
       else html+='<div class="jduel nodet"><div class="jsum">'+sum+'</div></div>';
     });
     root.innerHTML=html;
+    root.addEventListener('click',ev=>{
+      const b=ev.target.closest&&ev.target.closest('.jmore'); if(!b) return;
+      const l=b.parentNode.querySelector('.jlines'); if(!l) return;
+      const show=l.hasAttribute('hidden');
+      if(show) l.removeAttribute('hidden'); else l.setAttribute('hidden','');
+      b.textContent=show?'Ocultar estadísticas':'Mostrar estadísticas';
+    });
   }catch(err){
     console.error(err);
     root.innerHTML='<p class="jmsg">No se pudo dibujar la jornada en este momento.</p>';
