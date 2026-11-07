@@ -814,10 +814,10 @@ JORNADA_JS = r'''(function(){
       BHA:{b:'#0057b8',t:'#ffffff',p:'pin',q:'#ffffff',w:1.5}, BUR:{b:'#6c1d45',s:'#99d6ea',t:'#99d6ea'},
       CHE:{b:'#1d4fb8',t:'#ffffff'}, COV:{b:'#5bb8e8',t:'#ffffff'},
       CRY:{b:'#1b458f',t:'#c4122e',p:'stripes',q:'#c4122e',w:5.5}, EVE:{b:'#1f4fb0',t:'#ffffff'},
-      FUL:{b:'#ffffff',t:'#111111'}, HUL:{b:'#f5a31a',t:'#111111'},
-      IPS:{b:'#1747a8',t:'#ffffff'}, LEE:{b:'#ffffff',t:'#1d428a'},
-      LEI:{b:'#0b3a9a',t:'#fdbe11'}, LIV:{b:'#d3121f',t:'#ffffff'},
-      MCI:{b:'#6cabdd',t:'#ffffff'}, MUN:{b:'#c8102e',s:'#c8102e',t:'#111111'},
+      FUL:{b:'#ffffff',t:'#111111'}, HUL:{b:'#f5a31a',t:'#111111',p:'stripes',q:'#1a1a1a',w:3.5},
+      IPS:{b:'#1747a8',t:'#ffffff'}, LEE:{b:'#ffffff',t:'#f2c200'},
+      LEI:{b:'#0b3a9a',t:'#fdbe11'}, LIV:{b:'#b5132b',t:'#f2e9d0'},
+      MCI:{b:'#6cabdd',t:'#ffffff',fade:1}, MUN:{b:'#c8102e',s:'#c8102e',t:'#111111'},
       NEW:{b:'#f5f5f5',t:'#111111',p:'stripes',q:'#1a1a1a',w:6}, NFO:{b:'#d90f1a',t:'#ffffff'},
       SOU:{b:'#d71920',t:'#111111',p:'stripes',q:'#ffffff',w:6}, SUN:{b:'#e8222f',t:'#111111',p:'stripes',q:'#ffffff',w:6},
       TOT:{b:'#ffffff',t:'#132257'}, WHU:{b:'#7a263a',s:'#1bb1e7',t:'#1bb1e7'},
@@ -826,14 +826,16 @@ JORNADA_JS = r'''(function(){
     };
     // Porteros: manga larga y un color por club
     const GKC=[['#e9ecef','#6b7280'],['#ec4899','#7a1b4d'],['#f5c518','#7a5b00'],['#22c55e','#0f5132'],['#38bdf8','#0b4a6f']];
-    const GKFIX={ARS:0,BHA:1};
+    const GKCLUB={ARS:['#e9ecef','#6b7280'],BHA:['#ec4899','#7a1b4d'],LEE:['#35c35a','#0f5132'],HUL:['#6b7280','#374151'],
+      EVE:['#b5f01c','#4d7c0f'],TOT:['#f0509b','#9d174d'],LIV:['#14532d','#052e16'],FUL:['#38bdf8','#0b4a6f'],
+      BRE:['#d8a4f0','#7e22ce'],MCI:['#e8482c','#7f1d1d'],AVL:['#f5c518','#7a5b00']};
     let jid=0;
     // Camiseta realista: hombros con costura, mangas (a veces de otro color), cuello, puños,
     // pliegues, sombra bajo los brazos, trama de tejido y brillo en los hombros
     function jersey(tid,gk){
       const code=(J.tshort||{})[tid]||'';
       let c=CLUB[code];
-      if(gk){const g=GKC[code in GKFIX?GKFIX[code]:tid%GKC.length]; c={b:g[0],t:g[1]};}
+      if(gk){const g=GKCLUB[code]||GKC[tid%GKC.length]; c={b:g[0],t:g[1]};}
       else if(!c){const h=(tid*47)%360; c={b:'hsl('+h+',65%,48%)',t:'#ffffff'};}
       const B=c.b, S=c.s||c.b, T=c.t||'#fff', id='jc'+(jid++);
       const torso='M20 4 C26 10 38 10 44 4 L50 8 L50 57 Q32 61 14 57 L14 8 Z';
@@ -852,12 +854,14 @@ JORNADA_JS = r'''(function(){
         +'<clipPath id="'+id+'c"><path d="'+torso+'"/><path d="'+slv+'"/><path d="'+slv+'" transform="'+mir+'"/></clipPath>'
         +'<linearGradient id="'+id+'g" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#000" stop-opacity=".32"/><stop offset=".22" stop-color="#000" stop-opacity="0"/><stop offset=".55" stop-color="#fff" stop-opacity=".1"/><stop offset=".78" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".34"/></linearGradient>'
         +'<linearGradient id="'+id+'v" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".16"/><stop offset=".35" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".22"/></linearGradient>'
+        +'<linearGradient id="'+id+'f" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity=".75"/></linearGradient>'
         +'<pattern id="'+id+'t" width="3" height="3" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="3" height="1" fill="#000" opacity=".07"/></pattern></defs>'
         +'<g clip-path="url(#'+id+'c)"><rect x="-3" width="70" height="62" fill="'+B+'"/>'+pat
         +sl(0)+sl(1)
         +'<path d="M20 12 Q18 36 17 56 M44 12 Q46 36 47 56" stroke="rgba(0,0,0,.10)" stroke-width="3" fill="none"/>'
         +'<path d="M32 14 L32 58" stroke="rgba(255,255,255,.07)" stroke-width="5" fill="none"/>'
         +'<rect x="-3" width="70" height="62" fill="url(#'+id+'g)"/><rect x="-3" width="70" height="62" fill="url(#'+id+'v)"/>'
+        +(c.fade?'<rect x="-3" y="26" width="70" height="36" fill="url(#'+id+'f)"/>':'')
         +'<rect x="-3" width="70" height="62" fill="url(#'+id+'t)"/>'
         +'<path d="M14 54 Q32 58 50 54" stroke="rgba(0,0,0,.2)" stroke-width="1.2" fill="none"/></g>'
         +'<path d="'+torso+'" fill="none" stroke="rgba(0,0,0,.45)" stroke-width=".9"/>'
