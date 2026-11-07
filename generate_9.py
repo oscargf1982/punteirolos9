@@ -265,6 +265,13 @@ body{
 .jn.played small{background:#150a45;color:#fff;border-radius:4px;margin-top:1px}
 .jbadge{position:absolute;top:-6px;right:2px;z-index:2;min-width:22px;height:22px;padding:0 3px;border-radius:50%;background:#7c3aed;color:#fff;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;border:2px solid #fff;font-family:'Space Mono',monospace}
 .jcap{position:absolute;top:-4px;left:2px;z-index:2;background:#2b0a6b;color:#fff;font-size:10px;font-weight:900;border-radius:9px;min-width:18px;height:18px;padding:0 4px;display:flex;align-items:center;justify-content:center;border:1.5px solid #fff}
+.jbench{position:relative;z-index:1;margin:10px 6px 0;padding:6px 0 4px;border-top:2px dashed rgba(255,255,255,.35);background:rgba(0,0,0,.18);border-radius:8px}
+.jbl{text-align:center;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.85);padding:2px 0 0}
+.jbench .jt.jbn{opacity:.85}
+.jt.jout{opacity:.5}
+.jflag{position:absolute;top:-7px;left:50%;transform:translateX(-50%);z-index:3;font-size:8.5px;font-weight:900;border-radius:8px;padding:1px 6px;white-space:nowrap;border:1.5px solid #fff}
+.jflag.in{background:#00b36b;color:#fff}
+.jflag.out{background:#b3263a;color:#fff}
 .jreprow{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;padding:8px 6px 2px;position:relative;z-index:1}
 .jreprow .jt{border:2px dashed rgba(255,255,255,.4);border-radius:10px;padding:6px 2px 4px;background:rgba(0,0,0,.2)}
 .jt.jrep{opacity:.55;filter:grayscale(1)}
@@ -937,7 +944,8 @@ JORNADA_JS = r'''(function(){
       else if(started) sub='(en juego)';
       else sub=f.map(m=>m[0]+' ('+m[1]+')').join(' · ');
       const cap=x[2]?(x[1]>=3?'3C':'C'):(x[3]?'V':'');
-      return '<div class="jt">'
+      const fl=x[6]==='in'?'<span class="jflag in">ENTRA</span>':(x[6]==='out'?'<span class="jflag out">NO JUGÓ</span>':'');
+      return '<div class="jt'+(x[6]==='out'?' jout':'')+(x[6]==='b'?' jbn':'')+'">'+fl
         +(started?'<span class="jbadge">'+pts+'</span>':'')
         +(cap?'<span class="jcap">'+cap+'</span>':'')
         +jersey(tid,x[5]===1,name)
@@ -951,20 +959,65 @@ JORNADA_JS = r'''(function(){
     }
 
     const xi=pk=>pk.p.filter(x=>x[1]>0);
+    // ¿Se sabe seguro que un jugador no ha jugado? (0 minutos y todos sus partidos terminados)
+    const FXALL=Object.keys(FX).length>0;
+    function noshow(id){
+      const p=PL[id]; if(!p||p[4]==null||p[4]>0) return false;
+      const f=FX[p[1]]||[];
+      if(!f.length) return FXALL;
+      return f.every(m=>m[2]===2);
+    }
+    function played(id){const p=PL[id]; return !!(p&&p[4]!=null&&p[4]>0);}
+    const LIM={2:[3,5],3:[2,5],4:[1,3]};
+    // Once efectivo: los suplentes entran por orden por los titulares que no jugaron (el portero solo por el portero),
+    // respetando la formación. Con Bench Boost cuentan los 15 y no hay sustituciones.
+    function lineup(pk){
+      const all=pk.p.slice().sort((a,b)=>a[4]-b[4]);
+      const cp=(x,f)=>[x[0],x[1],x[2],x[3],x[4],x[5],f||''];
+      if(pk.chip==='bboost') return {xi:all.filter(x=>x[1]>0).map(x=>cp(x)),bench:[]};
+      const xi=all.filter(x=>x[4]<=11).map(x=>cp(x));
+      let bn=all.filter(x=>x[4]>11).map(x=>cp(x,'b'));
+      const out=[];
+      const cnt=t=>xi.filter(x=>x[5]===t).length;
+      const swap=(g,sb)=>{
+        xi[xi.indexOf(g)]=sb; bn=bn.filter(x=>x!==sb);
+        sb[1]=1; sb[6]='in'; g[1]=0; g[6]='out'; out.push(g);
+      };
+      xi.filter(x=>x[5]===1&&noshow(x[0])).forEach(g=>{
+        const sb=bn.find(b=>b[5]===1&&played(b[0]));
+        if(sb) swap(g,sb);
+      });
+      xi.filter(x=>x[5]!==1&&noshow(x[0])).forEach(g=>{
+        const sb=bn.find(b=>{
+          if(b[5]===1||!played(b[0])) return false;
+          const c={2:cnt(2),3:cnt(3),4:cnt(4)}; c[g[5]]--; c[b[5]]++;
+          return [2,3,4].every(t=>c[t]>=LIM[t][0]&&c[t]<=LIM[t][1]);
+        });
+        if(sb) swap(g,sb);
+      });
+      // si el capitán no jugó, el vicecapitán hereda su multiplicador
+      const capO=all.find(x=>x[2]);
+      if(capO&&noshow(capO[0])){
+        const v=xi.find(x=>x[3]&&x[1]>0&&!noshow(x[0]));
+        if(v) v[1]=capO[1];
+      }
+      return {xi:xi.filter(x=>x[1]>0),bench:bn.concat(out)};
+    }
     const score=(list,pk)=>list.reduce((s,x)=>{const p=PL[x[0]];return s+(p?p[3]*x[1]:0);},0)-(pk.cost||0);
     const chipTag=pk=>{
       const l=(pk&&pk.chip)?(CHIPN[pk.chip]||pk.chip):'';
       return l?'<div class="jb-c">'+esc(l)+'</div>':'';
     };
 
-    function pitch(e,list,common,cls,sc){
+    function pitch(e,list,common,cls,sc,bench){
       const rows=[1,2,3,4].map(t=>{
         const items=list.filter(x=>x[5]===t).sort((a,b)=>a[4]-b[4]);
         return items.length?'<div class="jrow">'+items.map(tile).join('')+'</div>':'';
       }).join('');
       const rep=common.length?'<div class="jreprow">'+common.map(repTile).join('')+'</div>':'';
+      const bn=(bench&&bench.length)?'<div class="jbench"><div class="jbl">Banquillo · no suma salvo que entre</div><div class="jrow">'+bench.map(tile).join('')+'</div></div>':'';
       return '<div><div class="jpl '+cls+'"><span>'+esc(fname(e))+'</span><span>'+fmt(sc)+' pts</span></div>'
-        +'<div class="jpitch"><i class="jarc"></i>'+(rows||'<p class="jmsg">Sin jugadores distintos</p>')+rep+'</div></div>';
+        +'<div class="jpitch"><i class="jarc"></i>'+(rows||'<p class="jmsg">Sin jugadores distintos</p>')+rep+bn+'</div></div>';
     }
 
     function foot(a,b,pa,pb,sa,sb,common){
@@ -1062,7 +1115,7 @@ JORNADA_JS = r'''(function(){
 
     let html='<p class="jmsg"><b>Jornada '+J.gw+'</b> · datos a '+esc(J.updated)+'.</p>';
     if(J.available){
-      html+='<p class="jmsg">Los jugadores que tienen <b>los dos</b> managers en su once no cuentan en el duelo. Marcador orientativo: puntos de los jugadores distintos (con capitán) menos las penalizaciones por fichajes, sin contar suplentes automáticos.</p>';
+      html+='<p class="jmsg">Los jugadores que tienen <b>los dos</b> managers en su once no cuentan en el duelo. Marcador orientativo: puntos de los jugadores distintos (con capitán) menos las penalizaciones por fichajes. El banquillo no suma salvo que un suplente entre por un titular que no ha jugado (entran por orden, el portero solo por el portero) o que el manager use Bench Boost.</p>';
     }
     if(J.note) html+='<p class="jmsg">'+esc(J.note)+'</p>';
     if(!J.duels.length){
@@ -1076,7 +1129,8 @@ JORNADA_JS = r'''(function(){
       const both=!!(pa&&pb);
       let sa=0, sb=0, body='';
       if(both){
-        const xa=xi(pa), xb=xi(pb);
+        const la=lineup(pa), lb=lineup(pb);
+        const xa=la.xi, xb=lb.xi;
         const setA=new Set(xa.map(x=>x[0])), setB=new Set(xb.map(x=>x[0]));
         const common=[...setA].filter(id=>setB.has(id));
         const onlyA=xa.filter(x=>!setB.has(x[0])), onlyB=xb.filter(x=>!setA.has(x[0]));
@@ -1085,7 +1139,7 @@ JORNADA_JS = r'''(function(){
           +'<div class="jb red"><div class="jb-n">'+esc(fname(a))+'</div><div class="jb-t">'+esc(tname(a))+'</div>'+chipTag(pa)+'</div>'
           +'<div class="jb-vs">VS</div>'
           +'<div class="jb blue"><div class="jb-n">'+esc(fname(b))+'</div><div class="jb-t">'+esc(tname(b))+'</div>'+chipTag(pb)+'</div></div>'
-          +'<div class="jfichas">'+ficha(a,'red')+ficha(b,'blue')+'</div>'+'<div class="jpitches">'+pitch(a,onlyA,common,'red',sa)+pitch(b,onlyB,common,'blue',sb)+'</div>'
+          +'<div class="jfichas">'+ficha(a,'red')+ficha(b,'blue')+'</div>'+'<div class="jpitches">'+pitch(a,onlyA,common,'red',sa,la.bench)+pitch(b,onlyB,common,'blue',sb,lb.bench)+'</div>'
           +foot(a,b,pa,pb,sa,sb,common)+'</div>';
       }
       const mid=both
@@ -1164,10 +1218,19 @@ def build_jornada(bootstrap, teams, gw_matches, gw, updated):
     if info["picks"]:
         info["available"] = True
         used = {p[0] for pk in info["picks"].values() for p in pk["p"]}
+        # Puntos y minutos en directo de cada jugador (si falla, se usan los puntos del bootstrap y no hay sustituciones)
+        live = {}
+        data_live = fpl_optional(f"/event/{gw}/live/")
+        for el in (data_live or {}).get("elements", []):
+            live[el["id"]] = el.get("stats") or {}
         for eid in used:
             e = elements.get(eid)
             if e:
-                info["players"][eid] = [e["web_name"], e["team"], e["element_type"], e.get("event_points", 0)]
+                st = live.get(eid)
+                pts = st.get("total_points", e.get("event_points", 0)) if st else e.get("event_points", 0)
+                mins = st.get("minutes") if st else None
+                # [nombre, equipo, tipo, puntos, minutos jugados (None si no se sabe)]
+                info["players"][eid] = [e["web_name"], e["team"], e["element_type"], pts, mins]
                 info["tshort"][e["team"]] = short.get(e["team"], "")
         missing = len(teams) - len(info["picks"])
         if missing:
