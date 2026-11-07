@@ -328,7 +328,7 @@ body{
   <div class="card"><div class="ch"><span class="ci">🎯</span><span class="ct">Mejor jornada individual</span></div><div id="bar-best"></div></div>
   <div class="stitle">⚔️ H2H</div>
   <div class="card"><div class="ch"><span class="ci">😰</span><span class="ct">Victorias por ≤4 puntos</span></div><div id="bar-cw"></div></div>
-  <div class="card"><div class="ch"><span class="ci">💥</span><span class="ct">Goleadas de +20 puntos</span></div><div id="bar-bw"></div></div>
+  <div class="card"><div class="ch"><span class="ci">💥</span><span class="ct">Domadas de +20 puntos</span></div><div id="bar-bw"></div></div>
   <div class="card"><div class="ch"><span class="ci">💔</span><span class="ct">Derrotas por ≤4 puntos</span></div><div id="bar-cl"></div></div>
   <div class="stitle">📋 Récords</div>
   <div id="records"></div>
@@ -511,7 +511,7 @@ const avMx=parseFloat(st[avArr[0].e].avg);
 document.getElementById('bar-avg').innerHTML=avArr.map((t,i)=>bar(t.n,st[t.e].avg,(parseFloat(st[t.e].avg)/avMx)*100,'#00e87a','pts/GW',i*35)).join('');
 renderBars('bar-best',sd(TEAMS,'hs'),'hs','#ff2882','pts');
 renderBars('bar-cw',sd(TEAMS,'cw'),'cw','#00ff87','partidos');
-renderBars('bar-bw',sd(TEAMS,'bw'),'bw','#ff2882','goleadas');
+renderBars('bar-bw',sd(TEAMS,'bw'),'bw','#ff2882','domadas');
 renderBars('bar-cl',sd(TEAMS,'cl'),'cl','#ff2882','partidos');
 renderBars('bar-lp',sd(TEAMS,'lp'),'lp','#ff2882','pts');
 document.getElementById('records').innerHTML=`
@@ -547,7 +547,7 @@ document.getElementById('badges').innerHTML=[
   {i:'👑',n:'Líder',o:TEAMS[0].n,d:`${TEAMS[0].pts} pts`},
   {i:'🎯',n:'Cañonero',o:sd(TEAMS,'pts')[0].n,d:'Más puntos totales'},
   {i:'😰',n:'Rey del susto',o:sd(TEAMS,'cw')[0].n,d:`${st[sd(TEAMS,'cw')[0].e].cw} victorias ≤4 pts`},
-  {i:'💥',n:'Aplastador',o:sd(TEAMS,'bw')[0].n,d:`${st[sd(TEAMS,'bw')[0].e].bw} goleadas +20`},
+  {i:'💥',n:'Aplastador',o:sd(TEAMS,'bw')[0].n,d:`${st[sd(TEAMS,'bw')[0].e].bw} domadas +20`},
   {i:'🔥',n:'En racha',o:swArr[0].n,d:`${STR[swArr[0].e].bW} victorias seguidas`},
   {i:'🍀',n:'Más suerte',o:lkArr[0].n,d:`${st[lkArr[0].e].luck} victorias bajo la media`},
   {i:'😤',n:'Más gafado',o:ulArr[0].n,d:`${st[ulArr[0].e].unluck} derrotas sobre la media`},
@@ -643,7 +643,7 @@ document.getElementById('awards').innerHTML=[
   {i:'📊',l:'Más puntos acumulados',v:sd(TEAMS,'pts')[0].n,s:`${sd(TEAMS,'pts')[0].pts} pts`},
   {i:'🎯',l:'Récord de jornada',v:sd(TEAMS,'hs')[0].n,s:`${st[sd(TEAMS,'hs')[0].e].hs} pts · GW${bestM.gw}`},
   {i:'😰',l:'Rey del susto',v:sd(TEAMS,'cw')[0].n,s:`${st[sd(TEAMS,'cw')[0].e].cw} victorias ≤4 pts`},
-  {i:'💥',l:'Rey de las palizas',v:sd(TEAMS,'bw')[0].n,s:`${st[sd(TEAMS,'bw')[0].e].bw} goleadas +20 pts`},
+  {i:'💥',l:'Rey de las palizas',v:sd(TEAMS,'bw')[0].n,s:`${st[sd(TEAMS,'bw')[0].e].bw} domadas +20 pts`},
   {i:'💔',l:'Más derrotas ajustadas',v:sd(TEAMS,'cl')[0].n,s:`${st[sd(TEAMS,'cl')[0].e].cl} derrotas ≤4 pts`},
   {i:'🔥',l:'Mejor racha',v:swArr[0].n,s:`${STR[swArr[0].e].bW} victorias consecutivas`},
   {i:'🍀',l:'El más afortunado',v:lkArr[0].n,s:`${st[lkArr[0].e].luck} victorias con suerte`},
@@ -881,7 +881,7 @@ JORNADA_JS = r'''(function(){
       });
     });
     const LEAD=[
-      ['hs','Mejor jornada de la liga'],['avg','Mejor promedio por jornada'],['bw','Más goleadas (+20)'],
+      ['hs','Mejor jornada de la liga'],['avg','Mejor promedio por jornada'],['bw','Más domadas (+20)'],
       ['cw','Rey del susto (victorias ≤4)'],['cl','Más derrotas ajustadas (≤4)'],['luck','Más afortunado'],
       ['unluck','Más gafado'],['std','Más caótico']
     ];
@@ -933,7 +933,7 @@ JORNADA_JS = r'''(function(){
         +line('Mayor victoria',big?'+'+big.dd+' pts a '+esc(fname(big.vs))+' (GW'+big.gw+')':'aún sin victorias')
         +line('Chips usados',used||'ninguno')
         +line('Chips recibidos',recv||'ninguno')
-        +line('Goleadas y ajustados','goleadas (+20): '+(s.bw||0)+' · victorias ≤4: '+(s.cw||0)+' · derrotas ≤4: '+(s.cl||0))
+        +line('Domadas y ajustados','domadas (+20): '+(s.bw||0)+' · victorias ≤4: '+(s.cw||0)+' · derrotas ≤4: '+(s.cl||0))
         +line('Suerte',(s.luck||0)+' victorias con suerte · '+(s.unluck||0)+' derrotas con mala suerte')
         +line('Récords',tags.length?tags.map(x=>'<span class="jrec">'+esc(x)+'</span>').join(''):'sin récords todavía')
         +'</div></details>';
