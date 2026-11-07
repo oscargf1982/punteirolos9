@@ -2,7 +2,8 @@ name: Actualizar Punteirolos 9.0
 
 on:
   schedule:
-    - cron: '0 10 * * 2'
+    - cron: '0 10 * * 2'   # martes 10:00 UTC
+    - cron: '0 6 * * 6'    # sábado a primera hora: 06:00 UTC (07:00 en España en invierno, 08:00 en verano)
   workflow_dispatch:
 
 jobs:
