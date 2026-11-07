@@ -246,13 +246,15 @@ body{
 .jpl{display:flex;justify-content:space-between;padding:7px 12px;font-size:12px;font-weight:800;text-transform:uppercase;color:#fff;font-family:'Space Mono',monospace}
 .jpl.red{background:#a30d1d}
 .jpl.blue{background:#1e40af}
-.jpitch{position:relative;padding:18px 2px 10px;background:repeating-linear-gradient(180deg,#1c7f37 0 36px,#23963f 36px 72px)}
-.jpitch::before{content:'';position:absolute;top:0;left:50%;width:44%;height:40px;transform:translateX(-50%);border:2px solid rgba(255,255,255,.5);border-top:0;pointer-events:none}
-.jpitch::after{content:'';position:absolute;top:0;left:50%;width:20%;height:18px;transform:translateX(-50%);border:2px solid rgba(255,255,255,.5);border-top:0;pointer-events:none}
+.jpitch{position:relative;padding:20px 2px 14px;overflow:hidden;background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,0) 35%,rgba(0,0,0,.12)),repeating-linear-gradient(180deg,#0fa24e 0 46px,#0a8f41 46px 92px);box-shadow:inset 3px 0 0 -1px rgba(255,255,255,.55),inset -3px 0 0 -1px rgba(255,255,255,.55)}
+.jpitch::before{content:'';position:absolute;top:0;left:50%;width:66%;height:92px;transform:translateX(-50%);border:2px solid rgba(255,255,255,.75);border-top:0;pointer-events:none}
+.jpitch::after{content:'';position:absolute;top:0;left:50%;width:32%;height:36px;transform:translateX(-50%);border:2px solid rgba(255,255,255,.75);border-top:0;pointer-events:none}
+.jarc{position:absolute;left:50%;bottom:-70px;width:150px;height:150px;transform:translateX(-50%);border:2px solid rgba(255,255,255,.7);border-radius:50%;pointer-events:none}
+.jarc::before{content:'';position:absolute;left:50%;top:-2px;width:300%;height:2px;transform:translateX(-50%);background:rgba(255,255,255,.7)}
 .jpitch .jmsg{color:#fff;text-align:center}
 .jrow{display:flex;justify-content:space-evenly;align-items:flex-start;margin:12px 0;position:relative;z-index:1}
 .jt{position:relative;width:62px;flex:0 0 auto;text-align:center}
-.jsv{display:block;width:44px;height:41px;margin:0 auto;filter:drop-shadow(0 2px 2px rgba(0,0,0,.4))}
+.jsv{display:block;width:52px;height:46px;margin:0 auto;filter:drop-shadow(0 2px 2px rgba(0,0,0,.4))}
 .jn{background:#fff;color:#1c0028;border-radius:6px;padding:3px 3px 2px;margin:-3px auto 0;max-width:66px;line-height:1.15;position:relative}
 .jn b{display:block;font-size:11px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .jn small{display:block;font-size:10px;font-weight:700;color:#5a3a78;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -272,7 +274,7 @@ body{
 .jf .pos{color:var(--cyan);font-family:'Space Mono',monospace;font-size:14px}
 .jf .neg{color:var(--pink);font-family:'Space Mono',monospace;font-size:14px}
 .jf.mid{text-align:center;font-weight:900;color:#fff;font-size:15px;display:flex;align-items:center;justify-content:center}
-.jt:not(.jrep){background:rgba(0,70,25,.28);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:5px 0 0}
+.jt:not(.jrep){background:rgba(0,80,30,.38);border:1px solid rgba(0,0,0,.18);border-radius:6px;padding:4px 0 0;box-shadow:0 1px 3px rgba(0,0,0,.25)}
 .jt:not(.jrep) .jn{border-radius:0 0 7px 7px;margin:2px 0 0;max-width:none}
 .jfichas{display:grid;grid-template-columns:1fr;gap:10px;padding:0 10px 12px}
 .jficha{background:#120a33;border:1px solid rgba(255,255,255,.12);border-radius:12px;overflow:hidden}
@@ -302,7 +304,7 @@ body{
   .jpitches{grid-template-columns:1fr 1fr}
   .jfoot{grid-template-columns:1.2fr .8fr 1.2fr}
   .jt{width:76px}
-  .jsv{width:50px;height:46px}
+  .jsv{width:58px;height:51px}
 }
 </style>
 </head>
@@ -804,50 +806,65 @@ JORNADA_JS = r'''(function(){
     const tname=e=>T[e]?T[e].n:'';
     const fmt=n=>n<0?'−'+Math.abs(n):String(n);
 
-    // Colores de cada club (3 letras de FPL): principal, secundario, patrón y ancho de raya.
-    // Solo colores y rayas: sin escudos, patrocinadores ni marcas.
+    // Equipaciones: b=cuerpo, s=mangas, t=cuello y puños, p=patrón (stripes|pin), q=color del patrón, w=ancho.
+    // Solo colores y dibujo de la prenda: sin escudos, patrocinadores ni marcas.
     const CLUB={
-      ARS:['#e41b23','#ffffff','solid'], AVL:['#7b1e3d','#8fc4ea','solid'],
-      BOU:['#d71920','#111111','stripes',6], BRE:['#e4002b','#ffffff','stripes',6],
-      BHA:['#0057b8','#ffffff','stripes',4], BUR:['#6c1d45','#99d6ea','solid'],
-      CHE:['#034694','#ffffff','solid'], COV:['#5bb8e8','#ffffff','solid'],
-      CRY:['#1b458f','#c4122e','stripes',5], EVE:['#0a3d9c','#ffffff','solid'],
-      FUL:['#ffffff','#111111','solid'], HUL:['#f5a31a','#111111','solid'],
-      IPS:['#0b3fa8','#ffffff','solid'], LEE:['#ffffff','#1d428a','solid'],
-      LEI:['#0b3a9a','#ffffff','solid'], LIV:['#c8102e','#ffffff','solid'],
-      MCI:['#6cabdd','#ffffff','solid'], MUN:['#da291c','#111111','solid'],
-      NEW:['#1a1a1a','#ffffff','stripes',7], NFO:['#d90f1a','#ffffff','solid'],
-      SOU:['#d71920','#ffffff','stripes',6], SUN:['#e8222f','#ffffff','stripes',6],
-      TOT:['#ffffff','#132257','solid'], WHU:['#7a263a','#1bb1e7','solid'],
-      WOL:['#fdb913','#111111','solid'], WBA:['#122f67','#ffffff','stripes',6],
-      MID:['#c8102e','#ffffff','solid'], MIL:['#0a2a6e','#ffffff','solid']
+      ARS:{b:'#ef0107',s:'#ffffff',t:'#ffffff'}, AVL:{b:'#6c1d45',s:'#95bfe5',t:'#95bfe5'},
+      BOU:{b:'#e62333',t:'#111111',p:'stripes',q:'#111111',w:5.5}, BRE:{b:'#e30613',t:'#111111',p:'stripes',q:'#ffffff',w:5.5},
+      BHA:{b:'#0057b8',t:'#ffffff',p:'pin',q:'#ffffff',w:1.5}, BUR:{b:'#6c1d45',s:'#99d6ea',t:'#99d6ea'},
+      CHE:{b:'#1d4fb8',t:'#ffffff'}, COV:{b:'#5bb8e8',t:'#ffffff'},
+      CRY:{b:'#1b458f',t:'#c4122e',p:'stripes',q:'#c4122e',w:5.5}, EVE:{b:'#1f4fb0',t:'#ffffff'},
+      FUL:{b:'#ffffff',t:'#111111'}, HUL:{b:'#f5a31a',t:'#111111'},
+      IPS:{b:'#1747a8',t:'#ffffff'}, LEE:{b:'#ffffff',t:'#1d428a'},
+      LEI:{b:'#0b3a9a',t:'#fdbe11'}, LIV:{b:'#d3121f',t:'#ffffff'},
+      MCI:{b:'#6cabdd',t:'#ffffff'}, MUN:{b:'#c8102e',s:'#c8102e',t:'#111111'},
+      NEW:{b:'#f5f5f5',t:'#111111',p:'stripes',q:'#1a1a1a',w:6}, NFO:{b:'#d90f1a',t:'#ffffff'},
+      SOU:{b:'#d71920',t:'#111111',p:'stripes',q:'#ffffff',w:6}, SUN:{b:'#e8222f',t:'#111111',p:'stripes',q:'#ffffff',w:6},
+      TOT:{b:'#ffffff',t:'#132257'}, WHU:{b:'#7a263a',s:'#1bb1e7',t:'#1bb1e7'},
+      WOL:{b:'#fdb913',t:'#111111'}, WBA:{b:'#122f67',t:'#ffffff',p:'stripes',q:'#ffffff',w:6},
+      MID:{b:'#c8102e',t:'#ffffff'}, MIL:{b:'#0a2a6e',t:'#ffffff'}
     };
-    // Porteros: manga larga y un color por club (gris, rosa, amarillo, verde o celeste)
-    const GKC=[['#d9dde2','#7f8895'],['#ec4899','#7a1b4d'],['#f5c518','#7a5b00'],['#22c55e','#0f5132'],['#38bdf8','#0b4a6f']];
+    // Porteros: manga larga y un color por club
+    const GKC=[['#e9ecef','#6b7280'],['#ec4899','#7a1b4d'],['#f5c518','#7a5b00'],['#22c55e','#0f5132'],['#38bdf8','#0b4a6f']];
     const GKFIX={ARS:0,BHA:1};
     let jid=0;
-    // Camiseta: color del club, rayas si toca, cuello en V, ribetes y algo de sombra
+    // Camiseta realista: hombros con costura, mangas (a veces de otro color), cuello, puños,
+    // pliegues, sombra bajo los brazos, trama de tejido y brillo en los hombros
     function jersey(tid,gk){
       const code=(J.tshort||{})[tid]||'';
       let c=CLUB[code];
-      if(gk){const g=GKC[code in GKFIX?GKFIX[code]:tid%GKC.length]; c=[g[0],g[1],'solid'];}
-      else if(!c){const h=(tid*47)%360; c=['hsl('+h+',65%,48%)','#ffffff','solid'];}
-      const p=c[0], s=c[1], k=c[2], w=c[3]||6, id='jc'+(jid++);
-      const body=gk
-        ?'M20 4 L7 9 L0 36 L10 39 L14 24 L14 57 L50 57 L50 24 L54 39 L64 36 L57 9 L44 4 L32 15 Z'
-        :'M20 4 L8 10 L1 27 L12 31 L14 23 L14 57 L50 57 L50 23 L52 31 L63 27 L56 10 L44 4 L32 15 Z';
-      const cuffL=gk?'M0 34 L10 37.5':'M1 25 L12 29', cuffR=gk?'M64 34 L54 37.5':'M63 25 L52 29';
+      if(gk){const g=GKC[code in GKFIX?GKFIX[code]:tid%GKC.length]; c={b:g[0],t:g[1]};}
+      else if(!c){const h=(tid*47)%360; c={b:'hsl('+h+',65%,48%)',t:'#ffffff'};}
+      const B=c.b, S=c.s||c.b, T=c.t||'#fff', id='jc'+(jid++);
+      const torso='M20 4 C26 10 38 10 44 4 L50 8 L50 57 Q32 61 14 57 L14 8 Z';
+      const slv=gk?'M20 4 L9 8 L-2 44 L9 48 L14 30 L14 8 Z':'M20 4 L9 8 L-1 31 L10 36 L14 27 L14 8 Z';
+      const cuff=gk?'M-2.5 45.5 L9.5 49.5':'M-1.5 32.5 L10.5 37.5';
+      const mir='translate(64 0) scale(-1 1)';
       let pat='';
-      if(k==='stripes'){for(let x=2;x<64;x+=2*w) pat+='<rect x="'+x+'" y="0" width="'+w+'" height="60" fill="'+s+'"/>';}
-      return '<svg class="jsv" viewBox="0 0 64 60" aria-hidden="true"><defs>'
-        +'<clipPath id="'+id+'c"><path d="'+body+'"/></clipPath>'
-        +'<linearGradient id="'+id+'g" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#000" stop-opacity=".25"/><stop offset=".3" stop-color="#000" stop-opacity="0"/><stop offset=".7" stop-color="#fff" stop-opacity=".06"/><stop offset="1" stop-color="#000" stop-opacity=".28"/></linearGradient></defs>'
-        +'<g clip-path="url(#'+id+'c)"><rect width="64" height="60" fill="'+p+'"/>'+pat
-        +'<path d="'+cuffL+'" stroke="'+s+'" stroke-width="4.5"/><path d="'+cuffR+'" stroke="'+s+'" stroke-width="4.5"/>'
-        +'<rect width="64" height="60" fill="url(#'+id+'g)"/></g>'
-        +'<path d="'+body+'" fill="none" stroke="rgba(0,0,0,.4)" stroke-width="1"/>'
-        +'<path d="M20 4 L32 15 L44 4" fill="none" stroke="'+s+'" stroke-width="3" stroke-linejoin="round"/>'
-        +'<path d="M20 4 L32 15 L44 4" fill="none" stroke="rgba(0,0,0,.25)" stroke-width=".8" stroke-linejoin="round"/></svg>';
+      if(c.p==='stripes'){for(let x=-4;x<70;x+=2*c.w) pat+='<rect x="'+x+'" y="0" width="'+c.w+'" height="62" fill="'+c.q+'"/>';}
+      if(c.p==='pin'){for(let x=-3;x<70;x+=5) pat+='<rect x="'+x+'" y="0" width="'+c.w+'" height="62" fill="'+c.q+'" opacity=".85"/>';}
+      const sl=(x)=>'<g'+(x?' transform="'+mir+'"':'')+'>'
+        +(S!==B?'<path d="'+slv+'" fill="'+S+'"/>':'')
+        +'<path d="'+cuff+'" stroke="'+T+'" stroke-width="4.4" fill="none"/>'
+        +'<path d="M20 4 L9 8 M14 8 L14 27" stroke="rgba(0,0,0,.35)" stroke-width=".8" fill="none"/>'
+        +'<path d="M10 14 L4 30" stroke="rgba(0,0,0,.12)" stroke-width="2.5" fill="none"/></g>';
+      return '<svg class="jsv" viewBox="-3 0 70 62" aria-hidden="true"><defs>'
+        +'<clipPath id="'+id+'c"><path d="'+torso+'"/><path d="'+slv+'"/><path d="'+slv+'" transform="'+mir+'"/></clipPath>'
+        +'<linearGradient id="'+id+'g" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#000" stop-opacity=".32"/><stop offset=".22" stop-color="#000" stop-opacity="0"/><stop offset=".55" stop-color="#fff" stop-opacity=".1"/><stop offset=".78" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".34"/></linearGradient>'
+        +'<linearGradient id="'+id+'v" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".16"/><stop offset=".35" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".22"/></linearGradient>'
+        +'<pattern id="'+id+'t" width="3" height="3" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="3" height="1" fill="#000" opacity=".07"/></pattern></defs>'
+        +'<g clip-path="url(#'+id+'c)"><rect x="-3" width="70" height="62" fill="'+B+'"/>'+pat
+        +sl(0)+sl(1)
+        +'<path d="M20 12 Q18 36 17 56 M44 12 Q46 36 47 56" stroke="rgba(0,0,0,.10)" stroke-width="3" fill="none"/>'
+        +'<path d="M32 14 L32 58" stroke="rgba(255,255,255,.07)" stroke-width="5" fill="none"/>'
+        +'<rect x="-3" width="70" height="62" fill="url(#'+id+'g)"/><rect x="-3" width="70" height="62" fill="url(#'+id+'v)"/>'
+        +'<rect x="-3" width="70" height="62" fill="url(#'+id+'t)"/>'
+        +'<path d="M14 54 Q32 58 50 54" stroke="rgba(0,0,0,.2)" stroke-width="1.2" fill="none"/></g>'
+        +'<path d="'+torso+'" fill="none" stroke="rgba(0,0,0,.45)" stroke-width=".9"/>'
+        +'<path d="'+slv+'" fill="none" stroke="rgba(0,0,0,.45)" stroke-width=".9"/><path d="'+slv+'" transform="'+mir+'" fill="none" stroke="rgba(0,0,0,.45)" stroke-width=".9"/>'
+        +'<path d="M20 4 C26 10 38 10 44 4" fill="none" stroke="'+T+'" stroke-width="3.4" stroke-linecap="round"/>'
+        +'<path d="M21.5 5.8 C27 11 37 11 42.5 5.8" fill="none" stroke="rgba(0,0,0,.4)" stroke-width=".8"/>'
+        +'<path d="M20.5 3 C26 8 38 8 43.5 3" fill="none" stroke="rgba(255,255,255,.3)" stroke-width=".7"/></svg>';
     }
 
     // Jugador del once: camiseta + nombre + rival (o "ya jugó" con sus puntos)
@@ -890,7 +907,7 @@ JORNADA_JS = r'''(function(){
       }).join('');
       const rep=common.length?'<div class="jreprow">'+common.map(repTile).join('')+'</div>':'';
       return '<div><div class="jpl '+cls+'"><span>'+esc(fname(e))+'</span><span>'+fmt(sc)+' pts</span></div>'
-        +'<div class="jpitch">'+(rows||'<p class="jmsg">Sin jugadores distintos</p>')+rep+'</div></div>';
+        +'<div class="jpitch"><i class="jarc"></i>'+(rows||'<p class="jmsg">Sin jugadores distintos</p>')+rep+'</div></div>';
     }
 
     function foot(a,b,pa,pb,sa,sb,common){
