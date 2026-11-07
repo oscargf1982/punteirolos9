@@ -806,23 +806,36 @@ JORNADA_JS = r'''(function(){
     const tname=e=>T[e]?T[e].n:'';
     const fmt=n=>n<0?'−'+Math.abs(n):String(n);
 
-    // Equipaciones: b=cuerpo, s=mangas, t=cuello y puños, p=patrón (stripes|pin), q=color del patrón, w=ancho.
-    // Solo colores y dibujo de la prenda: sin escudos, patrocinadores ni marcas.
+    // Equipaciones inspiradas en las reales. b=cuerpo, s=mangas, t=cuello y puños, p=patrón (stripes|pin|sash),
+    // q=color del patrón, w=ancho, n=cuello (crew|v|polo), a=[texto,color] publicidad inventada, e=color del escudo.
+    // Escudos y marcas son GENÉRICOS e inventados: no se reproducen los logotipos oficiales.
     const CLUB={
-      ARS:{b:'#ef0107',s:'#ffffff',t:'#ffffff'}, AVL:{b:'#6c1d45',s:'#95bfe5',t:'#95bfe5'},
-      BOU:{b:'#e62333',t:'#111111',p:'stripes',q:'#111111',w:5.5}, BRE:{b:'#e30613',t:'#111111',p:'stripes',q:'#ffffff',w:5.5},
-      BHA:{b:'#0057b8',t:'#ffffff',p:'pin',q:'#ffffff',w:1.5}, BUR:{b:'#6c1d45',s:'#99d6ea',t:'#99d6ea'},
-      CHE:{b:'#1d4fb8',t:'#ffffff'}, COV:{b:'#5bb8e8',t:'#ffffff'},
-      CRY:{b:'#1b458f',t:'#c4122e',p:'stripes',q:'#c4122e',w:5.5}, EVE:{b:'#1f4fb0',t:'#ffffff'},
-      FUL:{b:'#ffffff',t:'#111111'}, HUL:{b:'#f5a31a',t:'#111111',p:'stripes',q:'#1a1a1a',w:3.5},
-      IPS:{b:'#1747a8',t:'#ffffff'}, LEE:{b:'#ffffff',t:'#f2c200'},
-      LEI:{b:'#0b3a9a',t:'#fdbe11'}, LIV:{b:'#b5132b',t:'#f2e9d0'},
-      MCI:{b:'#6cabdd',t:'#ffffff',fade:1}, MUN:{b:'#c8102e',s:'#c8102e',t:'#111111'},
-      NEW:{b:'#f5f5f5',t:'#111111',p:'stripes',q:'#1a1a1a',w:6}, NFO:{b:'#d90f1a',t:'#ffffff'},
-      SOU:{b:'#d71920',t:'#111111',p:'stripes',q:'#ffffff',w:6}, SUN:{b:'#e8222f',t:'#111111',p:'stripes',q:'#ffffff',w:6},
-      TOT:{b:'#ffffff',t:'#132257'}, WHU:{b:'#7a263a',s:'#1bb1e7',t:'#1bb1e7'},
-      WOL:{b:'#fdb913',t:'#111111'}, WBA:{b:'#122f67',t:'#ffffff',p:'stripes',q:'#ffffff',w:6},
-      MID:{b:'#c8102e',t:'#ffffff'}, MIL:{b:'#0a2a6e',t:'#ffffff'}
+      ARS:{b:'#ef0107',s:'#ffffff',t:'#ffffff',n:'v',a:['SKYWAY','#ffffff'],e:'#d4a017'},
+      AVL:{b:'#6c1d45',s:'#6c1d45',t:'#95bfe5',n:'v',a:['VISIT NORTE','#ffffff'],e:'#95bfe5'},
+      BOU:{b:'#e62333',t:'#111111',p:'stripes',q:'#111111',w:5.5,n:'crew',a:['VITALIA','#ffffff'],e:'#111111'},
+      BRE:{b:'#e30613',t:'#111111',p:'stripes',q:'#ffffff',w:6.5,ab:'#ffffff',n:'crew',a:['LUCKYBET','#111111'],e:'#ffffff'},
+      BHA:{b:'#0057b8',t:'#ffffff',p:'pin',q:'#ffffff',w:1.6,n:'polo',a:['AMERICAN BANK','#ffffff'],e:'#ffffff'},
+      BUR:{b:'#6c1d45',s:'#99d6ea',t:'#99d6ea',n:'v',e:'#99d6ea'},
+      CHE:{b:'#1d4fb8',t:'#ffffff',n:'polo',e:'#e0b43a'},
+      COV:{b:'#8fd0ee',t:'#ffffff',p:'stripes',q:'#ffffff',w:6.5,ab:'#ffffff',n:'v',a:['MONEYO','#d9534f'],e:'#ffffff'},
+      CRY:{b:'#ffffff',t:'#1b458f',p:'sash',q:'#1b458f',ab:'#ffffff',n:'v',a:['TEMPOS','#1b458f'],e:'#c4122e'},
+      EVE:{b:'#1f4fb0',t:'#ffffff',n:'crew',a:['HMC TRADE','#ffffff'],e:'#ffffff'},
+      FUL:{b:'#ffffff',t:'#111111',n:'crew',a:['DECKHAUS','#111111'],e:'#111111'},
+      HUL:{b:'#f5a31a',t:'#111111',p:'stripes',q:'#1a1a1a',w:3.5,n:'crew',e:'#111111'},
+      IPS:{b:'#1747a8',t:'#ffffff',n:'crew',a:['HALO','#ffffff'],e:'#ffffff'},
+      LEE:{b:'#ffffff',t:'#f2c200',n:'crew',a:['RED STAG','#c8102e'],e:'#1d428a'},
+      LEI:{b:'#0b3a9a',t:'#fdbe11',n:'polo',e:'#fdbe11'},
+      LIV:{b:'#b5132b',t:'#f2e9d0',n:'v',a:['STANDARD BANK','#ffffff'],e:'#f2e9d0'},
+      MCI:{b:'#6cabdd',t:'#ffffff',fade:1,n:'crew',a:['ETHAD AIR','#ffffff'],e:'#ffffff'},
+      MUN:{b:'#c8102e',t:'#ffffff',n:'v',a:['SNAPDRAKE','#ffffff'],e:'#ffd24a'},
+      NEW:{b:'#f5f5f5',t:'#111111',p:'stripes',q:'#1a1a1a',w:6.5,ab:'#111111',n:'crew',a:['SELLA','#f5f5f5'],e:'#111111'},
+      NFO:{b:'#c8102e',t:'#ffffff',n:'v',a:['SINHA','#ffffff'],e:'#ffffff'},
+      SOU:{b:'#d71920',t:'#111111',p:'stripes',q:'#ffffff',w:6.5,n:'crew',e:'#ffffff'},
+      SUN:{b:'#e8222f',t:'#111111',p:'stripes',q:'#ffffff',w:6.5,ab:'#ffffff',n:'polo',a:['WATCHES','#111111'],e:'#ffffff'},
+      TOT:{b:'#ffffff',t:'#132257',n:'crew',a:['AIM','#132257'],e:'#132257'},
+      WHU:{b:'#7a263a',s:'#1bb1e7',t:'#1bb1e7',n:'v',e:'#1bb1e7'},
+      WOL:{b:'#fdb913',t:'#111111',n:'v',e:'#111111'}, WBA:{b:'#122f67',t:'#ffffff',p:'stripes',q:'#ffffff',w:6,n:'polo',e:'#ffffff'},
+      MID:{b:'#c8102e',t:'#ffffff',n:'v',e:'#ffffff'}, MIL:{b:'#0a2a6e',t:'#ffffff',n:'crew',e:'#ffffff'}
     };
     // Porteros: manga larga y un color por club
     const GKC=[['#e9ecef','#6b7280'],['#ec4899','#7a1b4d'],['#f5c518','#7a5b00'],['#22c55e','#0f5132'],['#38bdf8','#0b4a6f']];
@@ -830,13 +843,13 @@ JORNADA_JS = r'''(function(){
       EVE:['#b5f01c','#4d7c0f'],TOT:['#f0509b','#9d174d'],LIV:['#14532d','#052e16'],FUL:['#38bdf8','#0b4a6f'],
       BRE:['#d8a4f0','#7e22ce'],MCI:['#e8482c','#7f1d1d'],AVL:['#f5c518','#7a5b00']};
     let jid=0;
-    // Camiseta realista: hombros con costura, mangas (a veces de otro color), cuello, puños,
-    // pliegues, sombra bajo los brazos, trama de tejido y brillo en los hombros
+    // Camiseta realista: hombros con costura, mangas (a veces de otro color), tipo de cuello propio de cada club,
+    // puños, pliegues, sombra, trama de tejido, escudo genérico y publicidad inventada
     function jersey(tid,gk){
       const code=(J.tshort||{})[tid]||'';
       let c=CLUB[code];
-      if(gk){const g=GKCLUB[code]||GKC[tid%GKC.length]; c={b:g[0],t:g[1]};}
-      else if(!c){const h=(tid*47)%360; c={b:'hsl('+h+',65%,48%)',t:'#ffffff'};}
+      if(gk){const g=GKCLUB[code]||GKC[tid%GKC.length]; c={b:g[0],t:g[1],n:'crew',e:g[1]};}
+      else if(!c){const h=(tid*47)%360; c={b:'hsl('+h+',65%,48%)',t:'#ffffff',n:'crew',e:'#ffffff'};}
       const B=c.b, S=c.s||c.b, T=c.t||'#fff', id='jc'+(jid++);
       const torso='M20 4 C26 10 38 10 44 4 L50 8 L50 57 Q32 61 14 57 L14 8 Z';
       const slv=gk?'M20 4 L9 8 L-2 44 L9 48 L14 30 L14 8 Z':'M20 4 L9 8 L-1 31 L10 36 L14 27 L14 8 Z';
@@ -845,11 +858,35 @@ JORNADA_JS = r'''(function(){
       let pat='';
       if(c.p==='stripes'){for(let x=-4;x<70;x+=2*c.w) pat+='<rect x="'+x+'" y="0" width="'+c.w+'" height="62" fill="'+c.q+'"/>';}
       if(c.p==='pin'){for(let x=-3;x<70;x+=5) pat+='<rect x="'+x+'" y="0" width="'+c.w+'" height="62" fill="'+c.q+'" opacity=".85"/>';}
+      if(c.p==='sash'){pat='<path d="M12 4 L30 4 L52 36 L52 52 Z" fill="'+c.q+'"/><path d="M12 4 L30 4 L52 36 L52 52 Z" fill="none" stroke="#c4122e" stroke-width="1.6"/>';}
       const sl=(x)=>'<g'+(x?' transform="'+mir+'"':'')+'>'
         +(S!==B?'<path d="'+slv+'" fill="'+S+'"/>':'')
         +'<path d="'+cuff+'" stroke="'+T+'" stroke-width="4.4" fill="none"/>'
         +'<path d="M20 4 L9 8 M14 8 L14 27" stroke="rgba(0,0,0,.35)" stroke-width=".8" fill="none"/>'
         +'<path d="M10 14 L4 30" stroke="rgba(0,0,0,.12)" stroke-width="2.5" fill="none"/></g>';
+      // cuello según el club
+      let col;
+      if(c.n==='v'){
+        col='<path d="M19 3.5 L32 17 L45 3.5" fill="none" stroke="'+T+'" stroke-width="3.2" stroke-linejoin="round"/>'
+          +'<path d="M21 4.5 L32 15 L43 4.5" fill="none" stroke="rgba(0,0,0,.4)" stroke-width=".8"/>';
+      }else if(c.n==='polo'){
+        col='<path d="M20 4 C26 9 38 9 44 4" fill="none" stroke="'+T+'" stroke-width="3" stroke-linecap="round"/>'
+          +'<path d="M20 3 L28 9 L26 13 L17 6 Z" fill="'+T+'" stroke="rgba(0,0,0,.35)" stroke-width=".7"/>'
+          +'<path d="M44 3 L36 9 L38 13 L47 6 Z" fill="'+T+'" stroke="rgba(0,0,0,.35)" stroke-width=".7"/>'
+          +'<rect x="30.4" y="9" width="3.2" height="9" fill="'+T+'" stroke="rgba(0,0,0,.35)" stroke-width=".6"/>'
+          +'<circle cx="32" cy="11.5" r=".7" fill="rgba(0,0,0,.5)"/><circle cx="32" cy="15" r=".7" fill="rgba(0,0,0,.5)"/>';
+      }else{
+        col='<path d="M20 4 C26 10 38 10 44 4" fill="none" stroke="'+T+'" stroke-width="3.4" stroke-linecap="round"/>'
+          +'<path d="M21.5 5.8 C27 11 37 11 42.5 5.8" fill="none" stroke="rgba(0,0,0,.4)" stroke-width=".8"/>'
+          +'<path d="M20.5 3 C26 8 38 8 43.5 3" fill="none" stroke="rgba(255,255,255,.3)" stroke-width=".7"/>';
+      }
+      // escudo genérico (pecho izquierdo del jugador) y publicidad inventada
+      const E=c.e||T;
+      const crest='<path d="M38 17 h8 v5.5 q0 4 -4 6 q-4 -2 -4 -6 z" fill="'+E+'" stroke="rgba(0,0,0,.55)" stroke-width=".8"/>'
+        +'<path d="M42 19 v7" stroke="rgba(0,0,0,.4)" stroke-width=".8"/>';
+      const adW=c.a?Math.min(26,c.a[0].length*4.2):0;
+      const ad=(!gk&&c.a)?((c.p?'<rect x="'+(32-adW/2-2)+'" y="32" width="'+(adW+4)+'" height="8" rx="1.5" fill="'+(c.ab||B)+'"/>':'')
+        +'<text x="32" y="38" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="800" font-size="6" fill="'+c.a[1]+'" textLength="'+adW+'" lengthAdjust="spacingAndGlyphs">'+c.a[0]+'</text>'):'';
       return '<svg class="jsv" viewBox="-3 0 70 62" aria-hidden="true"><defs>'
         +'<clipPath id="'+id+'c"><path d="'+torso+'"/><path d="'+slv+'"/><path d="'+slv+'" transform="'+mir+'"/></clipPath>'
         +'<linearGradient id="'+id+'g" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#000" stop-opacity=".32"/><stop offset=".22" stop-color="#000" stop-opacity="0"/><stop offset=".55" stop-color="#fff" stop-opacity=".1"/><stop offset=".78" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".34"/></linearGradient>'
@@ -866,9 +903,7 @@ JORNADA_JS = r'''(function(){
         +'<path d="M14 54 Q32 58 50 54" stroke="rgba(0,0,0,.2)" stroke-width="1.2" fill="none"/></g>'
         +'<path d="'+torso+'" fill="none" stroke="rgba(0,0,0,.45)" stroke-width=".9"/>'
         +'<path d="'+slv+'" fill="none" stroke="rgba(0,0,0,.45)" stroke-width=".9"/><path d="'+slv+'" transform="'+mir+'" fill="none" stroke="rgba(0,0,0,.45)" stroke-width=".9"/>'
-        +'<path d="M20 4 C26 10 38 10 44 4" fill="none" stroke="'+T+'" stroke-width="3.4" stroke-linecap="round"/>'
-        +'<path d="M21.5 5.8 C27 11 37 11 42.5 5.8" fill="none" stroke="rgba(0,0,0,.4)" stroke-width=".8"/>'
-        +'<path d="M20.5 3 C26 8 38 8 43.5 3" fill="none" stroke="rgba(255,255,255,.3)" stroke-width=".7"/></svg>';
+        +ad+crest+col+'</svg>';
     }
 
     // Jugador del once: camiseta + nombre + rival (o "ya jugó" con sus puntos)
