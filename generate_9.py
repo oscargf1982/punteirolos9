@@ -263,6 +263,8 @@ body{
 .jn small{display:block;font-size:10px;font-weight:700;color:#5a3a78;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .jn.played{background:#f5f0ff}
 .jn.played small{background:#150a45;color:#fff;border-radius:4px;margin-top:1px}
+.jn small.jpts{background:#000;color:#fff;font-family:'Space Mono',monospace;font-size:13px;font-weight:800;border-radius:0 0 5px 5px;padding:2px 0 1px;margin-top:1px}
+.jlive{display:block;font-style:normal;color:#ff4d4d;font-family:'Outfit',sans-serif;font-size:8px;font-weight:800;letter-spacing:.05em;line-height:1.1;padding-bottom:1px}
 .jbadge{position:absolute;top:-6px;right:2px;z-index:2;min-width:22px;height:22px;padding:0 3px;border-radius:50%;background:#7c3aed;color:#fff;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;border:2px solid #fff;font-family:'Space Mono',monospace}
 .jcap{position:absolute;top:-4px;left:2px;z-index:2;background:#2b0a6b;color:#fff;font-size:10px;font-weight:900;border-radius:9px;min-width:18px;height:18px;padding:0 4px;display:flex;align-items:center;justify-content:center;border:1.5px solid #fff}
 .jbench{position:relative;z-index:1;margin:10px 6px 0;padding:6px 0 4px;border-top:2px dashed rgba(255,255,255,.35);background:rgba(0,0,0,.18);border-radius:8px}
@@ -960,18 +962,16 @@ JORNADA_JS = r'''(function(){
       const f=FX[tid]||[];
       const started=f.some(m=>m[2]>=1);
       const done=f.length>0&&f.every(m=>m[2]===2);
-      let sub;
+      let sub, pt='';
       if(!f.length) sub='sin partido';
-      else if(done) sub='(ya jugó)';
-      else if(started) sub='(en juego)';
+      else if(started){ pt='<small class="jpts">'+pts+(done?'':'<i class="jlive">EN JUEGO</i>')+'</small>'; }
       else sub=f.map(m=>m[0]+' ('+m[1]+')').join(' · ');
       const cap=x[2]?(x[1]>=3?'3C':'C'):(x[3]?'V':'');
       const fl=x[6]==='in'?'<span class="jflag in">ENTRA</span>':(x[6]==='out'?'<span class="jflag out">NO JUGÓ</span>':'');
       return '<div class="jt'+(x[6]==='out'?' jout':'')+(x[6]==='b'?' jbn':'')+'">'+fl
-        +(started?'<span class="jbadge">'+pts+'</span>':'')
         +(cap?'<span class="jcap">'+cap+'</span>':'')
         +jersey(tid,x[5]===1,name)
-        +'<div class="jn'+(started?' played':'')+'"><b>'+esc(name)+'</b><small>'+esc(sub)+'</small></div></div>';
+        +'<div class="jn'+(started?' played':'')+'"><b>'+esc(name)+'</b>'+(pt||'<small>'+esc(sub)+'</small>')+'</div></div>';
     }
     // Jugador repetido (lo tienen los dos): hueco tachado
     function repTile(id){
