@@ -319,7 +319,7 @@ body{
   <div class="hstrip" id="hstrip"></div>
 </div>
 
-<div class="panel on" id="panel-home">
+<div class="panel" id="panel-home">
   <div class="stitle">🏆 Clasificación</div>
   <div class="card"><div class="podium" id="podium"></div><div id="standings"></div></div>
   <div class="stitle">📅 Últimos partidos</div>
@@ -388,14 +388,14 @@ body{
   <div id="diana"></div>
 </div>
 
-<div class="panel" id="panel-jornada">
+<div class="panel on" id="panel-jornada">
   <div class="stitle">⚽ La jornada</div>
   <div id="jornada-root"><p class="jmsg">Cargando duelos…</p></div>
 </div>
 
 <nav class="nav">
-  <button class="nb on" data-p="home"><span class="nb-icon">🏠</span>Inicio</button>
-  <button class="nb" data-p="jornada"><span class="nb-icon">⚽</span>Jornada</button>
+  <button class="nb" data-p="home"><span class="nb-icon">🏠</span>Inicio</button>
+  <button class="nb on" data-p="jornada"><span class="nb-icon">⚽</span>Jornada</button>
   <button class="nb" data-p="stats"><span class="nb-icon">📊</span>Stats</button>
   <button class="nb" data-p="streaks"><span class="nb-icon">🔥</span>Rachas</button>
   <button class="nb" data-p="charts"><span class="nb-icon">📈</span>Gráf.</button>
