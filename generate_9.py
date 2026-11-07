@@ -259,7 +259,7 @@ body{
 .jn.played{background:#f5f0ff}
 .jn.played small{background:#1c0028;color:#fff;border-radius:4px;margin-top:1px}
 .jbadge{position:absolute;top:-6px;right:2px;z-index:2;min-width:22px;height:22px;padding:0 3px;border-radius:50%;background:#7c3aed;color:#fff;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;border:2px solid #fff;font-family:'Space Mono',monospace}
-.jcap{position:absolute;top:-6px;left:2px;z-index:2;background:#ffd700;color:#1c0028;font-size:10px;font-weight:900;border-radius:10px;padding:1px 5px}
+.jcap{position:absolute;top:-4px;left:2px;z-index:2;background:#37003c;color:#fff;font-size:10px;font-weight:900;border-radius:9px;min-width:18px;height:18px;padding:0 4px;display:flex;align-items:center;justify-content:center;border:1.5px solid #fff}
 .jreprow{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;padding:8px 6px 2px;position:relative;z-index:1}
 .jreprow .jt{border:2px dashed rgba(255,255,255,.4);border-radius:10px;padding:6px 2px 4px;background:rgba(0,0,0,.2)}
 .jt.jrep{opacity:.55;filter:grayscale(1)}
@@ -272,7 +272,33 @@ body{
 .jf .pos{color:var(--cyan);font-family:'Space Mono',monospace;font-size:14px}
 .jf .neg{color:var(--pink);font-family:'Space Mono',monospace;font-size:14px}
 .jf.mid{text-align:center;font-weight:900;color:#fff;font-size:15px;display:flex;align-items:center;justify-content:center}
+.jt:not(.jrep){background:rgba(0,70,25,.28);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:5px 0 0}
+.jt:not(.jrep) .jn{border-radius:0 0 7px 7px;margin:2px 0 0;max-width:none}
+.jfichas{display:grid;grid-template-columns:1fr;gap:10px;padding:0 10px 12px}
+.jficha{background:#120a33;border:1px solid rgba(255,255,255,.12);border-radius:12px;overflow:hidden}
+.jficha>summary{list-style:none;cursor:pointer;padding:10px 12px;font-weight:900;font-size:13px;color:#fff;display:flex;justify-content:space-between;align-items:center;gap:8px;-webkit-tap-highlight-color:transparent}
+.jficha.red>summary{border-left:4px solid #ff3b4a}
+.jficha.blue>summary{border-left:4px solid #3b82f6}
+.jficha>summary::-webkit-details-marker{display:none}
+.jficha>summary::after{content:'▾';color:var(--cyan);font-size:13px;transition:transform .2s}
+.jficha[open]>summary::after{transform:rotate(180deg)}
+.jficha>summary span:first-child{flex:1;min-width:0}
+.jpos{font-family:'Space Mono',monospace;color:var(--cyan)}
+.jtiles{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:0 10px 8px}
+.jtile{background:rgba(255,255,255,.06);border-radius:8px;padding:7px 4px;text-align:center;min-width:0}
+.jtile b{display:block;font-family:'Space Mono',monospace;font-size:16px;color:#fff;white-space:nowrap}
+.jtile span{display:block;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
+.jlines{padding:0 12px 10px;font-size:13px;color:var(--text2);line-height:1.5}
+.jlines>div{padding:6px 0;border-top:1px solid rgba(255,255,255,.07)}
+.jlines .k{display:block;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;font-family:'Space Mono',monospace;margin-bottom:3px}
+.jchip{display:inline-block;margin:2px 4px 2px 0;padding:3px 9px;border-radius:20px;background:rgba(255,255,255,.1);font-size:12px;font-weight:700;color:#fff}
+.jchip.w{background:rgba(0,255,135,.16);color:var(--cyan)}
+.jchip.l{background:rgba(255,40,130,.16);color:var(--pink)}
+.jchip.p{background:rgba(255,215,0,.16);color:#ffd700}
+.jrec{display:inline-block;margin:2px 4px 2px 0;padding:3px 9px;border-radius:8px;background:rgba(255,215,0,.14);color:#ffd700;font-size:12px;font-weight:700}
 @media(min-width:720px){
+  .jfichas{grid-template-columns:1fr 1fr}
+
   .jpitches{grid-template-columns:1fr 1fr}
   .jfoot{grid-template-columns:1.2fr .8fr 1.2fr}
   .jt{width:76px}
@@ -731,14 +757,50 @@ JORNADA_JS = r'''(function(){
     const tname=e=>T[e]?T[e].n:'';
     const fmt=n=>n<0?'−'+Math.abs(n):String(n);
 
-    // Camiseta generica (color por equipo, sin escudos ni marcas)
+    // Colores de cada club (3 letras de FPL): principal, secundario, patrón y ancho de raya.
+    // Solo colores y rayas: sin escudos, patrocinadores ni marcas.
+    const CLUB={
+      ARS:['#e41b23','#ffffff','solid'], AVL:['#7b1e3d','#8fc4ea','solid'],
+      BOU:['#d71920','#111111','stripes',6], BRE:['#e4002b','#ffffff','stripes',6],
+      BHA:['#0057b8','#ffffff','stripes',4], BUR:['#6c1d45','#99d6ea','solid'],
+      CHE:['#034694','#ffffff','solid'], COV:['#5bb8e8','#ffffff','solid'],
+      CRY:['#1b458f','#c4122e','stripes',5], EVE:['#0a3d9c','#ffffff','solid'],
+      FUL:['#ffffff','#111111','solid'], HUL:['#f5a31a','#111111','solid'],
+      IPS:['#0b3fa8','#ffffff','solid'], LEE:['#ffffff','#1d428a','solid'],
+      LEI:['#0b3a9a','#ffffff','solid'], LIV:['#c8102e','#ffffff','solid'],
+      MCI:['#6cabdd','#ffffff','solid'], MUN:['#da291c','#111111','solid'],
+      NEW:['#1a1a1a','#ffffff','stripes',7], NFO:['#d90f1a','#ffffff','solid'],
+      SOU:['#d71920','#ffffff','stripes',6], SUN:['#e8222f','#ffffff','stripes',6],
+      TOT:['#ffffff','#132257','solid'], WHU:['#7a263a','#1bb1e7','solid'],
+      WOL:['#fdb913','#111111','solid'], WBA:['#122f67','#ffffff','stripes',6],
+      MID:['#c8102e','#ffffff','solid'], MIL:['#0a2a6e','#ffffff','solid']
+    };
+    // Porteros: manga larga y un color por club (gris, rosa, amarillo, verde o celeste)
+    const GKC=[['#d9dde2','#7f8895'],['#ec4899','#7a1b4d'],['#f5c518','#7a5b00'],['#22c55e','#0f5132'],['#38bdf8','#0b4a6f']];
+    const GKFIX={ARS:0,BHA:1};
+    let jid=0;
+    // Camiseta: color del club, rayas si toca, cuello en V, ribetes y algo de sombra
     function jersey(tid,gk){
-      const h=gk?330:(tid*47)%360;
-      const c1='hsl('+h+',70%,50%)', c2='hsl('+h+',70%,30%)';
-      return '<svg class="jsv" viewBox="0 0 64 60" aria-hidden="true">'
-        +'<path d="M20 4 L8 10 L1 27 L12 31 L14 23 L14 57 L50 57 L50 23 L52 31 L63 27 L56 10 L44 4 C40 11 24 11 20 4 Z" fill="'+c1+'" stroke="rgba(255,255,255,.6)" stroke-width="1.5"/>'
-        +'<path d="M20 4 C24 11 40 11 44 4" fill="none" stroke="'+c2+'" stroke-width="3"/>'
-        +'<rect x="14" y="42" width="36" height="5" fill="'+c2+'" opacity=".4"/></svg>';
+      const code=(J.tshort||{})[tid]||'';
+      let c=CLUB[code];
+      if(gk){const g=GKC[code in GKFIX?GKFIX[code]:tid%GKC.length]; c=[g[0],g[1],'solid'];}
+      else if(!c){const h=(tid*47)%360; c=['hsl('+h+',65%,48%)','#ffffff','solid'];}
+      const p=c[0], s=c[1], k=c[2], w=c[3]||6, id='jc'+(jid++);
+      const body=gk
+        ?'M20 4 L7 9 L0 36 L10 39 L14 24 L14 57 L50 57 L50 24 L54 39 L64 36 L57 9 L44 4 L32 15 Z'
+        :'M20 4 L8 10 L1 27 L12 31 L14 23 L14 57 L50 57 L50 23 L52 31 L63 27 L56 10 L44 4 L32 15 Z';
+      const cuffL=gk?'M0 34 L10 37.5':'M1 25 L12 29', cuffR=gk?'M64 34 L54 37.5':'M63 25 L52 29';
+      let pat='';
+      if(k==='stripes'){for(let x=2;x<64;x+=2*w) pat+='<rect x="'+x+'" y="0" width="'+w+'" height="60" fill="'+s+'"/>';}
+      return '<svg class="jsv" viewBox="0 0 64 60" aria-hidden="true"><defs>'
+        +'<clipPath id="'+id+'c"><path d="'+body+'"/></clipPath>'
+        +'<linearGradient id="'+id+'g" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#000" stop-opacity=".25"/><stop offset=".3" stop-color="#000" stop-opacity="0"/><stop offset=".7" stop-color="#fff" stop-opacity=".06"/><stop offset="1" stop-color="#000" stop-opacity=".28"/></linearGradient></defs>'
+        +'<g clip-path="url(#'+id+'c)"><rect width="64" height="60" fill="'+p+'"/>'+pat
+        +'<path d="'+cuffL+'" stroke="'+s+'" stroke-width="4.5"/><path d="'+cuffR+'" stroke="'+s+'" stroke-width="4.5"/>'
+        +'<rect width="64" height="60" fill="url(#'+id+'g)"/></g>'
+        +'<path d="'+body+'" fill="none" stroke="rgba(0,0,0,.4)" stroke-width="1"/>'
+        +'<path d="M20 4 L32 15 L44 4" fill="none" stroke="'+s+'" stroke-width="3" stroke-linejoin="round"/>'
+        +'<path d="M20 4 L32 15 L44 4" fill="none" stroke="rgba(0,0,0,.25)" stroke-width=".8" stroke-linejoin="round"/></svg>';
     }
 
     // Jugador del once: camiseta + nombre + rival (o "ya jugó" con sus puntos)
@@ -753,7 +815,7 @@ JORNADA_JS = r'''(function(){
       else if(done) sub='(ya jugó)';
       else if(started) sub='(en juego)';
       else sub=f.map(m=>m[0]+' ('+m[1]+')').join(' · ');
-      const cap=x[1]>=3?'3C':(x[1]===2?'C':'');
+      const cap=x[2]?(x[1]>=3?'3C':'C'):(x[3]?'V':'');
       return '<div class="jt">'
         +(started?'<span class="jbadge">'+pts+'</span>':'')
         +(cap?'<span class="jcap">'+cap+'</span>':'')
@@ -770,7 +832,7 @@ JORNADA_JS = r'''(function(){
     const xi=pk=>pk.p.filter(x=>x[1]>0);
     const score=(list,pk)=>list.reduce((s,x)=>{const p=PL[x[0]];return s+(p?p[3]*x[1]:0);},0)-(pk.cost||0);
     const chipTag=pk=>{
-      const l=(pk&&pk.chip&&typeof CHIP_LABELS!=='undefined')?CHIP_LABELS[pk.chip]:'';
+      const l=(pk&&pk.chip)?(CHIPN[pk.chip]||pk.chip):'';
       return l?'<div class="jb-c">'+esc(l)+'</div>':'';
     };
 
@@ -792,6 +854,89 @@ JORNADA_JS = r'''(function(){
         +'<div class="jf"><b>Jugadores repetidos</b> (no cuentan en el duelo)<br>'+(names.length?names.join(' · '):'Ninguno')+'</div>'
         +'<div class="jf mid">⚽ Duelo sin repetidos</div>'
         +'<div class="jf">'+line(a,pa,sa)+'<br>'+line(b,pb,sb)+'</div></div>';
+    }
+
+    // ---- Datos curiosos del manager (usa las estadísticas que ya calcula la web principal) ----
+    const SC=(typeof st!=='undefined')?st:{};
+    const STRK=(typeof STR!=='undefined')?STR:{};
+    const CHIPS=(typeof CHIPS_USED!=='undefined')?CHIPS_USED:{};
+    const CHIPN={wildcard:'Wildcard',freehit:'Free Hit','3xc':'Triple Capitán',bboost:'Bench Boost'};
+    const HIST={}, OPP={}, RECV={};
+    TEAMS.forEach(t=>{HIST[t.e]=[];RECV[t.e]=[];});
+    MATCHES.forEach(m=>{
+      const e1=m[0],s1=m[1],e2=m[2],s2=m[3],gw=m[4];
+      if(HIST[e1]) HIST[e1].push({gw:gw,my:s1,op:s2,vs:e2});
+      if(HIST[e2]) HIST[e2].push({gw:gw,my:s2,op:s1,vs:e1});
+      (OPP[gw]=OPP[gw]||{})[e1]=e2; OPP[gw][e2]=e1;
+    });
+    Object.keys(HIST).forEach(k=>HIST[k].sort((a,b)=>a.gw-b.gw));
+    (J.duels||[]).forEach(d=>{(OPP[J.gw]=OPP[J.gw]||{})[d[0]]=d[1]; OPP[J.gw][d[1]]=d[0];});
+    const resOf=(e,gw)=>{const h=(HIST[e]||[]).find(x=>x.gw===gw);return h?(h.my>h.op?'W':(h.my<h.op?'L':'D')):'P';};
+    // chips recibidos: el rival de cada manager en la jornada en la que usó el chip
+    Object.keys(CHIPS).forEach(k=>{
+      const u=+k;
+      (CHIPS[k]||[]).forEach(c=>{
+        const o=(OPP[c.event]||{})[u];
+        if(o&&RECV[o]) RECV[o].push({chip:c.name,from:u,gw:c.event,res:resOf(u,c.event)});
+      });
+    });
+    const LEAD=[
+      ['hs','Mejor jornada de la liga'],['avg','Mejor promedio por jornada'],['bw','Más goleadas (+20)'],
+      ['cw','Rey del susto (victorias ≤4)'],['cl','Más derrotas ajustadas (≤4)'],['luck','Más afortunado'],
+      ['unluck','Más gafado'],['std','Más caótico']
+    ];
+    const lead={};
+    LEAD.forEach(l=>{lead[l[0]]=Math.max.apply(null,TEAMS.map(t=>parseFloat((SC[t.e]||{})[l[0]])||0));});
+    const leadW=Math.max.apply(null,TEAMS.map(t=>(STRK[t.e]||{}).bW||0));
+    const leadL=Math.max.apply(null,TEAMS.map(t=>(STRK[t.e]||{}).bL||0));
+    const pl=(n,s,p)=>n+' '+(n===1?s:p);
+    const RES={W:['ganó','w'],L:['perdió','l'],D:['empató',''],P:['en juego','p']};
+    function curStreak(h){
+      if(!h.length) return 'sin partidos aún';
+      const kind=x=>x.my>x.op?'W':(x.my<x.op?'L':'D');
+      const r=kind(h[h.length-1]);
+      let n=0;
+      for(let i=h.length-1;i>=0;i--){ if(kind(h[i])===r) n++; else break; }
+      return r==='W'?pl(n,'victoria seguida','victorias seguidas'):(r==='L'?pl(n,'derrota seguida','derrotas seguidas'):pl(n,'empate seguido','empates seguidos'));
+    }
+    function ficha(e,cls){
+      const t=T[e]; if(!t) return '';
+      const s=SC[e]||{}, k=STRK[e]||{bW:0,bL:0}, h=HIST[e]||[];
+      const lp=t.w*3+t.d;
+      let best=null, worst=null, big=null;
+      h.forEach(x=>{
+        if(!best||x.my>best.my) best=x;
+        if(!worst||x.my<worst.my) worst=x;
+        const dd=x.my-x.op;
+        if(dd>0&&(!big||dd>big.dd)) big={dd:dd,gw:x.gw,vs:x.vs};
+      });
+      const used=(CHIPS[e]||[]).map(c=>{
+        const r=RES[resOf(e,c.event)];
+        return '<span class="jchip '+r[1]+'">'+esc(CHIPN[c.name]||c.name)+' · GW'+c.event+' · '+r[0]+'</span>';
+      }).join('');
+      // el chip lo usó el rival: si el rival ganó, este manager perdió
+      const recv=(RECV[e]||[]).map(c=>{
+        const r=c.res==='W'?['perdió','l']:(c.res==='L'?['sobrevivió','w']:(c.res==='D'?['empató','']:['en juego','p']));
+        return '<span class="jchip '+r[1]+'">'+esc(CHIPN[c.chip]||c.chip)+' de '+esc(fname(c.from))+' · GW'+c.gw+' · '+r[0]+'</span>';
+      }).join('');
+      const tags=[];
+      LEAD.forEach(l=>{const v=parseFloat(s[l[0]])||0; if(v>0&&v===lead[l[0]]) tags.push(l[1]+(l[0]==='hs'?' ('+v+' pts)':''));});
+      if(k.bW>0&&k.bW===leadW) tags.push('Mejor racha de victorias ('+k.bW+')');
+      if(k.bL>0&&k.bL===leadL) tags.push('Peor racha de derrotas ('+k.bL+')');
+      const tiles=[['#'+t.r,'Posición'],[lp,'Pts liga'],[t.pts,'Pts totales'],[t.w+'-'+t.d+'-'+t.l,'V-E-D'],[s.avg||'–','Media/GW'],[best?best.my:'–','Mejor GW']];
+      const line=(label,body)=>'<div><span class="k">'+label+'</span>'+body+'</div>';
+      return '<details class="jficha '+cls+'" open><summary><span>Datos curiosos de '+esc(fname(e))+'</span><span class="jpos">#'+t.r+'</span></summary>'
+        +'<div class="jtiles">'+tiles.map(x=>'<div class="jtile"><b>'+esc(x[0])+'</b><span>'+x[1]+'</span></div>').join('')+'</div>'
+        +'<div class="jlines">'
+        +line('Racha',esc(curStreak(h))+' · mejor: '+pl(k.bW,'victoria','victorias')+' · peor: '+pl(k.bL,'derrota','derrotas'))
+        +line('Mejor y peor jornada',best?best.my+' pts (GW'+best.gw+') · '+worst.my+' pts (GW'+worst.gw+')':'sin datos')
+        +line('Mayor victoria',big?'+'+big.dd+' pts a '+esc(fname(big.vs))+' (GW'+big.gw+')':'aún sin victorias')
+        +line('Chips usados',used||'ninguno')
+        +line('Chips recibidos',recv||'ninguno')
+        +line('Goleadas y ajustados','goleadas (+20): '+(s.bw||0)+' · victorias ≤4: '+(s.cw||0)+' · derrotas ≤4: '+(s.cl||0))
+        +line('Suerte',(s.luck||0)+' victorias con suerte · '+(s.unluck||0)+' derrotas con mala suerte')
+        +line('Récords',tags.length?tags.map(x=>'<span class="jrec">'+esc(x)+'</span>').join(''):'sin récords todavía')
+        +'</div></details>';
     }
 
     let html='<p class="jmsg"><b>Jornada '+J.gw+'</b> · datos a '+esc(J.updated)+'.</p>';
@@ -819,7 +964,7 @@ JORNADA_JS = r'''(function(){
           +'<div class="jb red"><div class="jb-n">'+esc(fname(a))+'</div><div class="jb-t">'+esc(tname(a))+'</div>'+chipTag(pa)+'</div>'
           +'<div class="jb-vs">VS</div>'
           +'<div class="jb blue"><div class="jb-n">'+esc(fname(b))+'</div><div class="jb-t">'+esc(tname(b))+'</div>'+chipTag(pb)+'</div></div>'
-          +'<div class="jpitches">'+pitch(a,onlyA,common,'red',sa)+pitch(b,onlyB,common,'blue',sb)+'</div>'
+          +'<div class="jfichas">'+ficha(a,'red')+ficha(b,'blue')+'</div>'+'<div class="jpitches">'+pitch(a,onlyA,common,'red',sa)+pitch(b,onlyB,common,'blue',sb)+'</div>'
           +foot(a,b,pa,pb,sa,sb,common)+'</div>';
       }
       const mid=both
