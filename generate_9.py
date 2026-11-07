@@ -965,7 +965,7 @@ JORNADA_JS = r'''(function(){
       const done=f.length>0&&f.every(m=>m[2]===2);
       let sub, pt='';
       if(!f.length) sub='sin partido';
-      else if(started){ pt='<small class="jpts">'+pts+(done?'':'<i class="jlive">EN JUEGO</i>')+'</small>'; }
+      else if(started){ pt='<small class="jpts">'+(pts*(x[1]>0?x[1]:1))+(done?'':'<i class="jlive">EN JUEGO</i>')+'</small>'; }
       else sub=f.map(m=>m[0]+' ('+m[1]+')').join(' · ');
       const cap=x[2]?(x[1]>=3?'3C':'C'):(x[3]?'V':'');
       const fl=x[6]==='in'?'<span class="jflag in">ENTRA</span>':(x[6]==='out'?'<span class="jflag out">NO JUGÓ</span>':'');
@@ -980,7 +980,7 @@ JORNADA_JS = r'''(function(){
       const f=FX[p[1]]||[];
       const started=f.some(m=>m[2]>=1), done=f.length>0&&f.every(m=>m[2]===2);
       const cap=x[2]?(x[1]>=3?'3C':'C'):(x[3]?'V':'');
-      const pt=started?'<small class="jpts">'+p[3]+(done?'':'<i class="jlive">EN JUEGO</i>')+'</small>':'';
+      const pt=started?'<small class="jpts">'+(p[3]*(x[1]>0?x[1]:1))+(done?'':'<i class="jlive">EN JUEGO</i>')+'</small>':'';
       return '<div class="jt jrep">'+(cap?'<span class="jcap">'+cap+'</span>':'')+jersey(p[1],p[2]===1,p[0])+'<span class="jx">✕</span>'
         +'<div class="jn'+(started?' played':'')+'"><b>'+esc(p[0])+'</b>'+pt+'</div></div>';
     }
@@ -1233,12 +1233,23 @@ JORNADA_JS = r'''(function(){
         const common=[...setA].filter(id=>setB.has(id));
         const onlyA=xa.filter(x=>!setB.has(x[0])), onlyB=xb.filter(x=>!setA.has(x[0]));
         sa=score(xa,pa); sb=score(xb,pb);   // cuentan todos los del once efectivo, también los repetidos
-        const comA=xa.filter(x=>setB.has(x[0])), comB=xb.filter(x=>setA.has(x[0]));
+        // Repetidos: lo compartido (con el multiplicador menor) va en gris abajo; si un manager lo tiene de capitán y el
+        // otro no, el extra del capitán se pone entre sus titulares, sin C y sin doblar
+        const split=(mine,other)=>{
+          const mo=new Map(other.map(x=>[x[0],x[1]])), com=[], extra=[];
+          mine.filter(x=>mo.has(x[0])).forEach(x=>{
+            const d=x[1]-mo.get(x[0]);
+            if(d>0){ com.push([x[0],mo.get(x[0]),0,0,x[4],x[5],'']); extra.push([x[0],d,0,0,x[4],x[5],'']); }
+            else com.push(x);
+          });
+          return [com,extra];
+        };
+        const [comA,exA]=split(xa,xb), [comB,exB]=split(xb,xa);
         body='<div class="jbody"><div class="jbanner">'
           +'<div class="jb red"><div class="jb-n">'+esc(fname(a))+'</div><div class="jb-t">'+esc(tname(a))+'</div>'+chipTag(pa)+'</div>'
           +'<div class="jb-vs">VS</div>'
           +'<div class="jb blue"><div class="jb-n">'+esc(fname(b))+'</div><div class="jb-t">'+esc(tname(b))+'</div>'+chipTag(pb)+'</div></div>'
-          +'<div class="jfichas">'+ficha(a,'red')+ficha(b,'blue')+'</div>'+'<div class="jpitches">'+pitch(a,onlyA,comA,'red',sa,la.bench)+pitch(b,onlyB,comB,'blue',sb,lb.bench)+'</div>'
+          +'<div class="jfichas">'+ficha(a,'red')+ficha(b,'blue')+'</div>'+'<div class="jpitches">'+pitch(a,onlyA.concat(exA),comA,'red',sa,la.bench)+pitch(b,onlyB.concat(exB),comB,'blue',sb,lb.bench)+'</div>'
           +foot(a,b,pa,pb,sa,sb,common)+'</div>';
       }
       const mid=both
