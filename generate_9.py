@@ -1164,13 +1164,19 @@ JORNADA_JS = r'''(function(){
       const sq=(J.squad||{})[ME];
       if(!sq||!sq.length) return '<div class="jalert"><b>Tus avisos</b><p>Todavía no hay datos de tu plantilla.</p></div>';
       const ST={i:'Lesionado',s:'Sancionado',u:'No disponible',n:'No disponible',d:'Duda'};
-      const bad=[], price=[];
+      const bad=[], price=[], fore=[];
       sq.slice().sort((a,b)=>a[1]-b[1]).forEach(x=>{
         const p=PL[x[0]]; if(!p) return;
         const role=x[1]<=11?'titular':'banquillo';
         if(p[5]&&p[5]!=='a'){
           bad.push('<li><span>'+(p[5]==='d'?'⚠️':'⛔')+'</span><div><b>'+esc(p[0])+'</b> <small>'+role+'</small><br>'+esc(ST[p[5]]||'Aviso')
             +(p[6]!=null?' · '+p[6]+'% de jugar':'')+(p[7]?' · '+esc(p[7]):'')+'</div></li>');
+        }
+        // previsión oficial: >=100% sube / <=-100% baja esta noche (no si FPL aún calibra al jugador)
+        if(!p[13]&&p[11]!=null&&Math.abs(p[11])>=90){
+          const up=p[11]>0, sure=Math.abs(p[11])>=100;
+          fore.push('<li><span>'+(up?'📈':'📉')+'</span><div><b>'+esc(p[0])+'</b> <small>'+role+'</small><br>'+(sure?(up?'Subirá esta noche':'Bajará esta noche'):(up?'Cerca de subir':'Cerca de bajar'))
+            +' · '+Math.round(Math.abs(p[11]))+'%'+(p[12]!=null?' · fiabilidad '+Math.abs(p[12])+'/5':'')+'</div></li>');
         }
         if(p[9]){
           const up=p[9]>0, d=Math.abs(p[9])/10;
@@ -1180,6 +1186,7 @@ JORNADA_JS = r'''(function(){
       const old=J.squad_gw!==J.gw?'<p class="jnote">Plantilla de la jornada '+J.squad_gw+' (la de esta jornada se publica al pasar el deadline).</p>':'';
       return '<div class="jalert"><b>Tus avisos</b>'+old
         +'<div class="jak">Lesiones y dudas</div>'+(bad.length?'<ul>'+bad.join('')+'</ul>':'<p class="jok">✅ Ningún jugador con aviso.</p>')
+        +'<div class="jak">Previsión de precio (próximo cambio, 00:00 UK)</div>'+(fore.length?'<ul>'+fore.join('')+'</ul>':'<p class="jok">Ningún jugador tuyo cerca de cambiar.</p>')
         +'<div class="jak">Cambios de precio esta jornada</div>'+(price.length?'<ul>'+price.join('')+'</ul>':'<p class="jok">Sin cambios de precio en tu plantilla.</p>')+'</div>';
     }
     root.addEventListener('click',ev=>{
@@ -1262,6 +1269,19 @@ def pick_target_gw(bootstrap, fallback):
         return nxt["id"]
     return cur["id"] if cur else fallback
 
+def price_forecast(e):
+    """Prevision oficial de precio (campos nuevos de bootstrap-static en 2026/27).
+    Devuelve [progreso actual %, progreso previsto para esta noche %, fiabilidad -5..5, calibrando]; None si no existe."""
+    def num(v):
+        try:
+            return float(v)
+        except (TypeError, ValueError):
+            return None
+    cur = num(e.get("price_change_percent"))
+    proj = e.get("price_change_projections") or []
+    p0 = next((x for x in proj if isinstance(x, dict) and x.get("offset") == 0), proj[0] if proj and isinstance(proj[0], dict) else {})
+    return [cur, num(p0.get("projected_percent")), p0.get("likelihood"), bool(e.get("price_change_calibrating"))]
+
 def build_jornada(bootstrap, teams, gw_matches, gw, updated):
     info = {
         "gw": gw, "updated": updated, "available": False, "note": "",
@@ -1335,7 +1355,7 @@ def build_jornada(bootstrap, teams, gw_matches, gw, updated):
                 # [nombre, equipo, tipo, puntos, minutos, estado (a/d/i/s/u/n), % de jugar, noticia, precio x10, cambio de precio x10 esta jornada]
                 info["players"][eid] = [e["web_name"], e["team"], e["element_type"], pts, mins,
                                         e.get("status", "a"), e.get("chance_of_playing_next_round"), e.get("news", "") or "",
-                                        e.get("now_cost", 0), e.get("cost_change_event", 0)]
+                                        e.get("now_cost", 0), e.get("cost_change_event", 0)] + price_forecast(e)
                 info["tshort"][e["team"]] = short.get(e["team"], "")
         missing = len(teams) - len(info["picks"])
         if info["picks"] and missing:
