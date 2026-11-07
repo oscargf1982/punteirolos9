@@ -1187,15 +1187,15 @@ JORNADA_JS = r'''(function(){
         }
         if(p[9]){
           const up=p[9]>0, d=Math.abs(p[9])/10;
-          price.push('<li><span>'+(up?'🔺':'🔻')+'</span><div><b>'+esc(p[0])+'</b> <small>'+role+'</small><br>'+(up?'Sube ':'Baja ')+d.toFixed(1)+'m · ahora '+((p[8]||0)/10).toFixed(1)+'m</div></li>');
+          price.push('<li><span>'+(up?'🔺':'🔻')+'</span><div><b>'+esc(p[0])+'</b> <small>'+role+'</small><br>'+(up?'Ha subido ':'Ha bajado ')+d.toFixed(1)+'m · ya cuesta '+((p[8]||0)/10).toFixed(1)+'m</div></li>');
         }
       });
       bads.sort((a,b)=>a[0]-b[0]).forEach(b=>bad.push(b[1]));
       const old=J.squad_gw!==J.gw?'<p class="jnote">Plantilla de la jornada '+J.squad_gw+' (la de esta jornada se publica al pasar el deadline).</p>':'';
       return '<div class="jalert"><b>Tus avisos</b>'+old
         +'<div class="jak">Lesiones y dudas</div>'+(bad.length?'<ul>'+bad.join('')+'</ul>':'<p class="jok">✅ Ningún jugador con aviso.</p>')
-        +'<div class="jak">Previsión de precio (próximo cambio, 00:00 UK)</div>'+(fore.length?'<ul>'+fore.join('')+'</ul>':'<p class="jok">Ningún jugador tuyo cerca de cambiar.</p>')
-        +'<div class="jak">Cambios de precio esta jornada</div>'+(price.length?'<ul>'+price.join('')+'</ul>':'<p class="jok">Sin cambios de precio en tu plantilla.</p>')+'</div>';
+        +'<div class="jak">Previsión: cambios que AÚN NO han ocurrido (próximo ajuste, 00:00 UK)</div>'+(fore.length?'<ul>'+fore.join('')+'</ul>':'<p class="jok">Ningún jugador tuyo cerca de cambiar.</p>')
+        +'<div class="jak">Cambios de precio ya producidos esta jornada</div>'+(price.length?'<ul>'+price.join('')+'</ul>':'<p class="jok">Ninguno de tus jugadores ha cambiado de precio esta jornada.</p>')+'</div>';
     }
     root.addEventListener('click',ev=>{
       if(ev.target.closest&&ev.target.closest('.jchg')){ saveMe(ME?null:null); }
