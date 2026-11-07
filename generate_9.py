@@ -276,7 +276,8 @@ body{
 .jflag.out{background:#b3263a;color:#fff}
 .jreprow{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;padding:8px 6px 2px;position:relative;z-index:1}
 .jreprow .jt{border:2px dashed rgba(255,255,255,.4);border-radius:10px;padding:6px 2px 4px;background:rgba(0,0,0,.2)}
-.jt.jrep{opacity:.55;filter:grayscale(1)}
+.jt.jrep{opacity:.85}
+.jt.jrep .jsv{filter:grayscale(1) opacity(.6)}
 .jx{position:absolute;top:10px;left:50%;transform:translateX(-50%);font-size:22px;color:#fff;font-weight:900;text-shadow:0 0 3px #000;z-index:2}
 
 .jfoot{display:grid;grid-template-columns:1fr;gap:8px;padding:6px 12px 14px}
@@ -973,11 +974,15 @@ JORNADA_JS = r'''(function(){
         +jersey(tid,x[5]===1,name)
         +'<div class="jn'+(started?' played':'')+'"><b>'+esc(name)+'</b>'+(pt||'<small>'+esc(sub)+'</small>')+'</div></div>';
     }
-    // Jugador repetido (lo tienen los dos): hueco tachado
-    function repTile(id){
-      const p=PL[id]; if(!p) return '';
-      return '<div class="jt jrep">'+jersey(p[1],p[2]===1,p[0])+'<span class="jx">✕</span>'
-        +'<div class="jn"><b>'+esc(p[0])+'</b></div></div>';
+    // Jugador repetido (lo tienen los dos): camiseta en gris, aparte, pero sus puntos cuentan en el total
+    function repTile(x){
+      const p=PL[x[0]]; if(!p) return '';
+      const f=FX[p[1]]||[];
+      const started=f.some(m=>m[2]>=1), done=f.length>0&&f.every(m=>m[2]===2);
+      const cap=x[2]?(x[1]>=3?'3C':'C'):(x[3]?'V':'');
+      const pt=started?'<small class="jpts">'+p[3]+(done?'':'<i class="jlive">EN JUEGO</i>')+'</small>':'';
+      return '<div class="jt jrep">'+(cap?'<span class="jcap">'+cap+'</span>':'')+jersey(p[1],p[2]===1,p[0])+'<span class="jx">✕</span>'
+        +'<div class="jn'+(started?' played':'')+'"><b>'+esc(p[0])+'</b>'+pt+'</div></div>';
     }
 
     const xi=pk=>pk.p.filter(x=>x[1]>0);
@@ -1047,8 +1052,8 @@ JORNADA_JS = r'''(function(){
       const line=(e,pk,sc)=>esc(fname(e))+' está en <b class="'+(sc<0?'neg':'pos')+'">'+fmt(sc)+'</b>'
         +(pk.cost>0?' <small>(incluye −'+pk.cost+' por '+pk.hits+' fichaje'+(pk.hits===1?'':'s')+')</small>':'');
       return '<div class="jfoot">'
-        +'<div class="jf"><b>Jugadores repetidos</b> (no cuentan en el duelo)<br>'+(names.length?names.join(' · '):'Ninguno')+'</div>'
-        +'<div class="jf mid">⚽ Duelo sin repetidos</div>'
+        +'<div class="jf"><b>Jugadores repetidos</b> (los tienen los dos; sí cuentan en el total)<br>'+(names.length?names.join(' · '):'Ninguno')+'</div>'
+        +'<div class="jf mid">⚽ Puntuación total</div>'
         +'<div class="jf">'+line(a,pa,sa)+'<br>'+line(b,pb,sb)+'</div></div>';
     }
 
@@ -1204,7 +1209,7 @@ JORNADA_JS = r'''(function(){
 
     let html=meCard()+'<p class="jmsg"><b>Jornada '+J.gw+'</b> · datos a '+esc(J.updated)+'.</p>';
     if(J.available){
-      html+='<p class="jmsg">Los jugadores que tienen <b>los dos</b> managers en su once no cuentan en el duelo. Marcador orientativo: puntos de los jugadores distintos (con capitán) menos las penalizaciones por fichajes. El banquillo no suma salvo que un suplente entre por un titular que no ha jugado (entran por orden, el portero solo por el portero) o que el manager use Bench Boost.</p>';
+      html+='<p class="jmsg">Marcador orientativo: puntos de todos los jugadores del once (con capitán) menos las penalizaciones por fichajes. Los jugadores que tienen <b>los dos</b> managers van en gris, abajo del campo, pero también suman. El banquillo no suma salvo que un suplente entre por un titular que no ha jugado (entran por orden, el portero solo por el portero) o que el manager use Bench Boost.</p>';
     }
     if(J.note) html+='<p class="jmsg">'+esc(J.note)+'</p>';
     if(!J.duels.length){
@@ -1227,12 +1232,13 @@ JORNADA_JS = r'''(function(){
         const setA=new Set(xa.map(x=>x[0])), setB=new Set(xb.map(x=>x[0]));
         const common=[...setA].filter(id=>setB.has(id));
         const onlyA=xa.filter(x=>!setB.has(x[0])), onlyB=xb.filter(x=>!setA.has(x[0]));
-        sa=score(onlyA,pa); sb=score(onlyB,pb);
+        sa=score(xa,pa); sb=score(xb,pb);   // cuentan todos los del once efectivo, también los repetidos
+        const comA=xa.filter(x=>setB.has(x[0])), comB=xb.filter(x=>setA.has(x[0]));
         body='<div class="jbody"><div class="jbanner">'
           +'<div class="jb red"><div class="jb-n">'+esc(fname(a))+'</div><div class="jb-t">'+esc(tname(a))+'</div>'+chipTag(pa)+'</div>'
           +'<div class="jb-vs">VS</div>'
           +'<div class="jb blue"><div class="jb-n">'+esc(fname(b))+'</div><div class="jb-t">'+esc(tname(b))+'</div>'+chipTag(pb)+'</div></div>'
-          +'<div class="jfichas">'+ficha(a,'red')+ficha(b,'blue')+'</div>'+'<div class="jpitches">'+pitch(a,onlyA,common,'red',sa,la.bench)+pitch(b,onlyB,common,'blue',sb,lb.bench)+'</div>'
+          +'<div class="jfichas">'+ficha(a,'red')+ficha(b,'blue')+'</div>'+'<div class="jpitches">'+pitch(a,onlyA,comA,'red',sa,la.bench)+pitch(b,onlyB,comB,'blue',sb,lb.bench)+'</div>'
           +foot(a,b,pa,pb,sa,sb,common)+'</div>';
       }
       const mid=both
