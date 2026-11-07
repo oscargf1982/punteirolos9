@@ -2,13 +2,11 @@ name: Actualizar Punteirolos 9.0
 
 on:
   schedule:
-    - cron: '0 10 * * 2'            # martes 10:00 UTC
-    - cron: '0 */4 * * 1'           # lunes, cada 4 horas
-    - cron: '*/15 12-19 * * 5,6,0'  # viernes, sábado y domingo: de 12:00 a 19:45 UTC (13:00 a 20:45 en España en invierno), cada 15 min
-    - cron: '0 20 * * 5,6,0'        # ... y la última a las 20:00 UTC (21:00 en España en invierno)
+    - cron: '0 12 * * *'        # todos los dias 12:00 UTC (13:00 Espana invierno): actualizacion fija
+    - cron: '0 10 * * 2'        # martes 10:00 UTC (cierre de jornada)
+    - cron: '*/15 11-22 * * *'  # cada 15 min; solo actualiza si hay partido en juego (check_live.py)
   workflow_dispatch:
 
-# Evita que dos ejecuciones publiquen a la vez
 concurrency:
   group: punteirolos-pages
   cancel-in-progress: false
@@ -25,13 +23,24 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Hay partido en juego?
+        id: gate
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "${{ github.event.schedule }}" = "0 12 * * *" ] || [ "${{ github.event.schedule }}" = "0 10 * * 2" ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"; echo "ejecucion fija o manual"
+          else
+            python check_live.py
+          fi
+
       - name: Generar estadisticas
+        if: steps.gate.outputs.run == 'true'
         run: python generate_9.py
 
       - name: Publicar en GitHub Pages
+        if: steps.gate.outputs.run == 'true'
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: .
           publish_branch: gh-pages
-          exclude_assets: '.github,generate_9.py,README_9.md'
+          exclude_assets: '.github,generate_9.py,check_live.py,README_9.md'
