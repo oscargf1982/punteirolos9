@@ -1165,12 +1165,19 @@ JORNADA_JS = r'''(function(){
       if(!sq||!sq.length) return '<div class="jalert"><b>Tus avisos</b><p>Todavía no hay datos de tu plantilla.</p></div>';
       const ST={i:'Lesionado',s:'Sancionado',u:'No disponible',n:'No disponible',d:'Duda'};
       const bad=[], price=[], fore=[];
+      const nowMs=Date.parse(J.updated_iso||'')||Date.now();
+      const rank=x=>{const p=PL[x[0]]; return (x[1]<=11?0:2)+(p&&p[5]==='d'?1:0);};
+      const bads=[];
       sq.slice().sort((a,b)=>a[1]-b[1]).forEach(x=>{
         const p=PL[x[0]]; if(!p) return;
         const role=x[1]<=11?'titular':'banquillo';
         if(p[5]&&p[5]!=='a'){
-          bad.push('<li><span>'+(p[5]==='d'?'⚠️':'⛔')+'</span><div><b>'+esc(p[0])+'</b> <small>'+role+'</small><br>'+esc(ST[p[5]]||'Aviso')
-            +(p[6]!=null?' · '+p[6]+'% de jugar':'')+(p[7]?' · '+esc(p[7]):'')+'</div></li>');
+          const ret=(String(p[7]||'').match(/(?:expected back|back|return(?:s)?(?: on)?)\s+(?:on\s+)?(\d{1,2}\s+[A-Za-z]{3,9})/i)||[])[1];
+          const days=p[14]?Math.floor((nowMs-Date.parse(p[14]))/864e5):null;
+          bads.push([rank(x),'<li><span>'+(p[5]==='d'?'⚠️':'⛔')+'</span><div><b>'+esc(p[0])+'</b> <small>'+role+'</small><br>'+esc(ST[p[5]]||'Aviso')
+            +(p[6]!=null?' · '+p[6]+'% de jugar':'')+(p[7]?' · '+esc(p[7]):'')
+            +(ret?'<br><small>Regreso esperado: '+esc(ret)+'</small>':'')
+            +(days!=null&&days>=0?'<br><small>Noticia de hace '+(days===0?'hoy':days+(days===1?' día':' días'))+'</small>':'')+'</div></li>']);
         }
         // previsión oficial: >=100% sube / <=-100% baja esta noche (no si FPL aún calibra al jugador)
         if(!p[13]&&p[11]!=null&&Math.abs(p[11])>=90){
@@ -1183,6 +1190,7 @@ JORNADA_JS = r'''(function(){
           price.push('<li><span>'+(up?'🔺':'🔻')+'</span><div><b>'+esc(p[0])+'</b> <small>'+role+'</small><br>'+(up?'Sube ':'Baja ')+d.toFixed(1)+'m · ahora '+((p[8]||0)/10).toFixed(1)+'m</div></li>');
         }
       });
+      bads.sort((a,b)=>a[0]-b[0]).forEach(b=>bad.push(b[1]));
       const old=J.squad_gw!==J.gw?'<p class="jnote">Plantilla de la jornada '+J.squad_gw+' (la de esta jornada se publica al pasar el deadline).</p>':'';
       return '<div class="jalert"><b>Tus avisos</b>'+old
         +'<div class="jak">Lesiones y dudas</div>'+(bad.length?'<ul>'+bad.join('')+'</ul>':'<p class="jok">✅ Ningún jugador con aviso.</p>')
@@ -1355,7 +1363,7 @@ def build_jornada(bootstrap, teams, gw_matches, gw, updated):
                 # [nombre, equipo, tipo, puntos, minutos, estado (a/d/i/s/u/n), % de jugar, noticia, precio x10, cambio de precio x10 esta jornada]
                 info["players"][eid] = [e["web_name"], e["team"], e["element_type"], pts, mins,
                                         e.get("status", "a"), e.get("chance_of_playing_next_round"), e.get("news", "") or "",
-                                        e.get("now_cost", 0), e.get("cost_change_event", 0)] + price_forecast(e)
+                                        e.get("now_cost", 0), e.get("cost_change_event", 0)] + price_forecast(e) + [e.get("news_added")]
                 info["tshort"][e["team"]] = short.get(e["team"], "")
         missing = len(teams) - len(info["picks"])
         if info["picks"] and missing:
