@@ -2,9 +2,16 @@ name: Actualizar Punteirolos 9.0
 
 on:
   schedule:
-    - cron: '0 10 * * 2'          # martes 10:00 UTC
-    - cron: '0 */4 * * 0,1,6'     # sábado, domingo y lunes, cada 4 horas (00, 04, 08, 12, 16 y 20 UTC)
+    - cron: '0 10 * * 2'            # martes 10:00 UTC
+    - cron: '0 */4 * * 1'           # lunes, cada 4 horas
+    - cron: '*/15 12-19 * * 5,6,0'  # viernes, sábado y domingo: de 12:00 a 19:45 UTC (13:00 a 20:45 en España en invierno), cada 15 min
+    - cron: '0 20 * * 5,6,0'        # ... y la última a las 20:00 UTC (21:00 en España en invierno)
   workflow_dispatch:
+
+# Evita que dos ejecuciones publiquen a la vez
+concurrency:
+  group: punteirolos-pages
+  cancel-in-progress: false
 
 jobs:
   build:
