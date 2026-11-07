@@ -333,6 +333,10 @@ body{
   <div class="stitle">📋 Récords</div>
   <div id="records"></div>
   <div class="card"><div class="ch"><span class="ci">😵</span><span class="ct">El más gafado</span></div><p style="font-size:13px;color:var(--text3);margin-bottom:14px">Puntos acumulados perdiendo</p><div id="bar-lp"></div></div>
+  <div class="stitle">🧮 Matriz todos contra todos</div>
+  <div class="card"><div class="ch"><span class="ci">🧮</span><span class="ct">Victorias por puntuación relativa</span></div>
+  <p style="font-size:13px;color:var(--text3);margin-bottom:12px">Cada celda: en cuántas jornadas la fila habría ganado a la columna comparando sus puntos de esa jornada (victorias–derrotas). Sin rival fijo: mide quién es mejor de verdad, sin suerte del sorteo.</p>
+  <div id="matrix" style="overflow-x:auto"></div></div>
 </div>
 <div class="panel" id="panel-streaks">
   <div class="stitle">🔥 Rachas</div>
@@ -518,6 +522,49 @@ document.getElementById('records').innerHTML=`
   <div class="rec cyan"><div class="rec-lbl">🏅 Mayor puntuación en una jornada</div><div class="rec-val" style="color:var(--cyan)">${bestM.v} pts</div><div class="rec-sub">${bestM.n} · GW${bestM.gw}</div></div>
   <div class="rec pink"><div class="rec-lbl">😬 Menor puntuación en una jornada</div><div class="rec-val" style="color:var(--pink)">${worstM.v} pts</div><div class="rec-sub">${worstM.n} · GW${worstM.gw}</div></div>
   <div class="rec blue"><div class="rec-lbl">💥 MAYOR DOMADA</div><div class="rec-val" style="color:#38bdf8">+${bigW.d} pts</div><div class="rec-sub">${bigW.w} ${bigW.ws}–${bigW.ls} ${bigW.l} · GW${bigW.gw}</div></div>`;
+
+
+// Matriz todos contra todos (puntuacion relativa por jornada)
+(function(){
+  const sc={};
+  TEAMS.forEach(t=>{sc[t.e]={};});
+  MATCHES.forEach(([e1,s1,e2,s2,gw])=>{
+    if(!(s1>0||s2>0)) return;
+    if(sc[e1]) sc[e1][gw]=s1;
+    if(sc[e2]) sc[e2][gw]=s2;
+  });
+  const T=[...TEAMS];
+  const W={},cell={};
+  T.forEach(a=>{W[a.e]={w:0,d:0,l:0};cell[a.e]={};});
+  T.forEach(a=>T.forEach(b=>{
+    if(a.e===b.e) return;
+    let w=0,d=0,l=0;
+    Object.keys(sc[a.e]).forEach(g=>{
+      const y=sc[b.e][g]; if(y===undefined) return;
+      const x=sc[a.e][g];
+      if(x>y) w++; else if(x<y) l++; else d++;
+    });
+    cell[a.e][b.e]={w,d,l};
+    W[a.e].w+=w;W[a.e].d+=d;W[a.e].l+=l;
+  }));
+  T.sort((a,b)=>(W[b.e].w-W[b.e].l)-(W[a.e].w-W[a.e].l)||W[b.e].w-W[a.e].w);
+  const ab=n=>String(n).slice(0,3).toUpperCase();
+  let h='<table style="border-collapse:collapse;font-size:11px;min-width:100%;text-align:center">';
+  h+='<tr><th style="text-align:left;padding:4px 6px;position:sticky;left:0;background:var(--bg,#1a0a2e)"></th>'+T.map(t=>'<th style="padding:4px 3px;color:var(--text3)" title="'+t.n+'">'+ab(t.n)+'</th>').join('')+'<th style="padding:4px 6px;color:var(--cyan)">V-E-D</th></tr>';
+  T.forEach(a=>{
+    h+='<tr><td style="text-align:left;padding:5px 6px;font-weight:700;white-space:nowrap;position:sticky;left:0;background:var(--bg,#1a0a2e)">'+a.n+'</td>';
+    T.forEach(b=>{
+      if(a.e===b.e){h+='<td style="background:rgba(255,255,255,.05)">·</td>';return;}
+      const c=cell[a.e][b.e];
+      const col=c.w>c.l?'rgba(0,255,135,.2)':c.w<c.l?'rgba(255,40,130,.2)':'rgba(255,255,255,.08)';
+      h+='<td style="padding:5px 3px;background:'+col+';font-family:Space Mono,monospace">'+c.w+'–'+c.l+'</td>';
+    });
+    const r=W[a.e];
+    h+='<td style="padding:5px 6px;font-weight:800;color:var(--cyan);font-family:Space Mono,monospace;white-space:nowrap">'+r.w+'-'+r.d+'-'+r.l+'</td></tr>';
+  });
+  h+='</table>';
+  document.getElementById('matrix').innerHTML=h;
+})();
 
 // Streaks
 document.getElementById('str-win').innerHTML=[...TEAMS].sort((a,b)=>STR[b.e].bW-STR[a.e].bW).map(t=>`
