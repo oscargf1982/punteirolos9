@@ -517,7 +517,7 @@ renderBars('bar-lp',sd(TEAMS,'lp'),'lp','#ff2882','pts');
 document.getElementById('records').innerHTML=`
   <div class="rec cyan"><div class="rec-lbl">🏅 Mayor puntuación en una jornada</div><div class="rec-val" style="color:var(--cyan)">${bestM.v} pts</div><div class="rec-sub">${bestM.n} · GW${bestM.gw}</div></div>
   <div class="rec pink"><div class="rec-lbl">😬 Menor puntuación en una jornada</div><div class="rec-val" style="color:var(--pink)">${worstM.v} pts</div><div class="rec-sub">${worstM.n} · GW${worstM.gw}</div></div>
-  <div class="rec blue"><div class="rec-lbl">💥 Victoria más amplia</div><div class="rec-val" style="color:#38bdf8">+${bigW.d} pts</div><div class="rec-sub">${bigW.w} ${bigW.ws}–${bigW.ls} ${bigW.l} · GW${bigW.gw}</div></div>`;
+  <div class="rec blue"><div class="rec-lbl">💥 MAYOR DOMADA</div><div class="rec-val" style="color:#38bdf8">+${bigW.d} pts</div><div class="rec-sub">${bigW.w} ${bigW.ws}–${bigW.ls} ${bigW.l} · GW${bigW.gw}</div></div>`;
 
 // Streaks
 document.getElementById('str-win').innerHTML=[...TEAMS].sort((a,b)=>STR[b.e].bW-STR[a.e].bW).map(t=>`
