@@ -166,13 +166,15 @@ body{
 .jpl{display:flex;justify-content:space-between;padding:7px 12px;font-size:12px;font-weight:800;text-transform:uppercase;color:#fff;font-family:'Space Mono',monospace}
 .jpl.red{background:#a30d1d}
 .jpl.blue{background:#1e40af}
-.jpitch{position:relative;padding:18px 2px 10px;background:repeating-linear-gradient(180deg,#1c7f37 0 36px,#23963f 36px 72px)}
-.jpitch::before{content:'';position:absolute;top:0;left:50%;width:44%;height:40px;transform:translateX(-50%);border:2px solid rgba(255,255,255,.5);border-top:0;pointer-events:none}
-.jpitch::after{content:'';position:absolute;top:0;left:50%;width:20%;height:18px;transform:translateX(-50%);border:2px solid rgba(255,255,255,.5);border-top:0;pointer-events:none}
+.jpitch{position:relative;padding:20px 2px 14px;overflow:hidden;background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,0) 35%,rgba(0,0,0,.12)),repeating-linear-gradient(180deg,#0fa24e 0 46px,#0a8f41 46px 92px);box-shadow:inset 3px 0 0 -1px rgba(255,255,255,.55),inset -3px 0 0 -1px rgba(255,255,255,.55)}
+.jpitch::before{content:'';position:absolute;top:0;left:50%;width:66%;height:92px;transform:translateX(-50%);border:2px solid rgba(255,255,255,.75);border-top:0;pointer-events:none}
+.jpitch::after{content:'';position:absolute;top:0;left:50%;width:32%;height:36px;transform:translateX(-50%);border:2px solid rgba(255,255,255,.75);border-top:0;pointer-events:none}
+.jarc{position:absolute;left:50%;bottom:-70px;width:150px;height:150px;transform:translateX(-50%);border:2px solid rgba(255,255,255,.7);border-radius:50%;pointer-events:none}
+.jarc::before{content:'';position:absolute;left:50%;top:-2px;width:300%;height:2px;transform:translateX(-50%);background:rgba(255,255,255,.7)}
 .jpitch .jmsg{color:#fff;text-align:center}
 .jrow{display:flex;justify-content:space-evenly;align-items:flex-start;margin:12px 0;position:relative;z-index:1}
 .jt{position:relative;width:62px;flex:0 0 auto;text-align:center}
-.jsv{display:block;width:44px;height:41px;margin:0 auto;filter:drop-shadow(0 2px 2px rgba(0,0,0,.4))}
+.jsv{display:block;width:52px;height:46px;margin:0 auto;filter:drop-shadow(0 2px 2px rgba(0,0,0,.4))}
 .jn{background:#fff;color:#1c0028;border-radius:6px;padding:3px 3px 2px;margin:-3px auto 0;max-width:66px;line-height:1.15;position:relative}
 .jn b{display:block;font-size:11px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .jn small{display:block;font-size:10px;font-weight:700;color:#5a3a78;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -192,7 +194,7 @@ body{
 .jf .pos{color:var(--cyan);font-family:'Space Mono',monospace;font-size:14px}
 .jf .neg{color:var(--pink);font-family:'Space Mono',monospace;font-size:14px}
 .jf.mid{text-align:center;font-weight:900;color:#fff;font-size:15px;display:flex;align-items:center;justify-content:center}
-.jt:not(.jrep){background:rgba(0,70,25,.28);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:5px 0 0}
+.jt:not(.jrep){background:rgba(0,80,30,.38);border:1px solid rgba(0,0,0,.18);border-radius:6px;padding:4px 0 0;box-shadow:0 1px 3px rgba(0,0,0,.25)}
 .jt:not(.jrep) .jn{border-radius:0 0 7px 7px;margin:2px 0 0;max-width:none}
 .jfichas{display:grid;grid-template-columns:1fr;gap:10px;padding:0 10px 12px}
 .jficha{background:#120a33;border:1px solid rgba(255,255,255,.12);border-radius:12px;overflow:hidden}
@@ -222,7 +224,7 @@ body{
   .jpitches{grid-template-columns:1fr 1fr}
   .jfoot{grid-template-columns:1.2fr .8fr 1.2fr}
   .jt{width:76px}
-  .jsv{width:50px;height:46px}
+  .jsv{width:58px;height:51px}
 }
 </style>
 </head>
@@ -230,7 +232,7 @@ body{
 <div class="hero">
   <div class="hero-badge">⚽ Punteirolos 9.0 · 2026/27</div>
   <h1>PUNTEIROLOS<br>9.0</h1>
-  <p class="hero-sub">Liga #42303 · Actualizado: 07/11/2026 13:42</p>
+  <p class="hero-sub">Liga #42303 · Actualizado: 07/11/2026 13:55</p>
   <div class="live-pill"><span class="live-dot"></span>EN CURSO · GW 10</div>
   <div class="hstrip" id="hstrip"></div>
 </div>
@@ -248,11 +250,15 @@ body{
   <div class="card"><div class="ch"><span class="ci">🎯</span><span class="ct">Mejor jornada individual</span></div><div id="bar-best"></div></div>
   <div class="stitle">⚔️ H2H</div>
   <div class="card"><div class="ch"><span class="ci">😰</span><span class="ct">Victorias por ≤4 puntos</span></div><div id="bar-cw"></div></div>
-  <div class="card"><div class="ch"><span class="ci">💥</span><span class="ct">Goleadas de +20 puntos</span></div><div id="bar-bw"></div></div>
+  <div class="card"><div class="ch"><span class="ci">💥</span><span class="ct">Domadas de +20 puntos</span></div><div id="bar-bw"></div></div>
   <div class="card"><div class="ch"><span class="ci">💔</span><span class="ct">Derrotas por ≤4 puntos</span></div><div id="bar-cl"></div></div>
   <div class="stitle">📋 Récords</div>
   <div id="records"></div>
   <div class="card"><div class="ch"><span class="ci">😵</span><span class="ct">El más gafado</span></div><p style="font-size:13px;color:var(--text3);margin-bottom:14px">Puntos acumulados perdiendo</p><div id="bar-lp"></div></div>
+  <div class="stitle">🧮 Matriz todos contra todos</div>
+  <div class="card"><div class="ch"><span class="ci">🧮</span><span class="ct">Victorias por puntuación relativa</span></div>
+  <p style="font-size:13px;color:var(--text3);margin-bottom:12px">Cada celda: en cuántas jornadas la fila habría ganado a la columna comparando sus puntos de esa jornada (victorias–derrotas). Sin rival fijo: mide quién es mejor de verdad, sin suerte del sorteo.</p>
+  <div id="matrix" style="overflow-x:auto"></div></div>
 </div>
 <div class="panel" id="panel-streaks">
   <div class="stitle">🔥 Rachas</div>
@@ -568,13 +574,56 @@ const avMx=parseFloat(st[avArr[0].e].avg);
 document.getElementById('bar-avg').innerHTML=avArr.map((t,i)=>bar(t.n,st[t.e].avg,(parseFloat(st[t.e].avg)/avMx)*100,'#00e87a','pts/GW',i*35)).join('');
 renderBars('bar-best',sd(TEAMS,'hs'),'hs','#ff2882','pts');
 renderBars('bar-cw',sd(TEAMS,'cw'),'cw','#00ff87','partidos');
-renderBars('bar-bw',sd(TEAMS,'bw'),'bw','#ff2882','goleadas');
+renderBars('bar-bw',sd(TEAMS,'bw'),'bw','#ff2882','domadas');
 renderBars('bar-cl',sd(TEAMS,'cl'),'cl','#ff2882','partidos');
 renderBars('bar-lp',sd(TEAMS,'lp'),'lp','#ff2882','pts');
 document.getElementById('records').innerHTML=`
   <div class="rec cyan"><div class="rec-lbl">🏅 Mayor puntuación en una jornada</div><div class="rec-val" style="color:var(--cyan)">${bestM.v} pts</div><div class="rec-sub">${bestM.n} · GW${bestM.gw}</div></div>
   <div class="rec pink"><div class="rec-lbl">😬 Menor puntuación en una jornada</div><div class="rec-val" style="color:var(--pink)">${worstM.v} pts</div><div class="rec-sub">${worstM.n} · GW${worstM.gw}</div></div>
   <div class="rec blue"><div class="rec-lbl">💥 MAYOR DOMADA</div><div class="rec-val" style="color:#38bdf8">+${bigW.d} pts</div><div class="rec-sub">${bigW.w} ${bigW.ws}–${bigW.ls} ${bigW.l} · GW${bigW.gw}</div></div>`;
+
+
+// Matriz todos contra todos (puntuacion relativa por jornada)
+(function(){
+  const sc={};
+  TEAMS.forEach(t=>{sc[t.e]={};});
+  MATCHES.forEach(([e1,s1,e2,s2,gw])=>{
+    if(!(s1>0||s2>0)) return;
+    if(sc[e1]) sc[e1][gw]=s1;
+    if(sc[e2]) sc[e2][gw]=s2;
+  });
+  const T=[...TEAMS];
+  const W={},cell={};
+  T.forEach(a=>{W[a.e]={w:0,d:0,l:0};cell[a.e]={};});
+  T.forEach(a=>T.forEach(b=>{
+    if(a.e===b.e) return;
+    let w=0,d=0,l=0;
+    Object.keys(sc[a.e]).forEach(g=>{
+      const y=sc[b.e][g]; if(y===undefined) return;
+      const x=sc[a.e][g];
+      if(x>y) w++; else if(x<y) l++; else d++;
+    });
+    cell[a.e][b.e]={w,d,l};
+    W[a.e].w+=w;W[a.e].d+=d;W[a.e].l+=l;
+  }));
+  T.sort((a,b)=>(W[b.e].w-W[b.e].l)-(W[a.e].w-W[a.e].l)||W[b.e].w-W[a.e].w);
+  const ab=n=>String(n).slice(0,3).toUpperCase();
+  let h='<table style="border-collapse:collapse;font-size:11px;min-width:100%;text-align:center">';
+  h+='<tr><th style="text-align:left;padding:4px 6px;position:sticky;left:0;background:var(--bg,#1a0a2e)"></th>'+T.map(t=>'<th style="padding:4px 3px;color:var(--text3)" title="'+t.n+'">'+ab(t.n)+'</th>').join('')+'<th style="padding:4px 6px;color:var(--cyan)">V-E-D</th></tr>';
+  T.forEach(a=>{
+    h+='<tr><td style="text-align:left;padding:5px 6px;font-weight:700;white-space:nowrap;position:sticky;left:0;background:var(--bg,#1a0a2e)">'+a.n+'</td>';
+    T.forEach(b=>{
+      if(a.e===b.e){h+='<td style="background:rgba(255,255,255,.05)">·</td>';return;}
+      const c=cell[a.e][b.e];
+      const col=c.w>c.l?'rgba(0,255,135,.2)':c.w<c.l?'rgba(255,40,130,.2)':'rgba(255,255,255,.08)';
+      h+='<td style="padding:5px 3px;background:'+col+';font-family:Space Mono,monospace">'+c.w+'–'+c.l+'</td>';
+    });
+    const r=W[a.e];
+    h+='<td style="padding:5px 6px;font-weight:800;color:var(--cyan);font-family:Space Mono,monospace;white-space:nowrap">'+r.w+'-'+r.d+'-'+r.l+'</td></tr>';
+  });
+  h+='</table>';
+  document.getElementById('matrix').innerHTML=h;
+})();
 
 // Streaks
 document.getElementById('str-win').innerHTML=[...TEAMS].sort((a,b)=>STR[b.e].bW-STR[a.e].bW).map(t=>`
@@ -604,7 +653,7 @@ document.getElementById('badges').innerHTML=[
   {i:'👑',n:'Líder',o:TEAMS[0].n,d:`${TEAMS[0].pts} pts`},
   {i:'🎯',n:'Cañonero',o:sd(TEAMS,'pts')[0].n,d:'Más puntos totales'},
   {i:'😰',n:'Rey del susto',o:sd(TEAMS,'cw')[0].n,d:`${st[sd(TEAMS,'cw')[0].e].cw} victorias ≤4 pts`},
-  {i:'💥',n:'Aplastador',o:sd(TEAMS,'bw')[0].n,d:`${st[sd(TEAMS,'bw')[0].e].bw} goleadas +20`},
+  {i:'💥',n:'Aplastador',o:sd(TEAMS,'bw')[0].n,d:`${st[sd(TEAMS,'bw')[0].e].bw} domadas +20`},
   {i:'🔥',n:'En racha',o:swArr[0].n,d:`${STR[swArr[0].e].bW} victorias seguidas`},
   {i:'🍀',n:'Más suerte',o:lkArr[0].n,d:`${st[lkArr[0].e].luck} victorias bajo la media`},
   {i:'😤',n:'Más gafado',o:ulArr[0].n,d:`${st[ulArr[0].e].unluck} derrotas sobre la media`},
@@ -700,7 +749,7 @@ document.getElementById('awards').innerHTML=[
   {i:'📊',l:'Más puntos acumulados',v:sd(TEAMS,'pts')[0].n,s:`${sd(TEAMS,'pts')[0].pts} pts`},
   {i:'🎯',l:'Récord de jornada',v:sd(TEAMS,'hs')[0].n,s:`${st[sd(TEAMS,'hs')[0].e].hs} pts · GW${bestM.gw}`},
   {i:'😰',l:'Rey del susto',v:sd(TEAMS,'cw')[0].n,s:`${st[sd(TEAMS,'cw')[0].e].cw} victorias ≤4 pts`},
-  {i:'💥',l:'Rey de las palizas',v:sd(TEAMS,'bw')[0].n,s:`${st[sd(TEAMS,'bw')[0].e].bw} goleadas +20 pts`},
+  {i:'💥',l:'Rey de las palizas',v:sd(TEAMS,'bw')[0].n,s:`${st[sd(TEAMS,'bw')[0].e].bw} domadas +20 pts`},
   {i:'💔',l:'Más derrotas ajustadas',v:sd(TEAMS,'cl')[0].n,s:`${st[sd(TEAMS,'cl')[0].e].cl} derrotas ≤4 pts`},
   {i:'🔥',l:'Mejor racha',v:swArr[0].n,s:`${STR[swArr[0].e].bW} victorias consecutivas`},
   {i:'🍀',l:'El más afortunado',v:lkArr[0].n,s:`${st[lkArr[0].e].luck} victorias con suerte`},
@@ -802,7 +851,7 @@ document.querySelectorAll('.nb').forEach(btn=>{
 });
 </script>
 <script>
-const JORNADA={"gw":10,"updated":"07/11/2026 13:42","available":true,"note":"","duels":[[2740014,208380],[2739209,4414467],[4273984,2738656],[2742897,352983],[314451,2740581],[2763130,6036721],[375826,232272],[253425,371963],[209323,336896],[2609302,15871]],"picks":{"2740581":{"chip":null,"hits":1,"cost":0,"p":[[1,1,0,0,1,1],[31,1,0,0,2,2],[503,1,0,0,3,2],[8,1,0,0,4,2],[115,1,0,0,5,2],[237,1,0,0,6,3],[68,1,0,0,7,3],[154,1,0,0,8,3],[401,1,0,0,9,4],[79,1,0,1,10,4],[411,2,1,0,11,4],[572,0,0,0,12,1],[399,0,0,0,13,3],[124,0,0,0,14,3],[204,0,0,0,15,2]]},"4414467":{"chip":null,"hits":1,"cost":0,"p":[[1,1,0,0,1,1],[60,1,0,0,2,2],[115,1,0,0,3,2],[8,1,0,0,4,2],[31,1,0,1,5,2],[40,1,0,0,6,3],[68,1,0,0,7,3],[154,1,0,0,8,3],[249,1,0,0,9,4],[166,1,0,0,10,4],[411,2,1,0,11,4],[250,0,0,0,12,1],[124,0,0,0,13,3],[334,0,0,0,14,2],[286,0,0,0,15,3]]},"6036721":{"chip":null,"hits":0,"cost":0,"p":[[109,1,0,0,1,1],[8,1,0,0,2,2],[115,1,0,0,3,2],[31,1,0,0,4,2],[154,1,0,1,5,3],[40,1,0,0,6,3],[68,1,0,0,7,3],[124,1,0,0,8,3],[411,2,1,0,9,4],[379,1,0,0,10,4],[79,1,0,0,11,4],[496,0,0,0,12,1],[512,0,0,0,13,3],[508,0,0,0,14,2],[304,0,0,0,15,2]]},"232272":{"chip":null,"hits":2,"cost":4,"p":[[109,1,0,0,1,1],[8,1,0,0,2,2],[229,1,0,0,3,2],[115,1,0,0,4,2],[112,1,0,0,5,2],[68,1,0,0,6,3],[124,1,0,0,7,3],[40,1,0,1,8,3],[79,1,0,0,9,4],[379,1,0,0,10,4],[411,2,1,0,11,4],[572,0,0,0,12,1],[286,0,0,0,13,3],[94,0,0,0,14,3],[330,0,0,0,15,2]]},"2739209":{"chip":"bboost","hits":1,"cost":0,"p":[[496,1,0,0,1,1],[31,1,0,0,2,2],[115,1,0,0,3,2],[8,1,0,0,4,2],[154,1,0,0,5,3],[68,1,0,0,6,3],[40,1,0,0,7,3],[124,1,0,0,8,3],[79,1,0,0,9,4],[166,1,0,1,10,4],[411,2,1,0,11,4],[572,1,0,0,12,1],[15,1,0,0,13,3],[391,1,0,0,14,2],[330,1,0,0,15,2]]},"336896":{"chip":null,"hits":0,"cost":0,"p":[[1,1,0,0,1,1],[566,1,0,0,2,2],[4,1,0,1,3,2],[112,1,0,0,4,2],[427,1,0,0,5,3],[53,1,0,0,6,3],[40,1,0,0,7,3],[124,1,0,0,8,3],[569,1,0,0,9,4],[79,2,1,0,10,4],[411,1,0,0,11,4],[251,0,0,0,12,1],[268,0,0,0,13,3],[449,0,0,0,14,2],[173,0,0,0,15,2]]},"209323":{"chip":null,"hits":0,"cost":0,"p":[[496,1,0,0,1,1],[362,1,0,0,2,2],[31,1,0,0,3,2],[88,1,0,0,4,2],[53,1,0,0,5,3],[40,1,0,0,6,3],[124,1,0,0,7,3],[154,1,0,1,8,3],[379,1,0,0,9,4],[411,2,1,0,10,4],[166,1,0,0,11,4],[497,0,0,0,12,1],[94,0,0,0,13,3],[175,0,0,0,14,2],[330,0,0,0,15,2]]},"2763130":{"chip":null,"hits":0,"cost":0,"p":[[412,1,0,0,1,1],[229,1,0,0,2,2],[114,1,0,0,3,2],[175,1,0,0,4,2],[366,1,0,0,5,3],[399,1,0,0,6,3],[40,1,0,0,7,3],[427,1,0,0,8,3],[411,2,1,0,9,4],[379,1,0,0,10,4],[166,1,0,1,11,4],[171,0,0,0,12,1],[542,0,0,0,13,3],[173,0,0,0,14,2],[259,0,0,0,15,2]]},"375826":{"chip":null,"hits":0,"cost":0,"p":[[1,1,0,0,1,1],[356,1,0,0,2,2],[330,1,0,0,3,2],[391,1,0,0,4,2],[115,1,0,0,5,2],[427,1,0,0,6,3],[94,1,0,0,7,3],[605,1,0,0,8,3],[379,1,0,1,9,4],[411,2,1,0,10,4],[79,1,0,0,11,4],[497,0,0,0,12,1],[13,0,0,0,13,3],[290,0,0,0,14,3],[388,0,0,0,15,2]]},"2609302":{"chip":null,"hits":2,"cost":4,"p":[[496,1,0,0,1,1],[31,1,0,0,2,2],[112,1,0,0,3,2],[8,1,0,0,4,2],[115,1,0,1,5,2],[154,1,0,0,6,3],[124,1,0,0,7,3],[15,1,0,0,8,3],[464,1,0,0,9,4],[379,1,0,0,10,4],[411,2,1,0,11,4],[250,0,0,0,12,1],[87,0,0,0,13,2],[268,0,0,0,14,3],[286,0,0,0,15,3]]},"2742897":{"chip":null,"hits":0,"cost":0,"p":[[496,1,0,0,1,1],[593,1,0,0,2,2],[4,1,0,0,3,2],[8,1,0,0,4,2],[115,1,0,0,5,2],[40,1,0,0,6,3],[124,1,0,0,7,3],[399,1,0,0,8,3],[156,1,0,0,9,3],[411,2,1,0,10,4],[166,1,0,1,11,4],[385,0,0,0,12,1],[605,0,0,0,13,3],[175,0,0,0,14,2],[272,0,0,0,15,4]]},"15871":{"chip":null,"hits":2,"cost":0,"p":[[1,1,0,0,1,1],[449,1,0,0,2,2],[8,1,0,0,3,2],[115,1,0,0,4,2],[124,1,0,0,5,3],[40,1,0,0,6,3],[68,1,0,0,7,3],[427,1,0,0,8,3],[379,1,0,0,9,4],[138,1,0,1,10,4],[411,2,1,0,11,4],[497,0,0,0,12,1],[53,0,0,0,13,3],[173,0,0,0,14,2],[305,0,0,0,15,2]]},"208380":{"chip":null,"hits":1,"cost":0,"p":[[57,1,0,0,1,1],[4,1,0,0,2,2],[60,1,0,0,3,2],[115,1,0,0,4,2],[68,1,0,0,5,3],[512,1,0,0,6,3],[40,1,0,0,7,3],[15,1,0,1,8,3],[124,1,0,0,9,3],[411,2,1,0,10,4],[569,1,0,0,11,4],[109,0,0,0,12,1],[316,0,0,0,13,4],[91,0,0,0,14,2],[173,0,0,0,15,2]]},"253425":{"chip":null,"hits":1,"cost":0,"p":[[496,1,0,0,1,1],[31,1,0,0,2,2],[8,1,0,0,3,2],[115,1,0,0,4,2],[154,1,0,0,5,3],[40,1,0,0,6,3],[68,1,0,0,7,3],[124,1,0,0,8,3],[379,1,0,0,9,4],[411,2,1,0,10,4],[166,1,0,1,11,4],[497,0,0,0,12,1],[399,0,0,0,13,3],[173,0,0,0,14,2],[586,0,0,0,15,2]]},"2740014":{"chip":null,"hits":1,"cost":0,"p":[[109,1,0,0,1,1],[8,1,0,0,2,2],[391,1,0,0,3,2],[115,1,0,0,4,2],[124,1,0,0,5,3],[68,1,0,0,6,3],[154,1,0,1,7,3],[94,1,0,0,8,3],[411,2,1,0,9,4],[79,1,0,0,10,4],[166,1,0,0,11,4],[629,0,0,0,12,1],[330,0,0,0,13,2],[286,0,0,0,14,3],[282,0,0,0,15,2]]},"371963":{"chip":null,"hits":0,"cost":0,"p":[[109,1,0,0,1,1],[10,1,0,0,2,2],[277,1,0,0,3,2],[388,1,0,0,4,2],[399,1,0,0,5,3],[427,1,0,1,6,3],[15,1,0,0,7,3],[40,1,0,0,8,3],[124,1,0,0,9,3],[379,1,0,0,10,4],[411,2,1,0,11,4],[572,0,0,0,12,1],[79,0,0,0,13,4],[115,0,0,0,14,2],[176,0,0,0,15,2]]},"4273984":{"chip":null,"hits":0,"cost":0,"p":[[226,1,0,0,1,1],[388,1,0,0,2,2],[115,1,0,0,3,2],[8,1,0,0,4,2],[40,1,0,0,5,3],[427,1,0,0,6,3],[399,1,0,0,7,3],[426,2,1,0,8,3],[379,1,0,0,9,4],[138,1,0,0,10,4],[165,1,0,1,11,4],[250,0,0,0,12,1],[87,0,0,0,13,2],[542,0,0,0,14,3],[147,0,0,0,15,2]]},"314451":{"chip":null,"hits":0,"cost":0,"p":[[226,1,0,0,1,1],[356,1,0,0,2,2],[8,1,0,0,3,2],[229,1,0,0,4,2],[154,1,0,0,5,3],[237,1,0,0,6,3],[40,1,0,1,7,3],[399,1,0,0,8,3],[249,1,0,0,9,4],[411,2,1,0,10,4],[316,1,0,0,11,4],[497,0,0,0,12,1],[286,0,0,0,13,3],[259,0,0,0,14,2],[282,0,0,0,15,2]]},"352983":{"chip":null,"hits":1,"cost":0,"p":[[109,1,0,0,1,1],[31,1,0,0,2,2],[391,1,0,0,3,2],[115,1,0,0,4,2],[15,1,0,0,5,3],[40,1,0,1,6,3],[399,1,0,0,7,3],[68,1,0,0,8,3],[79,2,1,0,9,4],[379,1,0,0,10,4],[411,1,0,0,11,4],[496,0,0,0,12,1],[453,0,0,0,13,3],[449,0,0,0,14,2],[279,0,0,0,15,2]]},"2738656":{"chip":null,"hits":1,"cost":0,"p":[[109,1,0,0,1,1],[387,1,0,0,2,2],[115,1,0,0,3,2],[201,1,0,0,4,2],[68,1,0,0,5,3],[124,1,0,0,6,3],[399,1,0,0,7,3],[13,1,0,0,8,3],[411,2,1,0,9,4],[79,1,0,0,10,4],[379,1,0,1,11,4],[1,0,0,0,12,1],[469,0,0,0,13,2],[212,0,0,0,14,3],[259,0,0,0,15,2]]}},"players":{"512":["Kudus",19,3,3],"1":["Raya",1,1,0],"4":["Gabriel",1,2,0],"8":["Calafiori",1,2,0],"10":["White",1,2,0],"13":["Rice",1,3,0],"15":["Ødegaard",1,3,0],"542":["E.Le Fée",20,3,0],"31":["Konsa",1,2,0],"40":["Rogers",6,3,0],"53":["Manzambi",2,3,0],"566":["Silva",3,2,0],"569":["Gonzalo",10,4,0],"57":["Petrović",3,1,0],"60":["Hill",3,2,0],"572":["Tzolakis",11,1,0],"68":["Tavernier",3,3,0],"586":["Mendy",11,2,0],"79":["Evanilson",3,4,0],"593":["Dedić",17,2,0],"87":["Ajer",4,2,0],"88":["Kayode",4,2,0],"91":["Pinnock",7,2,3],"605":["Yalcouyé",5,3,0],"94":["Schade",4,3,0],"109":["Verbruggen",5,1,0],"112":["Van Hecke",19,2,1],"114":["Boscagli",5,2,0],"115":["De Cuyper",5,2,0],"629":["Zetterer",13,1,0],"124":["Groß",5,3,0],"138":["Kostoulas",5,4,0],"147":["Tosin",19,2,0],"154":["Palmer",6,3,0],"156":["Neto",6,3,0],"165":["João Pedro",6,4,0],"166":["N.Jackson",2,4,0],"171":["Dovin",7,1,0],"173":["Thomas",7,2,0],"175":["van Ewijk",7,2,1],"176":["Dasilva",7,2,1],"201":["Muñoz",18,2,0],"204":["Mitchell",8,2,0],"212":["Hughes",8,3,0],"226":["Pickford",9,1,3],"229":["Tarkowski",9,2,2],"237":["Ndiaye",15,3,0],"249":["Barry",9,4,16],"250":["Leno",10,1,0],"251":["Lecomte",10,1,0],"259":["Diop",12,2,0],"268":["King",10,3,0],"272":["Kusi-Asare",10,4,0],"277":["Egan",11,2,0],"279":["Ajayi",11,2,0],"282":["Giles",11,2,0],"286":["Belloumi",11,3,0],"290":["Slater",11,3,0],"304":["O'Shea",12,2,0],"305":["Davis",12,2,0],"316":["Emersonn",12,4,0],"330":["Bogle",13,2,1],"334":["Muharemović",13,2,1],"356":["Virgil",14,2,0],"362":["Jacquet",14,2,0],"366":["Wirtz",14,3,0],"379":["Isak",14,4,0],"385":["Trafford",13,1,3],"387":["O'Reilly",15,2,0],"388":["Guéhi",15,2,0],"391":["Gvardiol",15,2,0],"399":["Cherki",15,3,0],"401":["Marmoush",19,4,1],"411":["Haaland",15,4,0],"412":["Lammens",16,1,0],"426":["B.Fernandes",16,3,0],"427":["Mbeumo",16,3,0],"449":["Hall",17,2,0],"453":["Barnes",17,3,0],"464":["Wissa",17,4,0],"469":["N.Williams",18,2,0],"496":["Kinsky",19,1,1],"497":["Dubravka",19,1,0],"503":["Van de Ven",19,2,0],"508":["Davies",19,2,0]},"fx":{"9":[["COV","H",2]],"7":[["EVE","A",2]],"13":[["TOT","H",1]],"19":[["LEE","A",1]],"1":[["HUL","H",0]],"11":[["ARS","A",0]],"10":[["NEW","H",0]],"17":[["FUL","A",0]],"18":[["MCI","H",0]],"15":[["NFO","A",0]],"5":[["BRE","H",0]],"4":[["BHA","A",0]],"8":[["LIV","H",0]],"14":[["CRY","A",0]],"12":[["BOU","H",0]],"3":[["IPS","A",0]],"20":[["CHE","H",0]],"6":[["SUN","A",0]],"16":[["AVL","H",0]],"2":[["MUN","A",0]]},"tshort":{"19":"TOT","1":"ARS","20":"SUN","6":"CHE","2":"AVL","3":"BOU","10":"FUL","11":"HUL","17":"NEW","4":"BRE","7":"COV","5":"BHA","13":"LEE","18":"NFO","8":"CRY","9":"EVE","15":"MCI","12":"IPS","14":"LIV","16":"MUN"}};
+const JORNADA={"gw":10,"updated":"07/11/2026 13:55","available":true,"note":"","duels":[[2740014,208380],[2739209,4414467],[4273984,2738656],[2742897,352983],[314451,2740581],[2763130,6036721],[375826,232272],[253425,371963],[209323,336896],[2609302,15871]],"picks":{"2740581":{"chip":null,"hits":1,"cost":0,"p":[[1,1,0,0,1,1],[31,1,0,0,2,2],[503,1,0,0,3,2],[8,1,0,0,4,2],[115,1,0,0,5,2],[237,1,0,0,6,3],[68,1,0,0,7,3],[154,1,0,0,8,3],[401,1,0,0,9,4],[79,1,0,1,10,4],[411,2,1,0,11,4],[572,0,0,0,12,1],[399,0,0,0,13,3],[124,0,0,0,14,3],[204,0,0,0,15,2]]},"4414467":{"chip":null,"hits":1,"cost":0,"p":[[1,1,0,0,1,1],[60,1,0,0,2,2],[115,1,0,0,3,2],[8,1,0,0,4,2],[31,1,0,1,5,2],[40,1,0,0,6,3],[68,1,0,0,7,3],[154,1,0,0,8,3],[249,1,0,0,9,4],[166,1,0,0,10,4],[411,2,1,0,11,4],[250,0,0,0,12,1],[124,0,0,0,13,3],[334,0,0,0,14,2],[286,0,0,0,15,3]]},"6036721":{"chip":null,"hits":0,"cost":0,"p":[[109,1,0,0,1,1],[8,1,0,0,2,2],[115,1,0,0,3,2],[31,1,0,0,4,2],[154,1,0,1,5,3],[40,1,0,0,6,3],[68,1,0,0,7,3],[124,1,0,0,8,3],[411,2,1,0,9,4],[379,1,0,0,10,4],[79,1,0,0,11,4],[496,0,0,0,12,1],[512,0,0,0,13,3],[508,0,0,0,14,2],[304,0,0,0,15,2]]},"232272":{"chip":null,"hits":2,"cost":4,"p":[[109,1,0,0,1,1],[8,1,0,0,2,2],[229,1,0,0,3,2],[115,1,0,0,4,2],[112,1,0,0,5,2],[68,1,0,0,6,3],[124,1,0,0,7,3],[40,1,0,1,8,3],[79,1,0,0,9,4],[379,1,0,0,10,4],[411,2,1,0,11,4],[572,0,0,0,12,1],[286,0,0,0,13,3],[94,0,0,0,14,3],[330,0,0,0,15,2]]},"2739209":{"chip":"bboost","hits":1,"cost":0,"p":[[496,1,0,0,1,1],[31,1,0,0,2,2],[115,1,0,0,3,2],[8,1,0,0,4,2],[154,1,0,0,5,3],[68,1,0,0,6,3],[40,1,0,0,7,3],[124,1,0,0,8,3],[79,1,0,0,9,4],[166,1,0,1,10,4],[411,2,1,0,11,4],[572,1,0,0,12,1],[15,1,0,0,13,3],[391,1,0,0,14,2],[330,1,0,0,15,2]]},"336896":{"chip":null,"hits":0,"cost":0,"p":[[1,1,0,0,1,1],[566,1,0,0,2,2],[4,1,0,1,3,2],[112,1,0,0,4,2],[427,1,0,0,5,3],[53,1,0,0,6,3],[40,1,0,0,7,3],[124,1,0,0,8,3],[569,1,0,0,9,4],[79,2,1,0,10,4],[411,1,0,0,11,4],[251,0,0,0,12,1],[268,0,0,0,13,3],[449,0,0,0,14,2],[173,0,0,0,15,2]]},"209323":{"chip":null,"hits":0,"cost":0,"p":[[496,1,0,0,1,1],[362,1,0,0,2,2],[31,1,0,0,3,2],[88,1,0,0,4,2],[53,1,0,0,5,3],[40,1,0,0,6,3],[124,1,0,0,7,3],[154,1,0,1,8,3],[379,1,0,0,9,4],[411,2,1,0,10,4],[166,1,0,0,11,4],[497,0,0,0,12,1],[94,0,0,0,13,3],[175,0,0,0,14,2],[330,0,0,0,15,2]]},"2763130":{"chip":null,"hits":0,"cost":0,"p":[[412,1,0,0,1,1],[229,1,0,0,2,2],[114,1,0,0,3,2],[175,1,0,0,4,2],[366,1,0,0,5,3],[399,1,0,0,6,3],[40,1,0,0,7,3],[427,1,0,0,8,3],[411,2,1,0,9,4],[379,1,0,0,10,4],[166,1,0,1,11,4],[171,0,0,0,12,1],[542,0,0,0,13,3],[173,0,0,0,14,2],[259,0,0,0,15,2]]},"375826":{"chip":null,"hits":0,"cost":0,"p":[[1,1,0,0,1,1],[356,1,0,0,2,2],[330,1,0,0,3,2],[391,1,0,0,4,2],[115,1,0,0,5,2],[427,1,0,0,6,3],[94,1,0,0,7,3],[605,1,0,0,8,3],[379,1,0,1,9,4],[411,2,1,0,10,4],[79,1,0,0,11,4],[497,0,0,0,12,1],[13,0,0,0,13,3],[290,0,0,0,14,3],[388,0,0,0,15,2]]},"2609302":{"chip":null,"hits":2,"cost":4,"p":[[496,1,0,0,1,1],[31,1,0,0,2,2],[112,1,0,0,3,2],[8,1,0,0,4,2],[115,1,0,1,5,2],[154,1,0,0,6,3],[124,1,0,0,7,3],[15,1,0,0,8,3],[464,1,0,0,9,4],[379,1,0,0,10,4],[411,2,1,0,11,4],[250,0,0,0,12,1],[87,0,0,0,13,2],[268,0,0,0,14,3],[286,0,0,0,15,3]]},"2742897":{"chip":null,"hits":0,"cost":0,"p":[[496,1,0,0,1,1],[593,1,0,0,2,2],[4,1,0,0,3,2],[8,1,0,0,4,2],[115,1,0,0,5,2],[40,1,0,0,6,3],[124,1,0,0,7,3],[399,1,0,0,8,3],[156,1,0,0,9,3],[411,2,1,0,10,4],[166,1,0,1,11,4],[385,0,0,0,12,1],[605,0,0,0,13,3],[175,0,0,0,14,2],[272,0,0,0,15,4]]},"15871":{"chip":null,"hits":2,"cost":0,"p":[[1,1,0,0,1,1],[449,1,0,0,2,2],[8,1,0,0,3,2],[115,1,0,0,4,2],[124,1,0,0,5,3],[40,1,0,0,6,3],[68,1,0,0,7,3],[427,1,0,0,8,3],[379,1,0,0,9,4],[138,1,0,1,10,4],[411,2,1,0,11,4],[497,0,0,0,12,1],[53,0,0,0,13,3],[173,0,0,0,14,2],[305,0,0,0,15,2]]},"208380":{"chip":null,"hits":1,"cost":0,"p":[[57,1,0,0,1,1],[4,1,0,0,2,2],[60,1,0,0,3,2],[115,1,0,0,4,2],[68,1,0,0,5,3],[512,1,0,0,6,3],[40,1,0,0,7,3],[15,1,0,1,8,3],[124,1,0,0,9,3],[411,2,1,0,10,4],[569,1,0,0,11,4],[109,0,0,0,12,1],[316,0,0,0,13,4],[91,0,0,0,14,2],[173,0,0,0,15,2]]},"253425":{"chip":null,"hits":1,"cost":0,"p":[[496,1,0,0,1,1],[31,1,0,0,2,2],[8,1,0,0,3,2],[115,1,0,0,4,2],[154,1,0,0,5,3],[40,1,0,0,6,3],[68,1,0,0,7,3],[124,1,0,0,8,3],[379,1,0,0,9,4],[411,2,1,0,10,4],[166,1,0,1,11,4],[497,0,0,0,12,1],[399,0,0,0,13,3],[173,0,0,0,14,2],[586,0,0,0,15,2]]},"2740014":{"chip":null,"hits":1,"cost":0,"p":[[109,1,0,0,1,1],[8,1,0,0,2,2],[391,1,0,0,3,2],[115,1,0,0,4,2],[124,1,0,0,5,3],[68,1,0,0,6,3],[154,1,0,1,7,3],[94,1,0,0,8,3],[411,2,1,0,9,4],[79,1,0,0,10,4],[166,1,0,0,11,4],[629,0,0,0,12,1],[330,0,0,0,13,2],[286,0,0,0,14,3],[282,0,0,0,15,2]]},"371963":{"chip":null,"hits":0,"cost":0,"p":[[109,1,0,0,1,1],[10,1,0,0,2,2],[277,1,0,0,3,2],[388,1,0,0,4,2],[399,1,0,0,5,3],[427,1,0,1,6,3],[15,1,0,0,7,3],[40,1,0,0,8,3],[124,1,0,0,9,3],[379,1,0,0,10,4],[411,2,1,0,11,4],[572,0,0,0,12,1],[79,0,0,0,13,4],[115,0,0,0,14,2],[176,0,0,0,15,2]]},"4273984":{"chip":null,"hits":0,"cost":0,"p":[[226,1,0,0,1,1],[388,1,0,0,2,2],[115,1,0,0,3,2],[8,1,0,0,4,2],[40,1,0,0,5,3],[427,1,0,0,6,3],[399,1,0,0,7,3],[426,2,1,0,8,3],[379,1,0,0,9,4],[138,1,0,0,10,4],[165,1,0,1,11,4],[250,0,0,0,12,1],[87,0,0,0,13,2],[542,0,0,0,14,3],[147,0,0,0,15,2]]},"314451":{"chip":null,"hits":0,"cost":0,"p":[[226,1,0,0,1,1],[356,1,0,0,2,2],[8,1,0,0,3,2],[229,1,0,0,4,2],[154,1,0,0,5,3],[237,1,0,0,6,3],[40,1,0,1,7,3],[399,1,0,0,8,3],[249,1,0,0,9,4],[411,2,1,0,10,4],[316,1,0,0,11,4],[497,0,0,0,12,1],[286,0,0,0,13,3],[259,0,0,0,14,2],[282,0,0,0,15,2]]},"352983":{"chip":null,"hits":1,"cost":0,"p":[[109,1,0,0,1,1],[31,1,0,0,2,2],[391,1,0,0,3,2],[115,1,0,0,4,2],[15,1,0,0,5,3],[40,1,0,1,6,3],[399,1,0,0,7,3],[68,1,0,0,8,3],[79,2,1,0,9,4],[379,1,0,0,10,4],[411,1,0,0,11,4],[496,0,0,0,12,1],[453,0,0,0,13,3],[449,0,0,0,14,2],[279,0,0,0,15,2]]},"2738656":{"chip":null,"hits":1,"cost":0,"p":[[109,1,0,0,1,1],[387,1,0,0,2,2],[115,1,0,0,3,2],[201,1,0,0,4,2],[68,1,0,0,5,3],[124,1,0,0,6,3],[399,1,0,0,7,3],[13,1,0,0,8,3],[411,2,1,0,9,4],[79,1,0,0,10,4],[379,1,0,1,11,4],[1,0,0,0,12,1],[469,0,0,0,13,2],[212,0,0,0,14,3],[259,0,0,0,15,2]]}},"players":{"512":["Kudus",19,3,3],"1":["Raya",1,1,0],"4":["Gabriel",1,2,0],"8":["Calafiori",1,2,0],"10":["White",1,2,0],"13":["Rice",1,3,0],"15":["Ødegaard",1,3,0],"542":["E.Le Fée",20,3,0],"31":["Konsa",1,2,0],"40":["Rogers",6,3,0],"53":["Manzambi",2,3,0],"566":["Silva",3,2,0],"569":["Gonzalo",10,4,0],"57":["Petrović",3,1,0],"60":["Hill",3,2,0],"572":["Tzolakis",11,1,0],"68":["Tavernier",3,3,0],"586":["Mendy",11,2,0],"79":["Evanilson",3,4,0],"593":["Dedić",17,2,0],"87":["Ajer",4,2,0],"88":["Kayode",4,2,0],"91":["Pinnock",7,2,3],"605":["Yalcouyé",5,3,0],"94":["Schade",4,3,0],"109":["Verbruggen",5,1,0],"112":["Van Hecke",19,2,7],"114":["Boscagli",5,2,0],"115":["De Cuyper",5,2,0],"629":["Zetterer",13,1,0],"124":["Groß",5,3,0],"138":["Kostoulas",5,4,0],"147":["Tosin",19,2,0],"154":["Palmer",6,3,0],"156":["Neto",6,3,0],"165":["João Pedro",6,4,0],"166":["N.Jackson",2,4,0],"171":["Dovin",7,1,0],"173":["Thomas",7,2,0],"175":["van Ewijk",7,2,1],"176":["Dasilva",7,2,1],"201":["Muñoz",18,2,0],"204":["Mitchell",8,2,0],"212":["Hughes",8,3,0],"226":["Pickford",9,1,3],"229":["Tarkowski",9,2,2],"237":["Ndiaye",15,3,0],"249":["Barry",9,4,16],"250":["Leno",10,1,0],"251":["Lecomte",10,1,0],"259":["Diop",12,2,0],"268":["King",10,3,0],"272":["Kusi-Asare",10,4,0],"277":["Egan",11,2,0],"279":["Ajayi",11,2,0],"282":["Giles",11,2,0],"286":["Belloumi",11,3,0],"290":["Slater",11,3,0],"304":["O'Shea",12,2,0],"305":["Davis",12,2,0],"316":["Emersonn",12,4,0],"330":["Bogle",13,2,6],"334":["Muharemović",13,2,9],"356":["Virgil",14,2,0],"362":["Jacquet",14,2,0],"366":["Wirtz",14,3,0],"379":["Isak",14,4,0],"385":["Trafford",13,1,9],"387":["O'Reilly",15,2,0],"388":["Guéhi",15,2,0],"391":["Gvardiol",15,2,0],"399":["Cherki",15,3,0],"401":["Marmoush",19,4,2],"411":["Haaland",15,4,0],"412":["Lammens",16,1,0],"426":["B.Fernandes",16,3,0],"427":["Mbeumo",16,3,0],"449":["Hall",17,2,0],"453":["Barnes",17,3,0],"464":["Wissa",17,4,0],"469":["N.Williams",18,2,0],"496":["Kinsky",19,1,6],"497":["Dubravka",19,1,0],"503":["Van de Ven",19,2,5],"508":["Davies",19,2,0]},"fx":{"9":[["COV","H",2]],"7":[["EVE","A",2]],"13":[["TOT","H",1]],"19":[["LEE","A",1]],"1":[["HUL","H",0]],"11":[["ARS","A",0]],"10":[["NEW","H",0]],"17":[["FUL","A",0]],"18":[["MCI","H",0]],"15":[["NFO","A",0]],"5":[["BRE","H",0]],"4":[["BHA","A",0]],"8":[["LIV","H",0]],"14":[["CRY","A",0]],"12":[["BOU","H",0]],"3":[["IPS","A",0]],"20":[["CHE","H",0]],"6":[["SUN","A",0]],"16":[["AVL","H",0]],"2":[["MUN","A",0]]},"tshort":{"19":"TOT","1":"ARS","20":"SUN","6":"CHE","2":"AVL","3":"BOU","10":"FUL","11":"HUL","17":"NEW","4":"BRE","7":"COV","5":"BHA","13":"LEE","18":"NFO","8":"CRY","9":"EVE","15":"MCI","12":"IPS","14":"LIV","16":"MUN"}};
 (function(){
   const root=document.getElementById('jornada-root');
   if(!root) return;
@@ -815,50 +864,65 @@ const JORNADA={"gw":10,"updated":"07/11/2026 13:42","available":true,"note":"","
     const tname=e=>T[e]?T[e].n:'';
     const fmt=n=>n<0?'−'+Math.abs(n):String(n);
 
-    // Colores de cada club (3 letras de FPL): principal, secundario, patrón y ancho de raya.
-    // Solo colores y rayas: sin escudos, patrocinadores ni marcas.
+    // Equipaciones: b=cuerpo, s=mangas, t=cuello y puños, p=patrón (stripes|pin), q=color del patrón, w=ancho.
+    // Solo colores y dibujo de la prenda: sin escudos, patrocinadores ni marcas.
     const CLUB={
-      ARS:['#e41b23','#ffffff','solid'], AVL:['#7b1e3d','#8fc4ea','solid'],
-      BOU:['#d71920','#111111','stripes',6], BRE:['#e4002b','#ffffff','stripes',6],
-      BHA:['#0057b8','#ffffff','stripes',4], BUR:['#6c1d45','#99d6ea','solid'],
-      CHE:['#034694','#ffffff','solid'], COV:['#5bb8e8','#ffffff','solid'],
-      CRY:['#1b458f','#c4122e','stripes',5], EVE:['#0a3d9c','#ffffff','solid'],
-      FUL:['#ffffff','#111111','solid'], HUL:['#f5a31a','#111111','solid'],
-      IPS:['#0b3fa8','#ffffff','solid'], LEE:['#ffffff','#1d428a','solid'],
-      LEI:['#0b3a9a','#ffffff','solid'], LIV:['#c8102e','#ffffff','solid'],
-      MCI:['#6cabdd','#ffffff','solid'], MUN:['#da291c','#111111','solid'],
-      NEW:['#1a1a1a','#ffffff','stripes',7], NFO:['#d90f1a','#ffffff','solid'],
-      SOU:['#d71920','#ffffff','stripes',6], SUN:['#e8222f','#ffffff','stripes',6],
-      TOT:['#ffffff','#132257','solid'], WHU:['#7a263a','#1bb1e7','solid'],
-      WOL:['#fdb913','#111111','solid'], WBA:['#122f67','#ffffff','stripes',6],
-      MID:['#c8102e','#ffffff','solid'], MIL:['#0a2a6e','#ffffff','solid']
+      ARS:{b:'#ef0107',s:'#ffffff',t:'#ffffff'}, AVL:{b:'#6c1d45',s:'#95bfe5',t:'#95bfe5'},
+      BOU:{b:'#e62333',t:'#111111',p:'stripes',q:'#111111',w:5.5}, BRE:{b:'#e30613',t:'#111111',p:'stripes',q:'#ffffff',w:5.5},
+      BHA:{b:'#0057b8',t:'#ffffff',p:'pin',q:'#ffffff',w:1.5}, BUR:{b:'#6c1d45',s:'#99d6ea',t:'#99d6ea'},
+      CHE:{b:'#1d4fb8',t:'#ffffff'}, COV:{b:'#5bb8e8',t:'#ffffff'},
+      CRY:{b:'#1b458f',t:'#c4122e',p:'stripes',q:'#c4122e',w:5.5}, EVE:{b:'#1f4fb0',t:'#ffffff'},
+      FUL:{b:'#ffffff',t:'#111111'}, HUL:{b:'#f5a31a',t:'#111111'},
+      IPS:{b:'#1747a8',t:'#ffffff'}, LEE:{b:'#ffffff',t:'#1d428a'},
+      LEI:{b:'#0b3a9a',t:'#fdbe11'}, LIV:{b:'#d3121f',t:'#ffffff'},
+      MCI:{b:'#6cabdd',t:'#ffffff'}, MUN:{b:'#c8102e',s:'#c8102e',t:'#111111'},
+      NEW:{b:'#f5f5f5',t:'#111111',p:'stripes',q:'#1a1a1a',w:6}, NFO:{b:'#d90f1a',t:'#ffffff'},
+      SOU:{b:'#d71920',t:'#111111',p:'stripes',q:'#ffffff',w:6}, SUN:{b:'#e8222f',t:'#111111',p:'stripes',q:'#ffffff',w:6},
+      TOT:{b:'#ffffff',t:'#132257'}, WHU:{b:'#7a263a',s:'#1bb1e7',t:'#1bb1e7'},
+      WOL:{b:'#fdb913',t:'#111111'}, WBA:{b:'#122f67',t:'#ffffff',p:'stripes',q:'#ffffff',w:6},
+      MID:{b:'#c8102e',t:'#ffffff'}, MIL:{b:'#0a2a6e',t:'#ffffff'}
     };
-    // Porteros: manga larga y un color por club (gris, rosa, amarillo, verde o celeste)
-    const GKC=[['#d9dde2','#7f8895'],['#ec4899','#7a1b4d'],['#f5c518','#7a5b00'],['#22c55e','#0f5132'],['#38bdf8','#0b4a6f']];
+    // Porteros: manga larga y un color por club
+    const GKC=[['#e9ecef','#6b7280'],['#ec4899','#7a1b4d'],['#f5c518','#7a5b00'],['#22c55e','#0f5132'],['#38bdf8','#0b4a6f']];
     const GKFIX={ARS:0,BHA:1};
     let jid=0;
-    // Camiseta: color del club, rayas si toca, cuello en V, ribetes y algo de sombra
+    // Camiseta realista: hombros con costura, mangas (a veces de otro color), cuello, puños,
+    // pliegues, sombra bajo los brazos, trama de tejido y brillo en los hombros
     function jersey(tid,gk){
       const code=(J.tshort||{})[tid]||'';
       let c=CLUB[code];
-      if(gk){const g=GKC[code in GKFIX?GKFIX[code]:tid%GKC.length]; c=[g[0],g[1],'solid'];}
-      else if(!c){const h=(tid*47)%360; c=['hsl('+h+',65%,48%)','#ffffff','solid'];}
-      const p=c[0], s=c[1], k=c[2], w=c[3]||6, id='jc'+(jid++);
-      const body=gk
-        ?'M20 4 L7 9 L0 36 L10 39 L14 24 L14 57 L50 57 L50 24 L54 39 L64 36 L57 9 L44 4 L32 15 Z'
-        :'M20 4 L8 10 L1 27 L12 31 L14 23 L14 57 L50 57 L50 23 L52 31 L63 27 L56 10 L44 4 L32 15 Z';
-      const cuffL=gk?'M0 34 L10 37.5':'M1 25 L12 29', cuffR=gk?'M64 34 L54 37.5':'M63 25 L52 29';
+      if(gk){const g=GKC[code in GKFIX?GKFIX[code]:tid%GKC.length]; c={b:g[0],t:g[1]};}
+      else if(!c){const h=(tid*47)%360; c={b:'hsl('+h+',65%,48%)',t:'#ffffff'};}
+      const B=c.b, S=c.s||c.b, T=c.t||'#fff', id='jc'+(jid++);
+      const torso='M20 4 C26 10 38 10 44 4 L50 8 L50 57 Q32 61 14 57 L14 8 Z';
+      const slv=gk?'M20 4 L9 8 L-2 44 L9 48 L14 30 L14 8 Z':'M20 4 L9 8 L-1 31 L10 36 L14 27 L14 8 Z';
+      const cuff=gk?'M-2.5 45.5 L9.5 49.5':'M-1.5 32.5 L10.5 37.5';
+      const mir='translate(64 0) scale(-1 1)';
       let pat='';
-      if(k==='stripes'){for(let x=2;x<64;x+=2*w) pat+='<rect x="'+x+'" y="0" width="'+w+'" height="60" fill="'+s+'"/>';}
-      return '<svg class="jsv" viewBox="0 0 64 60" aria-hidden="true"><defs>'
-        +'<clipPath id="'+id+'c"><path d="'+body+'"/></clipPath>'
-        +'<linearGradient id="'+id+'g" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#000" stop-opacity=".25"/><stop offset=".3" stop-color="#000" stop-opacity="0"/><stop offset=".7" stop-color="#fff" stop-opacity=".06"/><stop offset="1" stop-color="#000" stop-opacity=".28"/></linearGradient></defs>'
-        +'<g clip-path="url(#'+id+'c)"><rect width="64" height="60" fill="'+p+'"/>'+pat
-        +'<path d="'+cuffL+'" stroke="'+s+'" stroke-width="4.5"/><path d="'+cuffR+'" stroke="'+s+'" stroke-width="4.5"/>'
-        +'<rect width="64" height="60" fill="url(#'+id+'g)"/></g>'
-        +'<path d="'+body+'" fill="none" stroke="rgba(0,0,0,.4)" stroke-width="1"/>'
-        +'<path d="M20 4 L32 15 L44 4" fill="none" stroke="'+s+'" stroke-width="3" stroke-linejoin="round"/>'
-        +'<path d="M20 4 L32 15 L44 4" fill="none" stroke="rgba(0,0,0,.25)" stroke-width=".8" stroke-linejoin="round"/></svg>';
+      if(c.p==='stripes'){for(let x=-4;x<70;x+=2*c.w) pat+='<rect x="'+x+'" y="0" width="'+c.w+'" height="62" fill="'+c.q+'"/>';}
+      if(c.p==='pin'){for(let x=-3;x<70;x+=5) pat+='<rect x="'+x+'" y="0" width="'+c.w+'" height="62" fill="'+c.q+'" opacity=".85"/>';}
+      const sl=(x)=>'<g'+(x?' transform="'+mir+'"':'')+'>'
+        +(S!==B?'<path d="'+slv+'" fill="'+S+'"/>':'')
+        +'<path d="'+cuff+'" stroke="'+T+'" stroke-width="4.4" fill="none"/>'
+        +'<path d="M20 4 L9 8 M14 8 L14 27" stroke="rgba(0,0,0,.35)" stroke-width=".8" fill="none"/>'
+        +'<path d="M10 14 L4 30" stroke="rgba(0,0,0,.12)" stroke-width="2.5" fill="none"/></g>';
+      return '<svg class="jsv" viewBox="-3 0 70 62" aria-hidden="true"><defs>'
+        +'<clipPath id="'+id+'c"><path d="'+torso+'"/><path d="'+slv+'"/><path d="'+slv+'" transform="'+mir+'"/></clipPath>'
+        +'<linearGradient id="'+id+'g" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#000" stop-opacity=".32"/><stop offset=".22" stop-color="#000" stop-opacity="0"/><stop offset=".55" stop-color="#fff" stop-opacity=".1"/><stop offset=".78" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".34"/></linearGradient>'
+        +'<linearGradient id="'+id+'v" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".16"/><stop offset=".35" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".22"/></linearGradient>'
+        +'<pattern id="'+id+'t" width="3" height="3" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="3" height="1" fill="#000" opacity=".07"/></pattern></defs>'
+        +'<g clip-path="url(#'+id+'c)"><rect x="-3" width="70" height="62" fill="'+B+'"/>'+pat
+        +sl(0)+sl(1)
+        +'<path d="M20 12 Q18 36 17 56 M44 12 Q46 36 47 56" stroke="rgba(0,0,0,.10)" stroke-width="3" fill="none"/>'
+        +'<path d="M32 14 L32 58" stroke="rgba(255,255,255,.07)" stroke-width="5" fill="none"/>'
+        +'<rect x="-3" width="70" height="62" fill="url(#'+id+'g)"/><rect x="-3" width="70" height="62" fill="url(#'+id+'v)"/>'
+        +'<rect x="-3" width="70" height="62" fill="url(#'+id+'t)"/>'
+        +'<path d="M14 54 Q32 58 50 54" stroke="rgba(0,0,0,.2)" stroke-width="1.2" fill="none"/></g>'
+        +'<path d="'+torso+'" fill="none" stroke="rgba(0,0,0,.45)" stroke-width=".9"/>'
+        +'<path d="'+slv+'" fill="none" stroke="rgba(0,0,0,.45)" stroke-width=".9"/><path d="'+slv+'" transform="'+mir+'" fill="none" stroke="rgba(0,0,0,.45)" stroke-width=".9"/>'
+        +'<path d="M20 4 C26 10 38 10 44 4" fill="none" stroke="'+T+'" stroke-width="3.4" stroke-linecap="round"/>'
+        +'<path d="M21.5 5.8 C27 11 37 11 42.5 5.8" fill="none" stroke="rgba(0,0,0,.4)" stroke-width=".8"/>'
+        +'<path d="M20.5 3 C26 8 38 8 43.5 3" fill="none" stroke="rgba(255,255,255,.3)" stroke-width=".7"/></svg>';
     }
 
     // Jugador del once: camiseta + nombre + rival (o "ya jugó" con sus puntos)
@@ -901,7 +965,7 @@ const JORNADA={"gw":10,"updated":"07/11/2026 13:42","available":true,"note":"","
       }).join('');
       const rep=common.length?'<div class="jreprow">'+common.map(repTile).join('')+'</div>':'';
       return '<div><div class="jpl '+cls+'"><span>'+esc(fname(e))+'</span><span>'+fmt(sc)+' pts</span></div>'
-        +'<div class="jpitch">'+(rows||'<p class="jmsg">Sin jugadores distintos</p>')+rep+'</div></div>';
+        +'<div class="jpitch"><i class="jarc"></i>'+(rows||'<p class="jmsg">Sin jugadores distintos</p>')+rep+'</div></div>';
     }
 
     function foot(a,b,pa,pb,sa,sb,common){
@@ -939,7 +1003,7 @@ const JORNADA={"gw":10,"updated":"07/11/2026 13:42","available":true,"note":"","
       });
     });
     const LEAD=[
-      ['hs','Mejor jornada de la liga'],['avg','Mejor promedio por jornada'],['bw','Más goleadas (+20)'],
+      ['hs','Mejor jornada de la liga'],['avg','Mejor promedio por jornada'],['bw','Más domadas (+20)'],
       ['cw','Rey del susto (victorias ≤4)'],['cl','Más derrotas ajustadas (≤4)'],['luck','Más afortunado'],
       ['unluck','Más gafado'],['std','Más caótico']
     ];
@@ -991,7 +1055,7 @@ const JORNADA={"gw":10,"updated":"07/11/2026 13:42","available":true,"note":"","
         +line('Mayor victoria',big?'+'+big.dd+' pts a '+esc(fname(big.vs))+' (GW'+big.gw+')':'aún sin victorias')
         +line('Chips usados',used||'ninguno')
         +line('Chips recibidos',recv||'ninguno')
-        +line('Goleadas y ajustados','goleadas (+20): '+(s.bw||0)+' · victorias ≤4: '+(s.cw||0)+' · derrotas ≤4: '+(s.cl||0))
+        +line('Domadas y ajustados','domadas (+20): '+(s.bw||0)+' · victorias ≤4: '+(s.cw||0)+' · derrotas ≤4: '+(s.cl||0))
         +line('Suerte',(s.luck||0)+' victorias con suerte · '+(s.unluck||0)+' derrotas con mala suerte')
         +line('Récords',tags.length?tags.map(x=>'<span class="jrec">'+esc(x)+'</span>').join(''):'sin récords todavía')
         +'</div></details>';
