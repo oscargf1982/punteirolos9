@@ -300,6 +300,26 @@ body{
 .jtile{background:rgba(255,255,255,.06);border-radius:8px;padding:7px 4px;text-align:center;min-width:0}
 .jtile b{display:block;font-family:'Space Mono',monospace;font-size:16px;color:#fff;white-space:nowrap}
 .jtile span{display:block;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
+.mepick{position:fixed;inset:0;z-index:9999;background:rgba(10,4,38,.92);display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
+.mebox{width:100%;max-width:440px;background:linear-gradient(160deg,#2b0a6b,#150a45);border:1px solid rgba(0,229,255,.35);border-radius:18px;padding:20px 16px;max-height:92vh;overflow:auto}
+.mebox h2{font-size:24px;font-weight:900;margin-bottom:6px;color:#fff}
+.mebox p{font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:14px}
+.melist{display:grid;gap:8px;margin-bottom:12px}
+.melist button{display:flex;flex-direction:column;align-items:flex-start;text-align:left;padding:10px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);color:#fff;font:inherit;cursor:pointer}
+.melist button b{font-size:15px}.melist button span{font-size:12px;color:var(--text3)}
+.melist button:active{background:rgba(0,229,255,.18)}
+.meskip{width:100%;padding:10px;border-radius:12px;border:1px dashed rgba(255,255,255,.3);background:none;color:var(--text2);font:inherit;cursor:pointer}
+.jme{display:flex;justify-content:space-between;align-items:center;gap:8px;margin:0 0 10px;padding:10px 12px;border-radius:12px;background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.3);font-size:13px;color:var(--text2)}
+.jme b{color:#fff}.jchg{border:1px solid rgba(255,255,255,.3);background:none;color:var(--cyan);border-radius:20px;padding:4px 12px;font:700 11px 'Space Mono',monospace;cursor:pointer}
+.jalert{margin:0 0 14px;padding:12px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);font-size:13px;color:var(--text2)}
+.jalert>b{display:block;color:#fff;font-size:15px;margin-bottom:6px}
+.jak{margin:10px 0 4px;font:700 10px 'Space Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:var(--cyan)}
+.jalert ul{list-style:none;margin:0;padding:0}
+.jalert li{display:flex;gap:8px;padding:6px 0;border-top:1px solid rgba(255,255,255,.07);line-height:1.35}
+.jalert li small{color:var(--text3);font-size:10px;text-transform:uppercase}
+.jok{margin:0;color:var(--text2)}.jnote{margin:0 0 4px;font-size:11px;color:var(--text3)}
+.jduel.mine{border-color:var(--cyan);box-shadow:0 0 0 1px var(--cyan)}
+.jmine{background:var(--cyan);color:#150a45;font:800 11px 'Space Mono',monospace;letter-spacing:.06em;padding:3px 12px}
 .jmore{display:block;width:calc(100% - 20px);margin:2px 10px 10px;padding:8px;border:1px solid rgba(0,229,255,.4);border-radius:10px;background:rgba(0,229,255,.08);color:var(--cyan);font:700 12px 'Space Mono',monospace;letter-spacing:.04em;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .jlines[hidden]{display:none}
 .jlines{padding:0 12px 10px;font-size:13px;color:var(--text2);line-height:1.5}
@@ -1116,7 +1136,58 @@ JORNADA_JS = r'''(function(){
         +'</div></details>';
     }
 
-    let html='<p class="jmsg"><b>Jornada '+J.gw+'</b> · datos a '+esc(J.updated)+'.</p>';
+    // ---- Mi equipo: se elige la primera vez y se recuerda en este dispositivo ----
+    let ME=null, SKIP=false;
+    try{ME=parseInt(localStorage.getItem('punt_me'),10)||null; SKIP=localStorage.getItem('punt_skip')==='1';}catch(e){}
+    if(ME&&!T[ME]) ME=null;
+    const saveMe=v=>{
+      try{
+        if(v){localStorage.setItem('punt_me',String(v));localStorage.removeItem('punt_skip');}
+        else if(v===0){localStorage.removeItem('punt_me');localStorage.setItem('punt_skip','1');}
+        else{localStorage.removeItem('punt_me');localStorage.removeItem('punt_skip');}
+      }catch(e){}
+      location.reload();
+    };
+    function picker(){
+      const o=document.createElement('div'); o.id='mepick'; o.className='mepick';
+      o.innerHTML='<div class="mebox"><h2>¿Quién eres?</h2><p>Elige tu equipo de la liga. Se abrirá directamente tu duelo y te avisaremos de lesiones y cambios de precio de tus jugadores. Se guarda solo en este dispositivo.</p>'
+        +'<div class="melist">'+TEAMS.slice().sort((a,b)=>String(a.p).localeCompare(String(b.p))).map(t=>'<button type="button" data-e="'+t.e+'"><b>'+esc(t.p)+'</b><span>'+esc(t.n)+'</span></button>').join('')+'</div>'
+        +'<button type="button" class="meskip" data-e="0">Solo quiero mirar</button></div>';
+      o.addEventListener('click',ev=>{const b=ev.target.closest('button[data-e]'); if(b) saveMe(parseInt(b.dataset.e,10));});
+      document.body.appendChild(o);
+    }
+    function meCard(){
+      if(!ME) return SKIP?'<div class="jme"><span>¿Eres uno de los managers?</span><button type="button" class="jchg">Elegir mi equipo</button></div>':'';
+      return '<div class="jme"><span>Hola, <b>'+esc(T[ME].p)+'</b> · '+esc(T[ME].n)+'</span><button type="button" class="jchg">Cambiar</button></div>'+alerts();
+    }
+    function alerts(){
+      const sq=(J.squad||{})[ME];
+      if(!sq||!sq.length) return '<div class="jalert"><b>Tus avisos</b><p>Todavía no hay datos de tu plantilla.</p></div>';
+      const ST={i:'Lesionado',s:'Sancionado',u:'No disponible',n:'No disponible',d:'Duda'};
+      const bad=[], price=[];
+      sq.slice().sort((a,b)=>a[1]-b[1]).forEach(x=>{
+        const p=PL[x[0]]; if(!p) return;
+        const role=x[1]<=11?'titular':'banquillo';
+        if(p[5]&&p[5]!=='a'){
+          bad.push('<li><span>'+(p[5]==='d'?'⚠️':'⛔')+'</span><div><b>'+esc(p[0])+'</b> <small>'+role+'</small><br>'+esc(ST[p[5]]||'Aviso')
+            +(p[6]!=null?' · '+p[6]+'% de jugar':'')+(p[7]?' · '+esc(p[7]):'')+'</div></li>');
+        }
+        if(p[9]){
+          const up=p[9]>0, d=Math.abs(p[9])/10;
+          price.push('<li><span>'+(up?'🔺':'🔻')+'</span><div><b>'+esc(p[0])+'</b> <small>'+role+'</small><br>'+(up?'Sube ':'Baja ')+d.toFixed(1)+'m · ahora '+((p[8]||0)/10).toFixed(1)+'m</div></li>');
+        }
+      });
+      const old=J.squad_gw!==J.gw?'<p class="jnote">Plantilla de la jornada '+J.squad_gw+' (la de esta jornada se publica al pasar el deadline).</p>':'';
+      return '<div class="jalert"><b>Tus avisos</b>'+old
+        +'<div class="jak">Lesiones y dudas</div>'+(bad.length?'<ul>'+bad.join('')+'</ul>':'<p class="jok">✅ Ningún jugador con aviso.</p>')
+        +'<div class="jak">Cambios de precio esta jornada</div>'+(price.length?'<ul>'+price.join('')+'</ul>':'<p class="jok">Sin cambios de precio en tu plantilla.</p>')+'</div>';
+    }
+    root.addEventListener('click',ev=>{
+      if(ev.target.closest&&ev.target.closest('.jchg')){ saveMe(ME?null:null); }
+    });
+    if(!ME&&!SKIP) picker();
+
+    let html=meCard()+'<p class="jmsg"><b>Jornada '+J.gw+'</b> · datos a '+esc(J.updated)+'.</p>';
     if(J.available){
       html+='<p class="jmsg">Los jugadores que tienen <b>los dos</b> managers en su once no cuentan en el duelo. Marcador orientativo: puntos de los jugadores distintos (con capitán) menos las penalizaciones por fichajes. El banquillo no suma salvo que un suplente entre por un titular que no ha jugado (entran por orden, el portero solo por el portero) o que el manager use Bench Boost.</p>';
     }
@@ -1126,8 +1197,12 @@ JORNADA_JS = r'''(function(){
       return;
     }
 
-    J.duels.forEach((d,i)=>{
+    const mineIdx=J.duels.findIndex(d=>ME&&(d[0]===ME||d[1]===ME));
+    const order=J.duels.map((d,i)=>i).sort((x,y)=>(y===mineIdx)-(x===mineIdx)||x-y);
+    order.forEach((di,i)=>{
+      const d=J.duels[di];
       const a=d[0], b=d[1];
+      const isMine=di===mineIdx;
       const pa=J.picks[a], pb=J.picks[b];
       const both=!!(pa&&pb);
       let sa=0, sb=0, body='';
@@ -1151,8 +1226,9 @@ JORNADA_JS = r'''(function(){
       const sum='<div class="js-side"><div class="js-nm">'+esc(fname(a))+'</div><div class="js-tm">'+esc(tname(a))+'</div></div>'
         +'<div class="js-sc">'+mid+'</div>'
         +'<div class="js-side r"><div class="js-nm">'+esc(fname(b))+'</div><div class="js-tm">'+esc(tname(b))+'</div></div>';
-      if(both) html+='<details class="jduel"'+(i===0?' open':'')+'><summary>'+sum+'</summary>'+body+'</details>';
-      else html+='<div class="jduel nodet"><div class="jsum">'+sum+'</div></div>';
+      const tag=isMine?'<div class="jmine">⭐ TU DUELO</div>':'';
+      if(both) html+='<details class="jduel'+(isMine?' mine':'')+'"'+(i===0?' open':'')+'>'+tag+'<summary>'+sum+'</summary>'+body+'</details>';
+      else html+='<div class="jduel nodet'+(isMine?' mine':'')+'">'+tag+'<div class="jsum">'+sum+'</div></div>';
     });
     root.innerHTML=html;
     root.addEventListener('click',ev=>{
@@ -1191,6 +1267,7 @@ def build_jornada(bootstrap, teams, gw_matches, gw, updated):
         "gw": gw, "updated": updated, "available": False, "note": "",
         "duels": [[m["entry_1_entry"], m["entry_2_entry"]] for m in gw_matches],
         "picks": {}, "players": {}, "fx": {}, "tshort": {},
+        "squad": {}, "squad_gw": gw,
     }
     if not bootstrap:
         info["note"] = "No se pudieron leer los datos de FPL en esta actualización."
@@ -1225,9 +1302,24 @@ def build_jornada(bootstrap, teams, gw_matches, gw, updated):
         }
         time.sleep(0.3)
 
+    # Plantilla de cada manager para los avisos: la de esta jornada si ya es publica; si no, la de la anterior
     if info["picks"]:
-        info["available"] = True
-        used = {p[0] for pk in info["picks"].values() for p in pk["p"]}
+        for en, pk in info["picks"].items():
+            info["squad"][en] = [[p[0], p[4], p[2]] for p in pk["p"]]
+    elif gw > 1:
+        info["squad_gw"] = gw - 1
+        for t in teams:
+            data = fpl_optional(f"/entry/{t['entry']}/event/{gw - 1}/picks/")
+            if data is None:
+                if not info["squad"]:
+                    break
+                continue
+            info["squad"][t["entry"]] = [[p["element"], p["position"], 1 if p["is_captain"] else 0] for p in data.get("picks", [])]
+            time.sleep(0.3)
+
+    if info["picks"] or info["squad"]:
+        info["available"] = bool(info["picks"])
+        used = {p[0] for pk in info["picks"].values() for p in pk["p"]} | {x[0] for sq in info["squad"].values() for x in sq}
         # Puntos y minutos en directo de cada jugador (si falla, se usan los puntos del bootstrap y no hay sustituciones)
         live = {}
         data_live = fpl_optional(f"/event/{gw}/live/")
@@ -1240,12 +1332,15 @@ def build_jornada(bootstrap, teams, gw_matches, gw, updated):
                 pts = st.get("total_points", e.get("event_points", 0)) if st else e.get("event_points", 0)
                 mins = st.get("minutes") if st else None
                 # [nombre, equipo, tipo, puntos, minutos jugados (None si no se sabe)]
-                info["players"][eid] = [e["web_name"], e["team"], e["element_type"], pts, mins]
+                # [nombre, equipo, tipo, puntos, minutos, estado (a/d/i/s/u/n), % de jugar, noticia, precio x10, cambio de precio x10 esta jornada]
+                info["players"][eid] = [e["web_name"], e["team"], e["element_type"], pts, mins,
+                                        e.get("status", "a"), e.get("chance_of_playing_next_round"), e.get("news", "") or "",
+                                        e.get("now_cost", 0), e.get("cost_change_event", 0)]
                 info["tshort"][e["team"]] = short.get(e["team"], "")
         missing = len(teams) - len(info["picks"])
-        if missing:
+        if info["picks"] and missing:
             info["note"] = f"Faltan los equipos de {missing} manager(s); esos duelos se muestran sin onces."
-    else:
+    if not info["picks"]:
         info["note"] = (f"Los equipos de la jornada {gw} se publican cuando pasa el deadline. "
                         "Aquí tienes los emparejamientos; los onces aparecerán en la próxima actualización "
                         "(martes y sábado) o al lanzar el workflow a mano.")
