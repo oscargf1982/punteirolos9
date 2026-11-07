@@ -848,11 +848,16 @@ JORNADA_JS = r'''(function(){
     // Camiseta realista: hombros con costura, mangas (a veces de otro color), tipo de cuello propio de cada club,
     // puños, pliegues, sombra, trama de tejido, escudo genérico y publicidad inventada
     // Portero: por apellido si hay diseño propio; si no, el portero titular del club
-    const GKCLUBPX={ARS:'raya',BHA:'verbruggen',BUR:'trafford',TOT:'toloisso',EVE:'pickford',BRE:'kelley',FUL:'leno',CRY:'kalinic',MUN:'onana',CHE:'sanchez',SOU:'ramsdale'};
+    // Diseño de cada portero (por apellido) y portero titular de cada club
+    const GKALIAS={raya:'raya',verbruggen:'verbruggen',trafford:'trafford',tzolakis:'toloisso',pickford:'pickford',
+      kinsky:'kalinic',kelleher:'kelley',leno:'leno',lammens:'onana',onana:'onana',sanchez:'sanchez',ramsdale:'ramsdale',
+      szczesny:'szczesny',bayindir:'bayindir',flekken:'flekken',alexander:'alexander',kalinic:'kalinic'};
+    const GKCLUBPX={ARS:'raya',BHA:'verbruggen',LEE:'trafford',HUL:'toloisso',EVE:'pickford',TOT:'kalinic',BRE:'kelley',FUL:'leno',MUN:'onana',CHE:'sanchez',SOU:'ramsdale'};
     function gkPx(code,name){
       if(typeof GKSHIRTS==='undefined') return '';
       const n=String(name||'').toLowerCase();
-      const k=Object.keys(GKSHIRTS).find(x=>n.indexOf(x)>=0)||GKCLUBPX[code];
+      const hit=Object.keys(GKALIAS).find(x=>n.indexOf(x)>=0);
+      const k=hit?GKALIAS[hit]:GKCLUBPX[code];
       return k&&GKSHIRTS[k]?'<img class="jsv jpx" alt="" src="data:image/png;base64,'+GKSHIRTS[k]+'">':'';
     }
     function jersey(tid,gk,pname){
