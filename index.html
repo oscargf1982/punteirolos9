@@ -131,14 +131,81 @@ body{
 .match-card-header{padding:10px 16px;font-size:11px;font-family:'Space Mono',monospace;font-weight:700;letter-spacing:.08em}
 .match-card-body{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;padding:14px 16px}
 .diana-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+/* ===== LA JORNADA ===== */
+.nav{overflow-x:auto}
+.nb{flex:1 0 44px;min-width:44px;font-size:9.5px;letter-spacing:0;padding:10px 0 8px}
+#jornada-root{max-width:900px;margin:0 auto}
+.jmsg{font-size:14px;color:var(--text2);line-height:1.6;padding:2px 2px 12px}
+.jmsg b{color:#fff}
+.jduel{margin-bottom:14px;border-radius:var(--r);overflow:hidden;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1)}
+.jduel>summary,.jsum{list-style:none;cursor:pointer;display:grid;grid-template-columns:1fr auto 1fr 16px;gap:8px;align-items:center;padding:14px;-webkit-tap-highlight-color:transparent}
+.jsum{grid-template-columns:1fr auto 1fr;cursor:default}
+.jduel>summary::-webkit-details-marker{display:none}
+.jduel>summary::after{content:'▾';grid-column:4;color:var(--cyan);font-size:14px;transition:transform .2s}
+.jduel[open]>summary::after{transform:rotate(180deg)}
+.js-side{min-width:0}
+.js-side.r{text-align:right}
+.js-nm{font-size:16px;font-weight:900;color:#fff;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.js-tm{font-size:11px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.js-sc{font-family:'Space Mono',monospace;font-weight:700;font-size:16px;color:var(--text3);white-space:nowrap}
+.js-sc b{font-size:22px;color:var(--text2)}
+.js-sc b.w{color:var(--cyan)}
+
+.jbody{background:#0b0620}
+.jbanner{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:4px;padding:16px 8px 12px;background:radial-gradient(ellipse at 50% 0,#33186e 0,#0b0620 70%)}
+.jb{min-width:0;color:#fff;text-align:center;padding:6px 10px 5px;transform:skewX(-7deg)}
+.jb>*{transform:skewX(7deg)}
+.jb.red{background:linear-gradient(90deg,#a30d1d,#ff3b4a);clip-path:polygon(0 14%,5% 0,100% 8%,96% 100%,2% 90%)}
+.jb.blue{background:linear-gradient(90deg,#1e40af,#3b82f6);clip-path:polygon(4% 8%,100% 0,95% 92%,0 100%)}
+.jb-n{font-size:24px;font-weight:900;font-style:italic;text-transform:uppercase;letter-spacing:-.02em;line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.jb-t{font-size:10px;font-weight:700;opacity:.9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.jb-c{display:inline-block;margin-top:2px;font-size:10px;font-weight:800;background:rgba(0,0,0,.35);border-radius:20px;padding:1px 8px}
+.jb-vs{font-size:28px;font-weight:900;font-style:italic;color:#fff;text-shadow:2px 2px 0 #e11d48,-2px -2px 0 #3b82f6;padding:0 4px}
+
+.jpitches{display:grid;grid-template-columns:1fr;gap:10px;padding-bottom:10px}
+.jpl{display:flex;justify-content:space-between;padding:7px 12px;font-size:12px;font-weight:800;text-transform:uppercase;color:#fff;font-family:'Space Mono',monospace}
+.jpl.red{background:#a30d1d}
+.jpl.blue{background:#1e40af}
+.jpitch{position:relative;padding:18px 2px 10px;background:repeating-linear-gradient(180deg,#1c7f37 0 36px,#23963f 36px 72px)}
+.jpitch::before{content:'';position:absolute;top:0;left:50%;width:44%;height:40px;transform:translateX(-50%);border:2px solid rgba(255,255,255,.5);border-top:0;pointer-events:none}
+.jpitch::after{content:'';position:absolute;top:0;left:50%;width:20%;height:18px;transform:translateX(-50%);border:2px solid rgba(255,255,255,.5);border-top:0;pointer-events:none}
+.jpitch .jmsg{color:#fff;text-align:center}
+.jrow{display:flex;justify-content:space-evenly;align-items:flex-start;margin:12px 0;position:relative;z-index:1}
+.jt{position:relative;width:62px;flex:0 0 auto;text-align:center}
+.jsv{display:block;width:44px;height:41px;margin:0 auto;filter:drop-shadow(0 2px 2px rgba(0,0,0,.4))}
+.jn{background:#fff;color:#1c0028;border-radius:6px;padding:3px 3px 2px;margin:-3px auto 0;max-width:66px;line-height:1.15;position:relative}
+.jn b{display:block;font-size:11px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.jn small{display:block;font-size:10px;font-weight:700;color:#5a3a78;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.jn.played{background:#f5f0ff}
+.jn.played small{background:#1c0028;color:#fff;border-radius:4px;margin-top:1px}
+.jbadge{position:absolute;top:-6px;right:2px;z-index:2;min-width:22px;height:22px;padding:0 3px;border-radius:50%;background:#7c3aed;color:#fff;font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;border:2px solid #fff;font-family:'Space Mono',monospace}
+.jcap{position:absolute;top:-6px;left:2px;z-index:2;background:#ffd700;color:#1c0028;font-size:10px;font-weight:900;border-radius:10px;padding:1px 5px}
+.jreprow{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;padding:8px 6px 2px;position:relative;z-index:1}
+.jreprow .jt{border:2px dashed rgba(255,255,255,.4);border-radius:10px;padding:6px 2px 4px;background:rgba(0,0,0,.2)}
+.jt.jrep{opacity:.55;filter:grayscale(1)}
+.jx{position:absolute;top:10px;left:50%;transform:translateX(-50%);font-size:22px;color:#fff;font-weight:900;text-shadow:0 0 3px #000;z-index:2}
+
+.jfoot{display:grid;grid-template-columns:1fr;gap:8px;padding:6px 12px 14px}
+.jf{background:#160a3a;border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.6}
+.jf b{color:#fff}
+.jf small{color:var(--text3)}
+.jf .pos{color:var(--cyan);font-family:'Space Mono',monospace;font-size:14px}
+.jf .neg{color:var(--pink);font-family:'Space Mono',monospace;font-size:14px}
+.jf.mid{text-align:center;font-weight:900;color:#fff;font-size:15px;display:flex;align-items:center;justify-content:center}
+@media(min-width:720px){
+  .jpitches{grid-template-columns:1fr 1fr}
+  .jfoot{grid-template-columns:1.2fr .8fr 1.2fr}
+  .jt{width:76px}
+  .jsv{width:50px;height:46px}
+}
 </style>
 </head>
 <body>
 <div class="hero">
   <div class="hero-badge">⚽ Punteirolos 9.0 · 2026/27</div>
   <h1>PUNTEIROLOS<br>9.0</h1>
-  <p class="hero-sub">Liga #42303 · Actualizado: 03/11/2026 17:27</p>
-  <div class="live-pill"><span class="live-dot"></span>EN CURSO · GW 9</div>
+  <p class="hero-sub">Liga #42303 · Actualizado: 07/11/2026 12:05</p>
+  <div class="live-pill"><span class="live-dot"></span>EN CURSO · GW 10</div>
   <div class="hstrip" id="hstrip"></div>
 </div>
 
@@ -207,13 +274,19 @@ body{
   <div id="diana"></div>
 </div>
 
+<div class="panel" id="panel-jornada">
+  <div class="stitle">⚽ La jornada</div>
+  <div id="jornada-root"><p class="jmsg">Cargando duelos…</p></div>
+</div>
+
 <nav class="nav">
   <button class="nb on" data-p="home"><span class="nb-icon">🏠</span>Inicio</button>
+  <button class="nb" data-p="jornada"><span class="nb-icon">⚽</span>Jornada</button>
   <button class="nb" data-p="stats"><span class="nb-icon">📊</span>Stats</button>
   <button class="nb" data-p="streaks"><span class="nb-icon">🔥</span>Rachas</button>
-  <button class="nb" data-p="charts"><span class="nb-icon">📈</span>Gráficos</button>
+  <button class="nb" data-p="charts"><span class="nb-icon">📈</span>Gráf.</button>
   <button class="nb" data-p="compare"><span class="nb-icon">🆚</span>H2H</button>
-  <button class="nb" data-p="narrative"><span class="nb-icon">📰</span>Historia</button>
+  <button class="nb" data-p="narrative"><span class="nb-icon">📰</span>Hist.</button>
   <button class="nb" data-p="awards"><span class="nb-icon">🏅</span>Premios</button>
 </nav>
 
@@ -332,13 +405,13 @@ const MATCHES=[
   [4414467,63,4273984,46,9],
   [208380,52,2739209,57,9]
 ];
-const CURRENT_GW=9;
+const CURRENT_GW=10;
 const CHIPS_USED={
   2740581:[{name:"3xc",event:2}],
   4414467:[{name:"wildcard",event:7}],
   6036721:[{name:"wildcard",event:9}],
   232272:[{name:"wildcard",event:7}],
-  2739209:[{name:"wildcard",event:4},{name:"freehit",event:6}],
+  2739209:[{name:"wildcard",event:4},{name:"freehit",event:6},{name:"bboost",event:10}],
   336896:[{name:"freehit",event:4},{name:"wildcard",event:6}],
   209323:[{name:"wildcard",event:8}],
   2763130:[],
@@ -701,6 +774,127 @@ document.querySelectorAll('.nb').forEach(btn=>{
     window.scrollTo(0,0);
   });
 });
+</script>
+<script>
+const JORNADA={"gw":10,"updated":"07/11/2026 12:05","available":true,"note":"","duels":[[2740014,208380],[2739209,4414467],[4273984,2738656],[2742897,352983],[314451,2740581],[2763130,6036721],[375826,232272],[253425,371963],[209323,336896],[2609302,15871]],"picks":{"2740581":{"chip":null,"hits":1,"cost":0,"p":[[1,1,0,0,1,1],[31,1,0,0,2,2],[503,1,0,0,3,2],[8,1,0,0,4,2],[115,1,0,0,5,2],[237,1,0,0,6,3],[68,1,0,0,7,3],[154,1,0,0,8,3],[401,1,0,0,9,4],[79,1,0,1,10,4],[411,2,1,0,11,4],[572,0,0,0,12,1],[399,0,0,0,13,3],[124,0,0,0,14,3],[204,0,0,0,15,2]]},"4414467":{"chip":null,"hits":1,"cost":0,"p":[[1,1,0,0,1,1],[60,1,0,0,2,2],[115,1,0,0,3,2],[8,1,0,0,4,2],[31,1,0,1,5,2],[40,1,0,0,6,3],[68,1,0,0,7,3],[154,1,0,0,8,3],[249,1,0,0,9,4],[166,1,0,0,10,4],[411,2,1,0,11,4],[250,0,0,0,12,1],[124,0,0,0,13,3],[334,0,0,0,14,2],[286,0,0,0,15,3]]},"6036721":{"chip":null,"hits":0,"cost":0,"p":[[109,1,0,0,1,1],[8,1,0,0,2,2],[115,1,0,0,3,2],[31,1,0,0,4,2],[154,1,0,1,5,3],[40,1,0,0,6,3],[68,1,0,0,7,3],[124,1,0,0,8,3],[411,2,1,0,9,4],[379,1,0,0,10,4],[79,1,0,0,11,4],[496,0,0,0,12,1],[512,0,0,0,13,3],[508,0,0,0,14,2],[304,0,0,0,15,2]]},"232272":{"chip":null,"hits":2,"cost":4,"p":[[109,1,0,0,1,1],[8,1,0,0,2,2],[229,1,0,0,3,2],[115,1,0,0,4,2],[112,1,0,0,5,2],[68,1,0,0,6,3],[124,1,0,0,7,3],[40,1,0,1,8,3],[79,1,0,0,9,4],[379,1,0,0,10,4],[411,2,1,0,11,4],[572,0,0,0,12,1],[286,0,0,0,13,3],[94,0,0,0,14,3],[330,0,0,0,15,2]]},"2739209":{"chip":"bboost","hits":1,"cost":0,"p":[[496,1,0,0,1,1],[31,1,0,0,2,2],[115,1,0,0,3,2],[8,1,0,0,4,2],[154,1,0,0,5,3],[68,1,0,0,6,3],[40,1,0,0,7,3],[124,1,0,0,8,3],[79,1,0,0,9,4],[166,1,0,1,10,4],[411,2,1,0,11,4],[572,1,0,0,12,1],[15,1,0,0,13,3],[391,1,0,0,14,2],[330,1,0,0,15,2]]},"336896":{"chip":null,"hits":0,"cost":0,"p":[[1,1,0,0,1,1],[566,1,0,0,2,2],[4,1,0,1,3,2],[112,1,0,0,4,2],[427,1,0,0,5,3],[53,1,0,0,6,3],[40,1,0,0,7,3],[124,1,0,0,8,3],[569,1,0,0,9,4],[79,2,1,0,10,4],[411,1,0,0,11,4],[251,0,0,0,12,1],[268,0,0,0,13,3],[449,0,0,0,14,2],[173,0,0,0,15,2]]},"209323":{"chip":null,"hits":0,"cost":0,"p":[[496,1,0,0,1,1],[362,1,0,0,2,2],[31,1,0,0,3,2],[88,1,0,0,4,2],[53,1,0,0,5,3],[40,1,0,0,6,3],[124,1,0,0,7,3],[154,1,0,1,8,3],[379,1,0,0,9,4],[411,2,1,0,10,4],[166,1,0,0,11,4],[497,0,0,0,12,1],[94,0,0,0,13,3],[175,0,0,0,14,2],[330,0,0,0,15,2]]},"2763130":{"chip":null,"hits":0,"cost":0,"p":[[412,1,0,0,1,1],[229,1,0,0,2,2],[114,1,0,0,3,2],[175,1,0,0,4,2],[366,1,0,0,5,3],[399,1,0,0,6,3],[40,1,0,0,7,3],[427,1,0,0,8,3],[411,2,1,0,9,4],[379,1,0,0,10,4],[166,1,0,1,11,4],[171,0,0,0,12,1],[542,0,0,0,13,3],[173,0,0,0,14,2],[259,0,0,0,15,2]]},"375826":{"chip":null,"hits":0,"cost":0,"p":[[1,1,0,0,1,1],[356,1,0,0,2,2],[330,1,0,0,3,2],[391,1,0,0,4,2],[115,1,0,0,5,2],[427,1,0,0,6,3],[94,1,0,0,7,3],[605,1,0,0,8,3],[379,1,0,1,9,4],[411,2,1,0,10,4],[79,1,0,0,11,4],[497,0,0,0,12,1],[13,0,0,0,13,3],[290,0,0,0,14,3],[388,0,0,0,15,2]]},"2609302":{"chip":null,"hits":2,"cost":4,"p":[[496,1,0,0,1,1],[31,1,0,0,2,2],[112,1,0,0,3,2],[8,1,0,0,4,2],[115,1,0,1,5,2],[154,1,0,0,6,3],[124,1,0,0,7,3],[15,1,0,0,8,3],[464,1,0,0,9,4],[379,1,0,0,10,4],[411,2,1,0,11,4],[250,0,0,0,12,1],[87,0,0,0,13,2],[268,0,0,0,14,3],[286,0,0,0,15,3]]},"2742897":{"chip":null,"hits":0,"cost":0,"p":[[496,1,0,0,1,1],[593,1,0,0,2,2],[4,1,0,0,3,2],[8,1,0,0,4,2],[115,1,0,0,5,2],[40,1,0,0,6,3],[124,1,0,0,7,3],[399,1,0,0,8,3],[156,1,0,0,9,3],[411,2,1,0,10,4],[166,1,0,1,11,4],[385,0,0,0,12,1],[605,0,0,0,13,3],[175,0,0,0,14,2],[272,0,0,0,15,4]]},"15871":{"chip":null,"hits":2,"cost":0,"p":[[1,1,0,0,1,1],[449,1,0,0,2,2],[8,1,0,0,3,2],[115,1,0,0,4,2],[124,1,0,0,5,3],[40,1,0,0,6,3],[68,1,0,0,7,3],[427,1,0,0,8,3],[379,1,0,0,9,4],[138,1,0,1,10,4],[411,2,1,0,11,4],[497,0,0,0,12,1],[53,0,0,0,13,3],[173,0,0,0,14,2],[305,0,0,0,15,2]]},"208380":{"chip":null,"hits":1,"cost":0,"p":[[57,1,0,0,1,1],[4,1,0,0,2,2],[60,1,0,0,3,2],[115,1,0,0,4,2],[68,1,0,0,5,3],[512,1,0,0,6,3],[40,1,0,0,7,3],[15,1,0,1,8,3],[124,1,0,0,9,3],[411,2,1,0,10,4],[569,1,0,0,11,4],[109,0,0,0,12,1],[316,0,0,0,13,4],[91,0,0,0,14,2],[173,0,0,0,15,2]]},"253425":{"chip":null,"hits":1,"cost":0,"p":[[496,1,0,0,1,1],[31,1,0,0,2,2],[8,1,0,0,3,2],[115,1,0,0,4,2],[154,1,0,0,5,3],[40,1,0,0,6,3],[68,1,0,0,7,3],[124,1,0,0,8,3],[379,1,0,0,9,4],[411,2,1,0,10,4],[166,1,0,1,11,4],[497,0,0,0,12,1],[399,0,0,0,13,3],[173,0,0,0,14,2],[586,0,0,0,15,2]]},"2740014":{"chip":null,"hits":1,"cost":0,"p":[[109,1,0,0,1,1],[8,1,0,0,2,2],[391,1,0,0,3,2],[115,1,0,0,4,2],[124,1,0,0,5,3],[68,1,0,0,6,3],[154,1,0,1,7,3],[94,1,0,0,8,3],[411,2,1,0,9,4],[79,1,0,0,10,4],[166,1,0,0,11,4],[629,0,0,0,12,1],[330,0,0,0,13,2],[286,0,0,0,14,3],[282,0,0,0,15,2]]},"371963":{"chip":null,"hits":0,"cost":0,"p":[[109,1,0,0,1,1],[10,1,0,0,2,2],[277,1,0,0,3,2],[388,1,0,0,4,2],[399,1,0,0,5,3],[427,1,0,1,6,3],[15,1,0,0,7,3],[40,1,0,0,8,3],[124,1,0,0,9,3],[379,1,0,0,10,4],[411,2,1,0,11,4],[572,0,0,0,12,1],[79,0,0,0,13,4],[115,0,0,0,14,2],[176,0,0,0,15,2]]},"4273984":{"chip":null,"hits":0,"cost":0,"p":[[226,1,0,0,1,1],[388,1,0,0,2,2],[115,1,0,0,3,2],[8,1,0,0,4,2],[40,1,0,0,5,3],[427,1,0,0,6,3],[399,1,0,0,7,3],[426,2,1,0,8,3],[379,1,0,0,9,4],[138,1,0,0,10,4],[165,1,0,1,11,4],[250,0,0,0,12,1],[87,0,0,0,13,2],[542,0,0,0,14,3],[147,0,0,0,15,2]]},"314451":{"chip":null,"hits":0,"cost":0,"p":[[226,1,0,0,1,1],[356,1,0,0,2,2],[8,1,0,0,3,2],[229,1,0,0,4,2],[154,1,0,0,5,3],[237,1,0,0,6,3],[40,1,0,1,7,3],[399,1,0,0,8,3],[249,1,0,0,9,4],[411,2,1,0,10,4],[316,1,0,0,11,4],[497,0,0,0,12,1],[286,0,0,0,13,3],[259,0,0,0,14,2],[282,0,0,0,15,2]]},"352983":{"chip":null,"hits":1,"cost":0,"p":[[109,1,0,0,1,1],[31,1,0,0,2,2],[391,1,0,0,3,2],[115,1,0,0,4,2],[15,1,0,0,5,3],[40,1,0,1,6,3],[399,1,0,0,7,3],[68,1,0,0,8,3],[79,2,1,0,9,4],[379,1,0,0,10,4],[411,1,0,0,11,4],[496,0,0,0,12,1],[453,0,0,0,13,3],[449,0,0,0,14,2],[279,0,0,0,15,2]]},"2738656":{"chip":null,"hits":1,"cost":0,"p":[[109,1,0,0,1,1],[387,1,0,0,2,2],[115,1,0,0,3,2],[201,1,0,0,4,2],[68,1,0,0,5,3],[124,1,0,0,6,3],[399,1,0,0,7,3],[13,1,0,0,8,3],[411,2,1,0,9,4],[79,1,0,0,10,4],[379,1,0,1,11,4],[1,0,0,0,12,1],[469,0,0,0,13,2],[212,0,0,0,14,3],[259,0,0,0,15,2]]}},"players":{"512":["Kudus",19,3,0],"1":["Raya",1,1,0],"4":["Gabriel",1,2,0],"8":["Calafiori",1,2,0],"10":["White",1,2,0],"13":["Rice",1,3,0],"15":["Ødegaard",1,3,0],"542":["E.Le Fée",20,3,0],"31":["Konsa",1,2,0],"40":["Rogers",6,3,0],"53":["Manzambi",2,3,0],"566":["Silva",3,2,0],"569":["Gonzalo",10,4,0],"57":["Petrović",3,1,0],"60":["Hill",3,2,0],"572":["Tzolakis",11,1,0],"68":["Tavernier",3,3,0],"586":["Mendy",11,2,0],"79":["Evanilson",3,4,0],"593":["Dedić",17,2,0],"87":["Ajer",4,2,0],"88":["Kayode",4,2,0],"91":["Pinnock",7,2,3],"605":["Yalcouyé",5,3,0],"94":["Schade",4,3,0],"109":["Verbruggen",5,1,0],"112":["Van Hecke",19,2,0],"114":["Boscagli",5,2,0],"115":["De Cuyper",5,2,0],"629":["Zetterer",13,1,0],"124":["Groß",5,3,0],"138":["Kostoulas",5,4,0],"147":["Tosin",19,2,0],"154":["Palmer",6,3,0],"156":["Neto",6,3,0],"165":["João Pedro",6,4,0],"166":["N.Jackson",2,4,0],"171":["Dovin",7,1,0],"173":["Thomas",7,2,0],"175":["van Ewijk",7,2,1],"176":["Dasilva",7,2,1],"201":["Muñoz",18,2,0],"204":["Mitchell",8,2,0],"212":["Hughes",8,3,0],"226":["Pickford",9,1,3],"229":["Tarkowski",9,2,2],"237":["Ndiaye",15,3,0],"249":["Barry",9,4,16],"250":["Leno",10,1,0],"251":["Lecomte",10,1,0],"259":["Diop",12,2,0],"268":["King",10,3,0],"272":["Kusi-Asare",10,4,0],"277":["Egan",11,2,0],"279":["Ajayi",11,2,0],"282":["Giles",11,2,0],"286":["Belloumi",11,3,0],"290":["Slater",11,3,0],"304":["O'Shea",12,2,0],"305":["Davis",12,2,0],"316":["Emersonn",12,4,0],"330":["Bogle",13,2,0],"334":["Muharemović",13,2,0],"356":["Virgil",14,2,0],"362":["Jacquet",14,2,0],"366":["Wirtz",14,3,0],"379":["Isak",14,4,0],"385":["Trafford",13,1,0],"387":["O'Reilly",15,2,0],"388":["Guéhi",15,2,0],"391":["Gvardiol",15,2,0],"399":["Cherki",15,3,0],"401":["Marmoush",19,4,0],"411":["Haaland",15,4,0],"412":["Lammens",16,1,0],"426":["B.Fernandes",16,3,0],"427":["Mbeumo",16,3,0],"449":["Hall",17,2,0],"453":["Barnes",17,3,0],"464":["Wissa",17,4,0],"469":["N.Williams",18,2,0],"496":["Kinsky",19,1,0],"497":["Dubravka",19,1,0],"503":["Van de Ven",19,2,0],"508":["Davies",19,2,0]},"fx":{"9":[["COV","H",2]],"7":[["EVE","A",2]],"13":[["TOT","H",0]],"19":[["LEE","A",0]],"1":[["HUL","H",0]],"11":[["ARS","A",0]],"10":[["NEW","H",0]],"17":[["FUL","A",0]],"18":[["MCI","H",0]],"15":[["NFO","A",0]],"5":[["BRE","H",0]],"4":[["BHA","A",0]],"8":[["LIV","H",0]],"14":[["CRY","A",0]],"12":[["BOU","H",0]],"3":[["IPS","A",0]],"20":[["CHE","H",0]],"6":[["SUN","A",0]],"16":[["AVL","H",0]],"2":[["MUN","A",0]]},"tshort":{"19":"TOT","1":"ARS","20":"SUN","6":"CHE","2":"AVL","3":"BOU","10":"FUL","11":"HUL","17":"NEW","4":"BRE","7":"COV","5":"BHA","13":"LEE","18":"NFO","8":"CRY","9":"EVE","15":"MCI","12":"IPS","14":"LIV","16":"MUN"}};
+(function(){
+  const root=document.getElementById('jornada-root');
+  if(!root) return;
+  try{
+    const J=JORNADA;
+    const PL=J.players||{}, FX=J.fx||{};
+    const T={};TEAMS.forEach(t=>{T[t.e]=t;});
+    const esc=s=>String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    const fname=e=>T[e]?String(T[e].p).split(' ')[0].toUpperCase():'?';
+    const tname=e=>T[e]?T[e].n:'';
+    const fmt=n=>n<0?'−'+Math.abs(n):String(n);
+
+    // Camiseta generica (color por equipo, sin escudos ni marcas)
+    function jersey(tid,gk){
+      const h=gk?330:(tid*47)%360;
+      const c1='hsl('+h+',70%,50%)', c2='hsl('+h+',70%,30%)';
+      return '<svg class="jsv" viewBox="0 0 64 60" aria-hidden="true">'
+        +'<path d="M20 4 L8 10 L1 27 L12 31 L14 23 L14 57 L50 57 L50 23 L52 31 L63 27 L56 10 L44 4 C40 11 24 11 20 4 Z" fill="'+c1+'" stroke="rgba(255,255,255,.6)" stroke-width="1.5"/>'
+        +'<path d="M20 4 C24 11 40 11 44 4" fill="none" stroke="'+c2+'" stroke-width="3"/>'
+        +'<rect x="14" y="42" width="36" height="5" fill="'+c2+'" opacity=".4"/></svg>';
+    }
+
+    // Jugador del once: camiseta + nombre + rival (o "ya jugó" con sus puntos)
+    function tile(x){
+      const p=PL[x[0]]; if(!p) return '';
+      const name=p[0], tid=p[1], pts=p[3];
+      const f=FX[tid]||[];
+      const started=f.some(m=>m[2]>=1);
+      const done=f.length>0&&f.every(m=>m[2]===2);
+      let sub;
+      if(!f.length) sub='sin partido';
+      else if(done) sub='(ya jugó)';
+      else if(started) sub='(en juego)';
+      else sub=f.map(m=>m[0]+' ('+m[1]+')').join(' · ');
+      const cap=x[1]>=3?'3C':(x[1]===2?'C':'');
+      return '<div class="jt">'
+        +(started?'<span class="jbadge">'+pts+'</span>':'')
+        +(cap?'<span class="jcap">'+cap+'</span>':'')
+        +jersey(tid,x[5]===1)
+        +'<div class="jn'+(started?' played':'')+'"><b>'+esc(name)+'</b><small>'+esc(sub)+'</small></div></div>';
+    }
+    // Jugador repetido (lo tienen los dos): hueco tachado
+    function repTile(id){
+      const p=PL[id]; if(!p) return '';
+      return '<div class="jt jrep">'+jersey(p[1],p[2]===1)+'<span class="jx">✕</span>'
+        +'<div class="jn"><b>'+esc(p[0])+'</b></div></div>';
+    }
+
+    const xi=pk=>pk.p.filter(x=>x[1]>0);
+    const score=(list,pk)=>list.reduce((s,x)=>{const p=PL[x[0]];return s+(p?p[3]*x[1]:0);},0)-(pk.cost||0);
+    const chipTag=pk=>{
+      const l=(pk&&pk.chip&&typeof CHIP_LABELS!=='undefined')?CHIP_LABELS[pk.chip]:'';
+      return l?'<div class="jb-c">'+esc(l)+'</div>':'';
+    };
+
+    function pitch(e,list,common,cls,sc){
+      const rows=[1,2,3,4].map(t=>{
+        const items=list.filter(x=>x[5]===t).sort((a,b)=>a[4]-b[4]);
+        return items.length?'<div class="jrow">'+items.map(tile).join('')+'</div>':'';
+      }).join('');
+      const rep=common.length?'<div class="jreprow">'+common.map(repTile).join('')+'</div>':'';
+      return '<div><div class="jpl '+cls+'"><span>'+esc(fname(e))+'</span><span>'+fmt(sc)+' pts</span></div>'
+        +'<div class="jpitch">'+(rows||'<p class="jmsg">Sin jugadores distintos</p>')+rep+'</div></div>';
+    }
+
+    function foot(a,b,pa,pb,sa,sb,common){
+      const names=common.map(id=>PL[id]?esc(PL[id][0]):'').filter(Boolean);
+      const line=(e,pk,sc)=>esc(fname(e))+' está en <b class="'+(sc<0?'neg':'pos')+'">'+fmt(sc)+'</b>'
+        +(pk.cost>0?' <small>(incluye −'+pk.cost+' por '+pk.hits+' fichaje'+(pk.hits===1?'':'s')+')</small>':'');
+      return '<div class="jfoot">'
+        +'<div class="jf"><b>Jugadores repetidos</b> (no cuentan en el duelo)<br>'+(names.length?names.join(' · '):'Ninguno')+'</div>'
+        +'<div class="jf mid">⚽ Duelo sin repetidos</div>'
+        +'<div class="jf">'+line(a,pa,sa)+'<br>'+line(b,pb,sb)+'</div></div>';
+    }
+
+    let html='<p class="jmsg"><b>Jornada '+J.gw+'</b> · datos a '+esc(J.updated)+'.</p>';
+    if(J.available){
+      html+='<p class="jmsg">Los jugadores que tienen <b>los dos</b> managers en su once no cuentan en el duelo. Marcador orientativo: puntos de los jugadores distintos (con capitán) menos las penalizaciones por fichajes, sin contar suplentes automáticos.</p>';
+    }
+    if(J.note) html+='<p class="jmsg">'+esc(J.note)+'</p>';
+    if(!J.duels.length){
+      root.innerHTML=html+'<p class="jmsg">Todavía no hay duelos para esta jornada.</p>';
+      return;
+    }
+
+    J.duels.forEach((d,i)=>{
+      const a=d[0], b=d[1];
+      const pa=J.picks[a], pb=J.picks[b];
+      const both=!!(pa&&pb);
+      let sa=0, sb=0, body='';
+      if(both){
+        const xa=xi(pa), xb=xi(pb);
+        const setA=new Set(xa.map(x=>x[0])), setB=new Set(xb.map(x=>x[0]));
+        const common=[...setA].filter(id=>setB.has(id));
+        const onlyA=xa.filter(x=>!setB.has(x[0])), onlyB=xb.filter(x=>!setA.has(x[0]));
+        sa=score(onlyA,pa); sb=score(onlyB,pb);
+        body='<div class="jbody"><div class="jbanner">'
+          +'<div class="jb red"><div class="jb-n">'+esc(fname(a))+'</div><div class="jb-t">'+esc(tname(a))+'</div>'+chipTag(pa)+'</div>'
+          +'<div class="jb-vs">VS</div>'
+          +'<div class="jb blue"><div class="jb-n">'+esc(fname(b))+'</div><div class="jb-t">'+esc(tname(b))+'</div>'+chipTag(pb)+'</div></div>'
+          +'<div class="jpitches">'+pitch(a,onlyA,common,'red',sa)+pitch(b,onlyB,common,'blue',sb)+'</div>'
+          +foot(a,b,pa,pb,sa,sb,common)+'</div>';
+      }
+      const mid=both
+        ?'<b class="'+(sa>sb?'w':'')+'">'+fmt(sa)+'</b> – <b class="'+(sb>sa?'w':'')+'">'+fmt(sb)+'</b>'
+        :'vs';
+      const sum='<div class="js-side"><div class="js-nm">'+esc(fname(a))+'</div><div class="js-tm">'+esc(tname(a))+'</div></div>'
+        +'<div class="js-sc">'+mid+'</div>'
+        +'<div class="js-side r"><div class="js-nm">'+esc(fname(b))+'</div><div class="js-tm">'+esc(tname(b))+'</div></div>';
+      if(both) html+='<details class="jduel"'+(i===0?' open':'')+'><summary>'+sum+'</summary>'+body+'</details>';
+      else html+='<div class="jduel nodet"><div class="jsum">'+sum+'</div></div>';
+    });
+    root.innerHTML=html;
+  }catch(err){
+    console.error(err);
+    root.innerHTML='<p class="jmsg">No se pudo dibujar la jornada en este momento.</p>';
+  }
+})();
 </script>
 </body>
 </html>
